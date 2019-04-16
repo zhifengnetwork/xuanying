@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <!-- <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
+	<title>分类</title>
+	<!-- <script src="__STATIC__/js/public/rem.js"></script> -->
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css?v=1553087156"/>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/footer.css?v=1553087156"/>
+	<link rel="stylesheet" href="__STATIC__/css/style.css?v=1553087156">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/category/category_zp.css?v=1553087156"/>
+	<script src="__STATIC__/js/jquery-3.1.1.min.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
+	<script src="__STATIC__/js/mobile-util.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
+	<script src="__PUBLIC__/js/global.js?v=1553087156"></script>
+</head>
+<body>
+	<div class="wrapper">
+		<div class="category-wrap">
+			<div class="top-bar">
+				<div class="search">
+					<form action="/mobile/Goods/search.html" method="get">
+						<input type="submit" class="search-btn" value="" />
+						<input type="text" class="search-text" placeholder="SK ll" name="q" />
+						<i class="scan"></i>
+					</form>
+				</div>
+				<div class="msg-icon"></div>
+			</div>
+			<div class="category-main">
+				<!--左侧菜单-->
+				<div class="menu">
+					<ul>
+						<!-- <foreach name="category" item="vo" key="i">
+							<li><i></i>{$vo.mobile_name}</li>
+						</foreach> -->
+						<foreach name="secondCategoryList" item="list">
+							<li <if condition="$list[id] eq 111"> class="active" </if> ><i></i>{$list[name]}</li>
+						</foreach>
+						<!--<li class="active"><i></i>为您推荐</li>-->
+					</ul>
+				</div>
+				<!--右边分类内容-->
+				<div class="main">
+					<foreach name="secondCategoryList" item="category" key="key">
+						<div class="branchList <if condition='$category[id] eq 111'> active </if>">
+						<!--<div class="advert">-->
+							<!--<assign name="k" value="0"></assign>-->
+							<!--<foreach name="categoryList" item="cate">-->
+								<!--<if condition="$k<1">-->
+									<!--<if condition="$cate[id] eq $category[parent_id]">-->
+										<!--<a href="{$k++}"><img src="{$cate[image]}" /></a>-->
+									<!--<else>-->
+										<!--&lt;!&ndash; <a href="{$k++}"><img src="__STATIC__/images/category/advert-11.jpg" /></a> &ndash;&gt;-->
+									<!--</if>-->
+								<!--</if>-->
+							<!--</foreach>-->
+						<!--</div>-->
+
+							<div class="cate-item">
+								<h3>{$category[name]}</h3>
+								<ul class="cate-list">
+									<foreach name="category.child" item="child">
+										<li class="item">
+											<a href="/Mobile/Goods/goodsInfo/id/{$child[goods_id]}.html">
+												<img src="{$child[original_img]}" />
+												<p>{$child[goods_name]}</p>
+											</a>
+										</li>
+									</foreach>
+								</ul>
+							</div>
+
+					</div>
+					</foreach>
+
+				</div>
+			</div>
+			
+            <!--底部导航-->
+            <!-- <div class="footer-zp">
+                <ul>
+                    <li <if condition="CONTROLLER_NAME eq 'Index'">class="on"</if>  >
+                        <a href="{:U('Index/index')}"><i class="home-icon"></i><span>首页</span></a>
+                    </li>
+                    <li <if condition="CONTROLLER_NAME eq 'Goods'">class="on"</if> >
+                        <a href="{:U('Goods/categoryList')}"><i class="category-icon"></i><span>分类</span></a>
+                    </li>
+                    <li <if condition="CONTROLLER_NAME eq 'Cart'">class="on" </if> >
+                        <a href="{:U('Cart/index')}"><i class="cart-icon"></i><span>购物车</span></a>
+                    </li>
+                    <li <if condition="CONTROLLER_NAME eq 'User'">class="on" </if> >
+                        <a href="{:U('User/index')}"><i class="user-icon"></i><span>我的</span></a>
+                    </li>
+                </ul>
+			</div> -->
+
+			 <!--底部导航-start-->
+			 <include file="public/footer_nav"/>
+
+		</div>
+	</div>
+
+
+	<script src="__STATIC__/js/category/category_zp.js?v=1553087156"></script>
+
+</body>
+</html>

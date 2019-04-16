@@ -1,0 +1,495 @@
+<include file="public/layout" />
+<style>
+    .err{color:#F00; display:none;}
+</style>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>促销管理 - 编辑拼团</h3>
+                <h5>网站系统拼团活动详情页</h5>
+            </div>
+        </div>
+    </div>
+	<form class="form-horizontal" id="handleposition" method="post" onsubmit="return false;">
+		<!-- 选择商品隐藏数据 -->
+        <!-- <input type="hidden" name="team_id" value="{$teamActivity.team_id}"> -->
+		<input type="hidden" id="goods_id" name="goods_id" value="{$list.goods_id}">
+		<input type="hidden" name="id" value="{$info.id}">
+		<input type="hidden" name="act" value="{$act}">
+		<input type="hidden" name="goods_item_id" value="{$list.goods_item_id}">
+		<input type="hidden" name="team_id" value="{$list.team_id}">
+        <div class="ncap-form-default">
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>拼团活动标题</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" name="act_name" value="{$list['act_name']}" class="input-txt">
+                    <p class="notic">请填写拼团标题</p>
+                </dd>
+            </dl>
+			
+            <dl class="row">
+                <dt class="tit">
+                    <label><em>*</em>是否开启</label>
+                </dt>
+                <dd class="opt">
+						<if condition="($list['status'] == 1)">
+						<input type="radio" name="status" value="0"/>否
+						<input type="radio" name="status" value="1" checked=ture/>是
+						<else />
+						<input type="radio" name="status" value="0" checked=ture/>否
+						<input type="radio" name="status" value="1"/>是						
+					    </if>											
+                </dd>
+            </dl>	
+			
+			<dl class="row">
+			    <dt class="tit">
+			        <label><em>*</em>时间段:</label>
+			    </dt>
+			    <dd class="opt">
+					<if condition="($act == 'add')">
+						<input type="text" id="start_time" name="start_time" value="{:date('Y-m-d H:i:s',time())}">至<input type="text" id="end_time" name="end_time" value="{:date('Y-m-d H:i:s',time())}">
+					<else />
+						<input type="text" id="start_time" name="start_time" value="{:date('Y-m-d H:i:s',$list['start_time'])}">至<input type="text" id="end_time" name="end_time" value="{:date('Y-m-d H:i:s',$list['end_time'])}">
+					</if>	
+				</dd>
+			</dl>
+
+			<dl class="row">
+				<dt class="tit">
+					<label><em>*</em>选择商品</label>
+				</dt>
+				<dd class="opt">
+					<input type="text" readonly  id="goods_name" name="goods_name" value="{$list['goods_name']}" class="input-txt">
+					<div style="overflow: hidden" id="selected_group_goods">
+						<if condition="$list['goods_id'] gt 0">
+							<div style="float: left;margin-right: 10px" class="selected-group-goods">
+								<div class="goods-thumb"><img style="width: 162px;height: 162px"  <notempty name="list['specGoodsPrice']">src="{$list['specGoodsPrice']['spec_img']}"<else/>src="{$list['goods_id']|goods_thum_images=162,162}"</notempty>/></div>
+								<div class="goods-name">
+									<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$list['goods_id']))}">{$list.goods_name}</a>
+								</div>
+								<div class="goods-price">
+									<notempty name="list['specGoodsPrice']">
+										商城价：￥{$list['specGoodsPrice']['price']}库存:{$list['specGoodsPrice']['store_count']}
+										<else/>
+										商城价：￥{$list['goods']['shop_price']}库存:{$list['goods']['store_count']}
+									</notempty>
+								</div>
+							</div>
+						</if>
+					</div>
+					<span class="err" id="err_goods_name"></span>
+					<p class="notic">
+						<a onclick="selectGoods()" class="ncap-btn"><i class="fa fa-search"></i>选择商品</a>
+					</p>
+				</dd>
+			</dl>
+
+
+			<dl class="row" id="p_num">
+			    <dt class="tit">
+			        <label><em>*</em>拼团人数:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="group_number" value="{$list['group_number']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+			        <p class="notic">满足人数即可。</p>
+			    </dd>
+			</dl>
+			<dl class="row" id="p_num">
+			    <dt class="tit">
+			        <label><em>*</em>成团有效期:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="time_limit" value="{$list['time_limit']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+			        <p class="notic">超时则结束拼团(单位:小时)</p>
+			    </dd>
+			</dl>
+
+			<dl class="row" id="p_num">
+			    <dt class="tit">
+			        <label><em>*</em>拼团价格:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="group_price" value="{$list['group_price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+			        <p class="notic">请输入拼团价格。</p>
+			    </dd>
+			</dl>
+
+			<dl class="row" id="p_num">
+			    <dt class="tit">
+			        最大开团数:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="max_open_num" value="{$list['max_open_num']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+			        <p class="notic">请输入最大开团数。</p>
+			    </dd>
+			</dl>			
+
+            <dl class="row">
+                <dt class="tit">
+                    <label>是否返佣</label>
+                </dt>
+                <dd class="opt">
+							<if condition="($list['return_commission'] == 1)">
+								<input type="radio" name="return_commission" value="0"/>否
+								<input type="radio" name="return_commission" value="1" checked/>是								
+								<else />								
+								<input type="radio" name="return_commission" value="0"  checked/>否
+								<input type="radio" name="return_commission" value="1"/>是
+							</if>	
+                </dd>
+			</dl>
+
+             <dl class="row">
+					<dt class="tit">
+						<label>团长是否免单</label>
+					</dt>
+					<dd class="opt">
+
+							<if condition="($list['is_free'] == 0)">
+									<input type="radio" name="is_free" value="0" onclick="radioClick(1,this.name)" checked='true'/>否
+									<input type="radio" name="is_free" value="1" onclick="radioClick(1,this.name)"/>是								
+									<else />								
+									<input type="radio" name="is_free" value="0" onclick="radioClick(1,this.name)"/>否
+									<input type="radio" name="is_free" value="1" onclick="radioClick(1,this.name)" checked='true'/>是
+							</if>						
+								  <p class="notic">可设置团长是否允许免单或固定价（设置0或空按拼团价来计算)</p>		
+					</dd>
+			</dl>		
+            <if condition="($list['is_free'] eq 1)">
+            <dl class="row" id="disc" style="display:none">
+					<dt class="tit">
+						<label>固定价格:</label>
+					</dt>
+					<dd class="opt">
+							<input type="text" name="discount_price" value="{$list['discount_price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+							
+					</dd>
+			</dl>
+			<else/>
+					<dl class="row" id="disc">
+						<dt class="tit">
+							<label>固定价格:</label>
+						</dt>
+						<dd class="opt">
+								<input type="text" name="discount_price" value="{$list['discount_price']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')"/>
+								
+						</dd>
+					</dl>			
+			</if>
+			<dl class="row">
+			    <dt class="tit">
+			        <label>限购:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="buy_limit" value="{$list['buy_limit']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="input-txt">
+			        <p class="notic">每人限制最多可购买数量。不设或设置为0则表示不限购。如果商品也设置了限购以设置的最小值为准。</p>
+			    </dd>
+			</dl>
+			
+			<dl class="row">
+			    <dt class="tit">
+			        <label>活动规则:</label>
+			    </dt>
+			    <dd class="opt">
+			        <textarea type="text" name="activity_rule" class="input-txt">{$list['activity_rule']}</textarea>
+			    </dd>
+			</dl>
+			<dl class="row">
+			    <dt class="tit">
+			        <label>商品简介:</label>
+			    </dt>
+			    <dd class="opt">
+			        <textarea type="text" name="goods_intro" class="input-txt">{$list['goods_intro']}</textarea>
+					<p class="notic">简单介绍下商品。</p>
+			    </dd>
+			</dl>
+			<dl class="row">
+			    <dt class="tit">
+			        <label>分享标题:</label>
+			    </dt>
+			    <dd class="opt">
+			        <input type="text" name="share_title" value="{$list['share_title']}" class="input-txt">
+					<p class="notic">团购分享标签，50个汉字以内。</p>
+			    </dd>
+			</dl>
+			
+            
+            <div class="bot"><a onclick="verifyForm()" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+
+    $(document).on("click", '#submit', function (e) {
+        $('#submit').attr('disabled',true);
+        verifyForm();
+    })
+
+    $(document).ready(function(){
+        laydate.render({
+            elem: '#start_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+        laydate.render({
+            elem: '#end_time',//绑定元素
+            theme: 'molv', //主题
+            type:'datetime', //控件选择类型
+            format: 'yyyy-MM-dd HH:mm:ss', //自定义格式
+            calendar: true, //显示公历节日
+            min: '1970-01-01 00:00:00', //最小日期
+            max: '2099-12-31 00:00:00', //最大日期
+            // value: new Date(),//默认当前时间
+            isInitValue: true,
+            position : 'fixed', //定位方式
+            zIndex: 99999999, //css z-index
+        });
+    })
+    function verifyForm(){
+        $('span.err').hide();
+        $.ajax({
+            type: "POST",
+            url: "{:U('Team/teamHandle')}",
+            data: $('#handleposition').serialize(),
+            dataType: "json",
+            error: function () {
+                layer.alert("服务器繁忙, 请联系管理员!");
+            },
+            success: function (data) {
+                if (data.status == 1) {
+                    layer.msg(data.msg, {
+                        icon: 1,
+                        time: 1000
+                    }, function(){
+                        location.href = "{:U('Team/index')}";
+                    });
+                } else {
+                    layer.msg(data.msg, {icon: 2,time: 1000});
+                    $.each(data.result, function (index, item) {
+                        $('#err_' + index).text(item).show();
+                    });
+                }
+            }
+        });
+    }
+
+//   sku
+    function selectGoods2(){
+        var url = "{:U('Team/search_goods2',array('tpl'=>'add_sku','prom_type'=>6,'prom_id'=>$info[id]))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['30%', '50%'],
+            content: url,
+        });
+    }
+
+
+    
+    function selectGoods(){
+        var url = "{:U('Promotion/search_goods',array('tpl'=>'select_goods','prom_type'=>6,'prom_id'=>$info[id]))}";
+        layer.open({
+            type: 2,
+            title: '选择商品',
+            shadeClose: true,
+            shade: 0.2,
+            area: ['75%', '75%'],
+            content: url,
+        });
+    }
+	// 商品显示
+    function call_back(goodsItem){
+        $('#goods_id').val(goodsItem.goods_id);
+        var html = '';
+        if(goodsItem.spec != null){
+            //有规格
+            html = '<div style="float: left;margin: 10px auto;" class="selected-group-goods"><div class="goods-thumb">' +
+                    '<img style="width: 162px;height: 162px" src="'+goodsItem.spec.spec_img+'"/></div> <div class="goods-name"> ' +
+                    '<a target="_blank" href="/index.php?m=Home&c=Goods&a=goodsInfo&id='+goodsItem.goods_id+'">'+goodsItem.goods_name+goodsItem.spec.key_name+'</a> </div>' +
+                    ' <div class="goods-price">商城价：￥'+goodsItem.spec.price+'库存:'+goodsItem.spec.store_count+'</div> </div>';
+            $('input[name=goods_item_id]').val(goodsItem.spec.item_id);
+            $('input[name=goods_name]').val(goodsItem.goods_name + goodsItem.spec.key_name);
+        }else{
+            html = '<div style="float: left;margin: 10px auto;" class="selected-group-goods"><div class="goods-thumb">' +
+                    '<img style="width: 162px;height: 162px" src="'+goodsItem.goods_image+'"/></div> <div class="goods-name"> ' +
+                    '<a target="_blank" href="/index.php?m=Home&c=Goods&a=goodsInfo&id='+goodsItem.goods_id+'">'+goodsItem.goods_name+'</a> </div>' +
+                    ' <div class="goods-price">商城价：￥'+goodsItem.goods_price+'库存:'+goodsItem.store_count+'</div> </div>';
+            $('input[name=goods_name]').val(goodsItem.goods_name);
+        }
+        $('#select_goods_button').attr('data-goods-id',goodsItem.goods_id);
+        $('#selected_group_goods').empty().html(html);
+        $('.selected-group-goods').show();
+        layer.closeAll('iframe');
+	}
+
+
+    // 层级编辑或者添加
+    function selectLevel(level){
+		if(level){
+        //    编辑层级
+		// alert('aaa');
+				// var url = "{:U('Team/selectLevel',array('tpl'=>'add_level','status'=>'edit','level'=>'level'))}";
+			    var url = '/index.php/admin/Team/selectLevel/tpl/add_level/h_val/'+level+'/status/edit';
+					layer.open({
+						type: 2,
+						title: '选择层级',
+						shadeClose: true,
+						shade: 0.2,
+						area: ['30%', '50%'],
+						content: url,
+					});
+		}else{
+			// alert('bbb');
+			// 添加层级
+			// var url = "{:U('Team/selectLevel',array('tpl'=>'add_level','status'=>'add'))}";
+            var h_val = $("#h_val").val();
+			// console.log(h_val);
+			// console.log(h_val);
+			var url = '/index.php/admin/Team/selectLevel/tpl/add_level/h_val/'+h_val+'/status/add';
+			layer.open({
+				type: 2,
+				title: '选择层级',
+				shadeClose: true,
+				shade: 0.2,
+				area: ['30%', '50%'],
+				content: url,
+			});
+		}
+
+    }	
+	//层级显示 显示填写的数据   #h_var相当于id，用于标记一行的数据
+    function call_back1(goodsItem){        
+        var html = '';
+            html = '<tbody><tr><td align="left" abbr="article_title" axis="col3" class=""><div style="text-align: left; width: 50px;" class="">'+goodsItem.level+'</div></td>'+
+				   '<td align="left" abbr="ac_id" axis="col4" class=""><div style="text-align: center; width: 100px;" class="">'+goodsItem.team_price+'</div></td>'+
+				   '<td align="left" abbr="ac_id" axis="col4" class=""><div style="text-align: center; width: 120px;" class="">'+goodsItem.team_p+'</div></td>'+
+				   '<td align="left" axis="col1" class="handle"><div style="text-align: center; width: 240px;">'+
+				   '<a class="btn blue" onclick="selectLevel('+goodsItem.h_val+')"><i class="fa fa-pencil-square-o"></i>编辑</a>'+
+				   '<a class="btn red" href="javascript:void(0)" data-url="" data-id="" onClick="del('+goodsItem.h_val+',this)"><i class="fa fa-trash-o"></i>删除</a></div></td></tr></tbody>';    
+
+
+        // 把gooditem里的数据连接,放input框隐藏
+		var link_data = goodsItem.level+'-'+goodsItem.team_price+'-'+goodsItem.team_p;
+		// console.log(link_data);
+		var hid = ''; 
+		    hid = '<input type="text" class="lev" name="team_hid" id="team_hid" value="'+link_data+'">';
+			$('#level_box').append(hid);
+        
+		$('#team_level').val(goodsItem.level);
+		$('#team_price').val(goodsItem.team_price);
+		$('#team_person').val(goodsItem.team_p);
+		$('#selected_le').append(html);
+		// 把值赋给#h_val
+		$('#h_val').val(goodsItem.h_val);
+        layer.closeAll('iframe');
+
+    }
+    // 层级删除
+	function del(id,obj){
+		var res=$(obj).parent().parent().parent().parent().remove();
+		// 删除本行后，隐藏值设置为当前值-1，用于第二次点击后层级减1
+		var h_val = $("#h_val").val();
+		var data = h_val-1;
+		var h_val = $("#h_val").val(data);
+    }          
+	
+	function radioClick(level,name) {
+          //定义一个变量show，show获取的是被选中的radio对应的值
+          var show="";
+		  
+          //取到所有的单选
+          var apm = document.getElementsByName(name);
+          //遍历
+          for(var i=0;i < apm.length;i++){
+          //取到所选中的值checked
+              if(apm[i].checked)
+                  show = apm[i].value;
+          }
+		  if(level==0){
+			//接下来就是对取到的值，进行显示和隐藏操作。
+			switch (show){
+				case '1':
+					document.getElementById("casea").style.display="block";
+					document.getElementById("contentinpt").style.display="none";
+					document.getElementById("jieti").style.display="none";
+					document.getElementById("p_num").style.display="none";
+					document.getElementById("b_num").style.display="none";
+					break;
+				case '2':
+					document.getElementById("casea").style.display="none";
+					document.getElementById("contentinpt").style.display="block";
+					document.getElementById("jieti").style.display="none";
+					break;
+				case '3':
+					document.getElementById("casea").style.display="none";
+					document.getElementById("contentinpt").style.display="none";
+					document.getElementById("jieti").style.display="block";
+					document.getElementById("p_num").style.display="none";
+					document.getElementById("b_num").style.display="none";
+					break;
+
+				default:
+					document.getElementById("casea").style.display="none";
+					document.getElementById("contentinpt").style.display="none";
+					document.getElementById("jieti").style.display="none";
+					break;
+			}
+		  }else if(level==1){
+          		//接下来就是对取到的值，进行显示和隐藏操作。
+				switch (show){
+					case '0':
+						document.getElementById("disc").style.display="block";
+						
+						break;
+					case '1':
+						document.getElementById("disc").style.display="none";
+						
+						break;
+					default:
+						document.getElementById("disc").style.display="block";
+						break;
+				}                   
+		  }else{
+          	//接下来就是对取到的值，进行显示和隐藏操作。
+			switch (show){
+				case '0':
+					document.getElementById("p_num").style.display="block";
+					document.getElementById("b_num").style.display="none";
+					break;
+				case '1':
+					document.getElementById("p_num").style.display="none";
+					document.getElementById("b_num").style.display="block";
+					break;
+				default:
+					document.getElementById("casea").style.display="none";
+					document.getElementById("contentinpt").style.display="none";
+					break;
+			}
+		  }
+
+
+    }
+
+
+</script>
+</body>
+</html>

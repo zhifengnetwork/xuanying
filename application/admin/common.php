@@ -1,0 +1,256 @@
+<?php
+use app\common\logic\PerformanceLogic;
+
+
+/**
+ * 获取昵称
+ */
+function get_nickname($user_id){
+	return M('users')->where(['user_id'=>$user_id])->value('nickname');
+}
+
+function get_agent_log($user_id){
+
+	$logic = new PerformanceLogic();
+	$res = $logic->distribut_caculate_by_user_id($user_id);
+	$money = $res['money_total'];
+	return $money;
+}
+
+/**
+ * 获取上级名称
+ */
+function get_first_leader_name($user_id){
+	
+	$first_leader = M('users')->where(['user_id'=>$user_id])->value('first_leader');
+
+	if($first_leader == 0){
+	
+		$openid = M('users')->where(['user_id'=>$user_id])->value('openid');
+
+		$access_token = access_token();
+		$url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+	
+		$resp = httpRequest($url, "GET");
+		$res = json_decode($resp, true);
+
+		if($res['subscribe'] == 0){
+			return '<font color="red">没有关注公众号</font>';
+		}else{
+			//关注情况
+			if($res['subscribe_scene'] == 'ADD_SCENE_PROFILE_CARD'){
+				return '<font color="green">名片分享关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_SEARCH'){
+				return '<font color="green">搜索公众号关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_ACCOUNT_MIGRATION'){
+				return '<font color="green">公众号迁移关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENEPROFILE_LINK'){
+				return '<font color="green">图文页内名称点击</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_PROFILE_ITEM'){
+				return '<font color="green">图文页右上角菜单关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_PAID'){
+				return '<font color="green">支付后关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_OTHERS'){
+				return '<font color="green">其他渠道关注</font>';
+			}
+			if($res['subscribe_scene'] == 'ADD_SCENE_QR_CODE'){
+				if(is_numeric($res['qr_scene_str']) == false){
+					return '<font color="blue">扫描旧海报关注</font>';
+				}else{
+					return '<font color="blue">扫描（'.$res['qr_scene_str'].'）二维码</font>';
+				}
+			}
+			return '无';
+		}
+
+	}else{
+
+		$first_leader_user = M('users')->where(['user_id'=>$first_leader])->find();
+
+		if($first_leader_user['nickname'] == null)
+		{
+			$name = $first_leader_user['mobile'];
+		}else{
+			$name = $first_leader_user['nickname'];
+		}
+	}
+
+	return $name;
+}
+
+function get_agent_user($first_leader){
+
+	
+	$first_leader_user = M('users')->where(['user_id'=>$first_leader])->find();
+	if(empty($first_leader_user)){
+		$name = "无";
+	}else{
+		if($first_leader_user['nickname'] == null)
+		{
+			$name = $first_leader_user['mobile'];
+		}else{
+			$name = $first_leader_user['nickname'];
+		}
+	}
+
+	return $name;
+}
+
+/**
+ * 管理员操作记录
+ * @param $log_info string 记录信息
+ */
+function adminLog($log_info){
+    $add['log_time'] = time();
+    $add['admin_id'] = session('admin_id');
+    $add['log_info'] = $log_info;
+    $add['log_ip'] = request()->ip();
+    $add['log_url'] = request()->baseUrl() ;
+    M('admin_log')->add($add);
+}
+
+
+/**
+ * 平台支出记录
+ * @param $data
+ */
+function expenseLog($data){
+	$data['addtime'] = time();
+	$data['admin_id'] = session('admin_id');
+	M('expense_log')->add($data);
+}
+ 
+function getAdminInfo($admin_id){
+	return D('admin')->where("admin_id", $admin_id)->find();
+}
+
+function tpversion()
+{   
+    //在线升级 
+	$isset_push = session('isset_push');         
+	if(!empty($isset_push))
+		return false;        
+	session('isset_push',1);
+	 
+    error_reporting(0);//关闭所有错误报告
+    $app_path = dirname($_SERVER['SCRIPT_FILENAME']).'/';
+    $version_txt_path = $app_path.'/application/admin/conf/version.php';
+    $curent_version = file_get_contents($version_txt_path);
+    
+    $vaules = array(            
+            'domain'=>$_SERVER['HTTP_HOST'], 
+            'last_domain'=>$_SERVER['HTTP_HOST'], 
+            'key_num'=>$curent_version, 
+            'install_time'=>INSTALL_DATE, 
+            'cpu'=>'0001',
+            'mac'=>'0002',
+            'serial_number'=>SERIALNUMBER,
+            );     
+     $url = "http://service.tp-shop.cn/index.php?m=Home&c=Index&a=user_push&".http_build_query($vaules);
+     stream_context_set_default(array('http' => array('timeout' => 3)));
+     file_get_contents($url);       
+}
+ 
+/**
+ * 面包屑导航  用于后台管理
+ * 根据当前的控制器名称 和 action 方法
+ */
+function navigate_admin()
+{            
+    $navigate = include APP_PATH.'admin/conf/navigate.php';
+    $location = strtolower('Admin/'.CONTROLLER_NAME);
+    $arr = array(
+        '后台首页'=>'javascript:void();',
+        $navigate[$location]['name']=>'javascript:void();',
+        $navigate[$location]['action'][ACTION_NAME]=>'javascript:void();',
+    );
+    return $arr;
+}
+
+/**
+ * 导出excel
+ * @param $strTable	表格内容
+ * @param $filename 文件名
+ */
+function downloadExcel($strTable,$filename)
+{
+	header("Content-type: application/vnd.ms-excel");
+	header("Content-Type: application/force-download");
+	header("Content-Disposition: attachment; filename=".$filename."_".date('Y-m-d').".xls");
+	header('Expires:0');
+	header('Pragma:public');
+	echo '<html><meta http-equiv="Content-Type" content="text/html; charset=utf-8" />'.$strTable.'</html>';
+}
+
+/**
+ * 格式化字节大小
+ * @param  number $size      字节数
+ * @param  string $delimiter 数字和单位分隔符
+ * @return string            格式化后的带单位的大小
+ */
+function format_bytes($size, $delimiter = '') {
+	$units = array('B', 'KB', 'MB', 'GB', 'TB', 'PB');
+	for ($i = 0; $size >= 1024 && $i < 5; $i++) $size /= 1024;
+	return round($size, 2) . $delimiter . $units[$i];
+}
+
+/**
+ * 根据id获取地区名字
+ * @param $regionId id
+ */
+function getRegionName($regionId){
+    $data = M('region')->where(array('id'=>$regionId))->field('name')->find();
+    return $data['name'];
+}
+
+function getMenuArr(){
+	$menuArr = include APP_PATH.'admin/conf/menu.php';
+	if(IS_SAAS == 1){
+		foreach($menuArr as $k=>$val){  
+			foreach ($val['child'] as $j=>$v){
+				foreach ($v['child'] as $s=>$son){
+					if($GLOBALS['SAAS_CONFIG']['is_base_app'] != 1 && $son['admin_saas'] == 1){
+						unset($menuArr[$k]['child'][$j]['child'][$s]);//过滤菜单
+					}
+				}
+			}
+		}
+	} 
+	$act_list = session('act_list');
+	if($act_list != 'all' && !empty($act_list)){
+		$right = M('system_menu')->where("id in ($act_list)")->cache(true)->getField('right',true);
+        $role_right = '';
+		foreach ($right as $val){
+			$role_right .= $val.',';
+		}
+		foreach($menuArr as $k=>$val){  
+			foreach ($val['child'] as $j=>$v){
+				if($v['child'])
+				foreach ($v['child'] as $s=>$son){				
+					if(strpos($role_right,$son['op'].'@'.$son['act']) === false){
+						unset($menuArr[$k]['child'][$j]['child'][$s]);//过滤菜单
+					}						
+				}
+			}
+		}  
+		foreach ($menuArr as $mk=>$mr){
+			foreach ($mr['child'] as $nk=>$nrr){
+				if(empty($nrr['child'])){
+					unset($menuArr[$mk]['child'][$nk]);
+				}
+			}
+		}
+	}
+	return $menuArr;
+}
+
+
+function respose($res){
+	exit(json_encode($res));
+}

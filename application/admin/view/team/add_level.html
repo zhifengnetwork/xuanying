@@ -1,0 +1,74 @@
+<include file="public/layout"/>
+
+<body style="background-color: rgb(255, 255, 255); overflow: auto; cursor: default; -moz-user-select: inherit;">
+        <div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+        <div id="append_parent"></div>
+        <div id="ajaxwaitid"></div>
+        <div class="page">
+
+            <form class="form-horizontal" id="handleposition" method="post" onsubmit="return false;">
+
+                <div class="ncap-form-default">
+
+                    
+                        <dl class="row">
+                            <dt class="tit">
+                                <label><em>*</em>层级</label>
+                            </dt>
+                            <dd class="opt">
+                                <select disabled name="level" id="level">
+                                    <option value="{$h_val}">
+                                            {$h_val}级
+                                    </option>
+                                </select>
+                            </dd>
+                        </dl>
+                        <input type="hidden" id="h_val" value="{$h_val}">                       
+                        <dl class="row">
+                            <dt class="tit">
+                                <label><em>*</em>拼团价</label>
+                            </dt>
+                            <dd class="opt">
+                                <input type="text" value="" id="team_price" name="team_price"/>
+                                <p class="notic">请填写拼团价</p>
+                            </dd>
+                        </dl>
+                        
+                        <dl class="row">
+                            <dt class="tit">
+                                <label><em>*</em>拼团人数</label>
+                            </dt>
+                            <dd class="opt">
+                                <input type="text" value="" id="team_p" name="team_p"/>
+                                <p class="notic">请填写拼团人数</p>
+                            </dd>
+                    </dl>                        
+
+                    <div class="bot"><a onclick="select_goods()" class="ncap-btn-big ncap-btn-green">确认提交</a></div>
+                </div>
+            </form>
+        </div>
+<script type="text/javascript">
+    //商品对象
+    function GoodsItem(level,team_price, team_p,h_val) {
+        this.level = level;
+        this.team_price = team_price;
+        this.team_p = team_p;
+        this.h_val = h_val;
+    }
+    function select_goods()
+    {
+        var level = $('#level').val();
+        var team_price = $('#team_price').val();
+        var team_p = $('#team_p').val();
+        var h_val = $('#h_val').val();
+
+        var goodsItem = null;
+        goodsItem = new GoodsItem(level,team_price,team_p,h_val);
+        window.parent.call_back1(goodsItem);
+    }
+
+</script>
+        
+</body>
+</html>
