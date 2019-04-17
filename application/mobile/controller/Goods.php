@@ -317,7 +317,7 @@ class Goods extends MobileBase
         $goodsLogic = new GoodsLogic();
         $goods_id = I("get.id/d");
         $goodsModel = new \app\common\model\Goods();
-        $goods = $goodsModel::get($goods_id);
+        $goods = $goodsModel::get($goods_id); 
         if (empty($goods) || ($goods['is_on_sale'] == 0)) {
             $this->error('此商品不存在或者已下架');
         }

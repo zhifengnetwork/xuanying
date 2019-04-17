@@ -193,6 +193,7 @@ class Goods extends Base {
             $where .= " and cat_id in(".  implode(',', $grandson_ids).") "; // 初始化搜索条件
         }
         
+        $where .= ' and goods_type <>' . C('customize.gift_goods_type'); 
         $count = M('Goods')->where($where)->count();
         $Page  = new AjaxPage($count,20);
         /**  搜索条件下 分页赋值
@@ -211,6 +212,61 @@ class Goods extends Base {
         $this->assign('page',$show);// 赋值分页输出
         return $this->fetch();
     }
+
+    /**
+     *  大礼包商品列表
+     */
+    public function giftGoodsList(){   
+        $GoodsLogic = new GoodsLogic();        
+        $brandList = $GoodsLogic->getSortBrands();
+        $categoryList = $GoodsLogic->getSortCategory();
+        $this->assign('categoryList',$categoryList);
+        $this->assign('brandList',$brandList);
+        return $this->fetch();
+    }
+    
+    /**
+     *  商品列表
+     */
+    public function ajaxGiftGoodsList(){            
+        
+        $where = ' 1 = 1 '; // 搜索条件                
+        I('intro')    && $where = "$where and ".I('intro')." = 1" ;        
+        I('brand_id') && $where = "$where and brand_id = ".I('brand_id') ;
+        (I('is_on_sale') !== '') && $where = "$where and is_on_sale = ".I('is_on_sale') ;                
+        $cat_id = I('cat_id');
+        // 关键词搜索               
+        $key_word = I('key_word') ? trim(I('key_word')) : '';
+        if($key_word)
+        {
+            $where = "$where and (goods_name like '%$key_word%' or goods_sn like '%$key_word%')" ;
+        }
+        
+        if($cat_id > 0)
+        {
+            $grandson_ids = getCatGrandson($cat_id); 
+            $where .= " and cat_id in(".  implode(',', $grandson_ids).") "; // 初始化搜索条件
+        }
+        
+        $where .= ' and goods_type=' . C('customize.gift_goods_type'); 
+        $count = M('Goods')->where($where)->count();
+        $Page  = new AjaxPage($count,20);
+        /**  搜索条件下 分页赋值
+        foreach($condition as $key=>$val) {
+            $Page->parameter[$key]   =   urlencode($val);
+        }
+        */
+        $show = $Page->show();
+        $order_str = "`{$_POST['orderby1']}` {$_POST['orderby2']}";
+        $goodsList = M('Goods')->where($where)->order($order_str)->limit($Page->firstRow.','.$Page->listRows)->select();
+
+        $catList = D('goods_category')->select();
+        $catList = convert_arr_key($catList, 'id');
+        $this->assign('catList',$catList);
+        $this->assign('goodsList',$goodsList);
+        $this->assign('page',$show);// 赋值分页输出
+        return $this->fetch();
+    }    
 
 
     /**
@@ -332,6 +388,35 @@ class Goods extends Base {
         return $this->fetch('_goods');
     }
 
+    /**
+     * 添加修改大礼包商品
+     */
+    public function addEditGiftGoods()
+    {
+        $GoodsLogic = new GoodsLogic();
+        $Goods = new \app\common\model\Goods();
+        $goods_id = input('id');
+        if($goods_id){
+            $goods = $Goods->where('goods_id', $goods_id)->find();
+            $level_cat = $GoodsLogic->find_parent_cat($goods['cat_id']); // 获取分类默认选中的下拉框
+            $level_cat2 = $GoodsLogic->find_parent_cat($goods['extend_cat_id']); // 获取分类默认选中的下拉框
+            $brandList = $GoodsLogic->getSortBrands($goods['cat_id']);   //获取三级分类下的全部品牌
+            $this->assign('goods', $goods);
+            $this->assign('level_cat', $level_cat);
+            $this->assign('level_cat2', $level_cat2);
+            $this->assign('brandList', $brandList);
+        }
+        $cat_list = Db::name('goods_category')->where("parent_id = 0")->select(); // 已经改成联动菜单
+        $goodsType = Db::name("GoodsType")->select();
+        $suppliersList = Db::name("suppliers")->where(['is_check'=>1])->select();
+        $freight_template = Db::name('freight_template')->where('')->select();
+        $this->assign('freight_template',$freight_template);
+        $this->assign('suppliersList', $suppliersList);
+        $this->assign('cat_list', $cat_list);
+        $this->assign('goodsType', $goodsType);
+        return $this->fetch('_gift_goods');
+    }    
+
     //商品保存
     public function save(){
         $data = input('post.');
@@ -367,6 +452,49 @@ class Goods extends Base {
         $return_arr = ['status' => 1, 'msg' => '操作成功'];
         $this->ajaxReturn($return_arr);
     }
+
+    //大礼包商品保存
+    public function save_gift(){
+        $data = input('post.');
+        $spec_item = input('item/a');
+        $data['is_free_shipping'] = 1;
+        $validate = Loader::validate('Goods');// 数据验证
+        if (!$validate->batch()->check($data)) {
+            $error = $validate->getError();
+            $error_msg = array_values($error);
+            $return_arr = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
+            $this->ajaxReturn($return_arr);
+        }
+        if ($data['goods_id'] > 0) {
+            $goods = \app\common\model\Goods::get($data['goods_id']);
+            $store_count_change_num = $data['store_count'] - $goods['store_count'];//库存变化量
+            $cart_update_data = ['market_price'=>$data['market_price'],'goods_price'=>$data['shop_price'],'member_goods_price'=>$data['shop_price']];
+            db('cart')->where(['goods_id'=>$data['goods_id'],'spec_key'=>''])->save($cart_update_data);
+            //编辑商品的时候需清楚缓存避免图片失效问题
+            clearCache();
+        }else{
+            $goods = new \app\common\model\Goods();
+            $store_count_change_num = $data['store_count'];
+        }
+        $data['cat_id'] = C('customize.gift_goods_cat');
+        $data['goods_type'] = C('customize.gift_goods_type');
+        $data['store_count'] = 65535;
+        $data['is_virtual'] = 1;
+        $data['is_on_sale'] = 1;
+        
+        $goods->data($data, true);          
+        $goods->last_update = time();
+        $goods->price_ladder = true;    
+        $goods->save();  
+        if(empty($spec_item)){
+            update_stock_log(session('admin_id'), $store_count_change_num, ['goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name']]);//库存日志
+        }
+        $GoodsLogic = new GoodsLogic();
+        $GoodsLogic->afterSave($goods['goods_id']);
+        $GoodsLogic->saveGoodsAttr($goods['goods_id'], $goods['goods_type']); // 处理商品 属性
+        $return_arr = ['status' => 1, 'msg' => '操作成功'];
+        $this->ajaxReturn($return_arr);
+    }    
 
     public  function getCategoryBrandList(){
         $cart_id = I('cart_id/d',0);

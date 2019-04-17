@@ -96,7 +96,9 @@
                             <td align="center" class="handle">
                                 <div style="text-align: center; width: 270px; max-width:350px;">
                                     <a href="javascript:void(0)" data-id="{$goods_type['id']}" class="btn blue type_info"><i class="fa fa-pencil-square-o"></i>编辑</a>
+                                    <if condition="$goods_type['id'] neq C('customize.gift_goods_type')">
                                     <a href="javascript:void(0)" data-id="{$goods_type['id']}" class="btn red delete_type" ><i class="fa fa-trash-o"></i>删除</a>
+                                    </if>
                                 </div>
                             </td>
                             <td align="" class="" style="width: 100%;">

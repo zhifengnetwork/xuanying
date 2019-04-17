@@ -69,6 +69,7 @@ return array(
     'shop' => array('name' => '商城', 'child' => array(
         array('name' => '商品', 'child' => array(
             array('name' => '商品列表', 'act' => 'goodsList', 'op' => 'Goods'),
+            array('name' => '大礼包商品', 'act' => 'giftGoodsList', 'op' => 'Goods'),
             // array('name' => '淘宝导入', 'act'=>'index', 'op'=>'Import'),
             array('name' => '商品分类', 'act' => 'categoryList', 'op' => 'Goods'),
             array('name' => '库存管理', 'act' => 'stockList', 'op' => 'Goods'),

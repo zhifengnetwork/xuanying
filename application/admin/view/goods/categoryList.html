@@ -97,7 +97,9 @@
                     <if condition="$vo[level] lt 3">                  
                     <li><a href="{:U('Goods/addEditCategory',array('parent_id'=>$vo['id']))}">新增下级分类</a></li>
                     </if>
+                    <if condition="$vo['id'] neq C('customize.gift_goods_cat')">
                     <li><a href="javascript:;" onclick="publicHandle({$vo['id']})">删除当前分类</a></li>
+                    </if>
                   </ul>
                   </span>
                 </div>
