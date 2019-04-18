@@ -404,7 +404,7 @@ class User extends MobileBase
 
         if($logo_url_logo_height > 420 || $logo_url_logo_width > 420){
             //压缩图片
-            $url_code = '/www/wwwroot/www.dchqzg1688.com/public/share/code/'.$user_id.'.jpg';
+            $url_code = C('customize.www_path').'/public/share/code/'.$user_id.'.jpg';
             $logo_url->thumb(410, 410)->save($url_code , null, 100);
         }
 

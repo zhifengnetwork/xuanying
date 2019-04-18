@@ -61,7 +61,7 @@ class ShareLogic
 
         //本地图片
         if(strpos($url,'public') !== false){ 
-            $url = '/www/wwwroot/www.dchqzg1688.com'.$url;
+            $url = C('customize.www_path').$url;
         }else{
             
             //是微信图片
