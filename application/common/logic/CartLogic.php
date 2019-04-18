@@ -135,15 +135,17 @@ class CartLogic extends Model
             if($this->goods['virtual_indate'] < time()){
                 throw new TpshopException('立即购买',0,['status'=>0,'msg'=>'虚拟商品有效期已过','result'=>'']);
             }
-            $isBuyWhere = [
-                'og.goods_id'=>$this->goods['goods_id'],
-                'o.user_id'=>$this->user_id,
-                'o.deleted'=>0,
-                'o.order_status'=>['neq',3]
-            ];
-            $isBuySum = Db::name('order_goods')->alias('og')->join('__ORDER__ o','og.order_id = o.order_id','LEFT')->where($isBuyWhere)->sum('og.goods_num');
-            if (($this->goodsBuyNum + $isBuySum) > $this->goods['virtual_limit']) {
-                throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '您已超过该商品的限制购买数', 'result' => '']);
+            if($this->goods['virtual_limit'] > 0){
+                $isBuyWhere = [
+                    'og.goods_id'=>$this->goods['goods_id'],
+                    'o.user_id'=>$this->user_id,
+                    'o.deleted'=>0,
+                    'o.order_status'=>['neq',3]
+                ];
+                $isBuySum = Db::name('order_goods')->alias('og')->join('__ORDER__ o','og.order_id = o.order_id','LEFT')->where($isBuyWhere)->sum('og.goods_num');
+                if (($this->goodsBuyNum + $isBuySum) > $this->goods['virtual_limit']) {
+                    throw new TpshopException('立即购买',0,['status' => 0, 'msg' => '您已超过该商品的限制购买数', 'result' => '']);
+                }
             }
         }
 

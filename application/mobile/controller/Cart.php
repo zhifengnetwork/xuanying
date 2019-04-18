@@ -196,7 +196,7 @@ class Cart extends MobileBase {
             $error = $cart_validate->getError();
             $this->ajaxReturn(['status' => 0, 'msg' => $error, 'result' => '']);
         }
-        $address = Db::name('user_address')->where("address_id", $address_id)->find();
+        $address = Db::name('user_address')->where("address_id", $address_id)->find(); 
         $cartLogic = new CartLogic();
         $pay = new Pay();
          try {
@@ -216,7 +216,7 @@ class Cart extends MobileBase {
 
             $pay->setUserId($this->user_id)->setShopById($shop_id)->delivery($address)->orderPromotion()
                 ->useCouponById($coupon_id)->getAuction()->getUserSign()->useUserMoney($user_money)
-                ->usePayPoints($pay_points,false,'mobile');
+                ->usePayPoints($pay_points,false,'mobile');  
             // 提交订单
             if ($_REQUEST['act'] == 'submit_order') {
                 $placeOrder = new PlaceOrder($pay);
@@ -224,6 +224,14 @@ class Cart extends MobileBase {
                     ->setUserNote($user_note)->setTaxpayer($taxpayer)->setInvoiceDesc($invoice_desc)->setPayPsw($pay_pwd)->setTakeTime($take_time)->addNormalOrder();
                 $cartLogic->clear();
                 $order = $placeOrder->getOrder();
+
+                //判断是否大礼包
+               if($is_virtual === 1){
+                    if(C('customize.gift_goods_type') == M('Goods')->where(['goods_id'=>$goods_id])->value('goods_type')){
+                        M('order')->update(['order_id'=>$order['order_id'],'shipping_status'=>1,'order_status'=>2]);
+                    }
+                }     
+
                 $this->ajaxReturn(['status' => 1, 'msg' => '提交订单成功', 'result' => $order['order_sn']]);
             }
             $this->ajaxReturn(['status' => 1, 'msg' => '计算成功', 'result' => $pay->toArray()]);

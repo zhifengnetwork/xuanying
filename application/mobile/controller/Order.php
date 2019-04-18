@@ -66,7 +66,7 @@ class Order extends MobileBase
             })
             ->count();
         $Page = new Page($count, 10);
-        $order_list = $order->where($where_arr)
+        $order_list = $order->where($where_arr)->whereOr('(prom_type = 5) and (prom_id = 0)')
             ->where(function ($query) use ($type) {
                 if ($type) {
                     $query->where("1=1".C(strtoupper($type)));

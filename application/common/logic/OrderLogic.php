@@ -295,6 +295,7 @@ class OrderLogic
 	 */
 	function make_virtual_code($order){
 		$order_goods = M('order_goods')->where(array('order_id'=>$order['order_id']))->find();
+        if($order_goods['cat_id'] == C('customize.gift_goods_cat'))return;
 		$goods = M('goods')->where(array('goods_id'=>$order_goods['goods_id']))->find();
 		M('order')->where(array('order_id'=>$order['order_id']))->save(array('order_status'=>1,'shipping_time'=>time()));
 		$perfix = mt_rand(100,999);
