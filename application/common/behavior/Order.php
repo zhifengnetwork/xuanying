@@ -33,7 +33,7 @@ class Order
             foreach ($goods as $key => $value) {
                 $text .= $value['goods_name'].'(规格：'.$value['spec_key_name'].',数量：'.$value['goods_num'].',价格：'.$value['final_price'].');';
             }
-            $wx_content = "您的订单已提交成功！\n\n店铺：DC环球直供\n下单时间：{$time}\n商品：{$text}\n金额：{$order['total_amount']}\n\n您的订单我们已经收到，支付后我们将尽快配送~~";
+            $wx_content = "您的订单已提交成功！\n\n店铺：萱莹集团\n下单时间：{$time}\n商品：{$text}\n金额：{$order['total_amount']}\n\n您的订单我们已经收到，支付后我们将尽快配送~~";
             
             $wechat = new WechatUtil();
             $wechat->sendMsg($user['openid'], 'text', $wx_content);
@@ -45,7 +45,7 @@ class Order
             $first_leader_openid = Db::name('users')->where(['user_id' => $user['first_leader']])->value('openid');
             if($first_leader_openid){
                 $nickname = Db::name('users')->where(['openid'=>$user['openid']])->value('nickname');
-                $first_leader_wx_content = "您的下级【{$nickname}】已提交订单成功！\n\n店铺：DC环球直供\n下单时间：{$time}\n商品：{$text}\n\n".$fanli;
+                $first_leader_wx_content = "您的下级【{$nickname}】已提交订单成功！\n\n店铺：萱莹集团\n下单时间：{$time}\n商品：{$text}\n\n".$fanli;
                 $wechat->sendMsg($first_leader_openid, 'text', $first_leader_wx_content);
             }
         }

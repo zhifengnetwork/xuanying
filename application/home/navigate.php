@@ -17,7 +17,7 @@
             	    )
                ),             		
               'admin/index'=>array(
-                'name' =>'DC环球直供网络',
+                'name' =>'萱莹集团',
                 'action'=>array(
                      'index'=>'欢迎页面',                     
          	       )
