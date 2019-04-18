@@ -730,5 +730,15 @@ class Goods extends MobileBase
         return $this->fetch();
     }
 
-
+    /**
+     * 大礼包商品
+     */
+    public function git_goods()
+    {
+        //大礼包商品
+        $goods =  M('goods')->where("cat_id=604 and is_on_sale=1")
+                ->order('sort DESC')->cache(true,TPSHOP_CACHE_TIME)->select();
+        $this->assign('goods',$goods);
+        return $this->fetch();
+    }
 }
