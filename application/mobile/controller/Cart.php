@@ -223,14 +223,7 @@ class Cart extends MobileBase {
                 $placeOrder->setMobile($mobile)->setUserAddress($address)->setConsignee($consignee)->setInvoiceTitle($invoice_title)
                     ->setUserNote($user_note)->setTaxpayer($taxpayer)->setInvoiceDesc($invoice_desc)->setPayPsw($pay_pwd)->setTakeTime($take_time)->addNormalOrder();
                 $cartLogic->clear();
-                $order = $placeOrder->getOrder();
-
-                //判断是否大礼包
-               if($is_virtual === 1){
-                    if(C('customize.gift_goods_type') == M('Goods')->where(['goods_id'=>$goods_id])->value('goods_type')){
-                        M('order')->update(['order_id'=>$order['order_id'],'shipping_status'=>1,'order_status'=>2]);
-                    }
-                }     
+                $order = $placeOrder->getOrder();   
 
                 $this->ajaxReturn(['status' => 1, 'msg' => '提交订单成功', 'result' => $order['order_sn']]);
             }
