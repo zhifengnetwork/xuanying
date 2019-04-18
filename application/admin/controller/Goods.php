@@ -248,7 +248,7 @@ class Goods extends Base {
             $where .= " and cat_id in(".  implode(',', $grandson_ids).") "; // 初始化搜索条件
         }
         
-        $where .= ' and goods_type=' . C('customize.gift_goods_type'); 
+        $where .= ' and ((goods_type=' . C('customize.gift_goods_type').') OR (cat_id='. C('customize.gift_goods_cat') .'))'; 
         $count = M('Goods')->where($where)->count();
         $Page  = new AjaxPage($count,20);
         /**  搜索条件下 分页赋值
