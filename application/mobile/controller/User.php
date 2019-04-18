@@ -409,14 +409,14 @@ class User extends MobileBase
         }
 
           
-        $head_url = '/www/wwwroot/www.dchqzg1688.com/public/share/head/'.$user_id.'.jpg';
+        $head_url = C('customize.www_path').'/public/share/head/'.$user_id.'.jpg';
         if( @fopen( $head_url, 'r' ) )
         {
             //已经有二维码了
-        	$url_head_pp = '/www/wwwroot/www.dchqzg1688.com/public/share/head/'.$user_id.'.jpg';
+        	$url_head_pp = C('customize.www_path').'/public/share/head/'.$user_id.'.jpg';
         }else{
             //还没有二维码
-            $re = $logic->getImage($head_pic_url,'/www/wwwroot/www.dchqzg1688.com/public/share/head', $user_id.'.jpg');
+            $re = $logic->getImage($head_pic_url,C('customize.www_path').'/public/share/head', $user_id.'.jpg');
             $url_head_pp = $re['save_path'];
         }
         
@@ -429,29 +429,29 @@ class User extends MobileBase
         //头像变成200
         if($logo_height > 260 || $logo_width > 260){
             //压缩图片
-             $url_head_file = '/www/wwwroot/www.dchqzg1688.com/public/share/head/'.$user_id.'.jpg';
+             $url_head_file = C('customize.www_path').'/public/share/head/'.$user_id.'.jpg';
              $logo->thumb(240, 240)->save($url_head_file , null, 100);
         }
         
         //得到二维码的绝对路径
 
-        $pic = "/www/wwwroot/www.dchqzg1688.com/public/share/picture_ok44/'.$user_id.'.jpg";
+        $pic =C('customize.www_path'). "/public/share/picture_ok44/'.$user_id.'.jpg";
         if( @fopen( $pic, 'r' ) )
         {
         	$pic = "/share/picture_ok44/".$user_id.".jpg";
         }
         else
         {
-        	$image = \think\Image::open('/www/wwwroot/www.dchqzg1688.com/public/share/bg1.jpg');
+        	$image = \think\Image::open(C('customize.www_path').'/public/share/bg1.jpg');
         	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_code,\think\Image::DCHQZG)->save('/www/wwwroot/www.dchqzg1688.com/public/share/picture_ok44/'.$user_id.'.jpg');
+        	$image->water($url_code,\think\Image::DCHQZG)->save(C('customize.www_path').'/public/share/picture_ok44/'.$user_id.'.jpg');
         	
         	$pic = "/public/share/picture_ok44/".$user_id.".jpg";
         }
     
         //再次叠加
 
-        $pic111 = "/www/wwwroot/www.dchqzg1688.com/public/share/picture_888/".$user_id.".jpg";
+        $pic111 = C('customize.www_path')."/public/share/picture_888/".$user_id.".jpg";
         if( @fopen( $pic111, 'r' ) )
         {
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
@@ -459,9 +459,9 @@ class User extends MobileBase
         else
         {
            
-        	$image = \think\Image::open('/www/wwwroot/www.dchqzg1688.com/public/share/picture_ok44/'.$user_id.'.jpg');
+        	$image = \think\Image::open(C('customize.www_path').'/public/share/picture_ok44/'.$user_id.'.jpg');
         	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_head_pp,\think\Image::TOUXIANG)->save('/www/wwwroot/www.dchqzg1688.com/public/share/picture_888/'.$user_id.'.jpg');
+        	$image->water($url_head_pp,\think\Image::TOUXIANG)->save(C('customize.www_path').'/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
