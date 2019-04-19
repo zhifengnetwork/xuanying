@@ -1118,7 +1118,7 @@ function update_pay_status($order_sn, $ext = array())
             $msg = '会员充值购买VIP';
         }
         accountLog($order['user_id'], $order['account'], 0, $msg, 0, 0, $order_sn);
-    } elseif (stripos($order_sn, 'B') !== false) {  
+    } elseif (stripos($order_sn, 'B') !== false) {  //竞拍保证金
         $order = M('AuctionDeposit')->where(['order_sn' => $order_sn, 'status' => 0])->find(); 
         if (!$order) return false;// 看看有没已经处理过这笔订单  支付宝返回不重复处理操作
         $update = ['status' => 1];
@@ -1135,14 +1135,14 @@ function update_pay_status($order_sn, $ext = array())
         // 找出对应的订单
         $Order = new \app\common\model\Order();
         $order = $Order->master()->where("order_sn", $order_sn)->find();
-        if ($order['prom_type'] == 6 && $order['order_amount'] != 0) {
+        if ($order['prom_type'] == 6 && $order['order_amount'] != 0) { //拼团订单
             $team = new \app\common\logic\team\Team();
             $team->setTeamActivityById($order['prom_id']);
             $team->setOrder($order);
             $team->doOrderPayAfter();
         }
         //预售订单
-        if ($order['prom_type'] == 4) {
+        if ($order['prom_type'] == 4) { 
             $preSell = new \app\common\logic\PreSell();
             $preSell->setPreSellById($order['prom_id']);
             $preSell->setOrder($order);
