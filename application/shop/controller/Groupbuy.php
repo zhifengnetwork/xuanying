@@ -321,6 +321,7 @@ class Groupbuy extends MobileBase
             }
 
 		if($data['found_id']){
+            $data['buy_type'] = 2;
 			$found_info = M('team_found')->field('found_end_time,user_id,need,status')->find($data['found_id']);
 			if($found_info['found_end_time'] < time())
 				$this->error('此团已结束');
@@ -511,7 +512,10 @@ class Groupbuy extends MobileBase
 						]);
 						M('team_found')->setInc('join');
 						M('team_found')->setDec('need');
-						if($needer == 0)M('team_found')->update(['found_id'=>$data['found_id'],'status'=>2]);
+						if($needer == 0){
+                            M('team_found')->update(['found_id'=>$data['found_id'],'status'=>2]);
+                            M('team_follow')->update(['found_id'=>$data['found_id'],'status'=>2]);
+                        }
 					}
 					if($found_ins){
 						# 更新用户余额
