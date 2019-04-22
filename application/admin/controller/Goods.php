@@ -401,6 +401,10 @@ class Goods extends Base {
             $level_cat = $GoodsLogic->find_parent_cat($goods['cat_id']); // 获取分类默认选中的下拉框
             $level_cat2 = $GoodsLogic->find_parent_cat($goods['extend_cat_id']); // 获取分类默认选中的下拉框
             $brandList = $GoodsLogic->getSortBrands($goods['cat_id']);   //获取三级分类下的全部品牌
+            $commission = M('goods_commission')->find($goods_id);
+            $goods['lev1'] = $commission ? $commission['lev1'] : 0;
+            $goods['lev2'] = $commission ? $commission['lev2'] : 0;
+            $goods['commission_type'] = $commission ? $commission['type'] : 0;
             $this->assign('goods', $goods);
             $this->assign('level_cat', $level_cat);
             $this->assign('level_cat2', $level_cat2);
@@ -413,7 +417,7 @@ class Goods extends Base {
         $this->assign('freight_template',$freight_template);
         $this->assign('suppliersList', $suppliersList);
         $this->assign('cat_list', $cat_list);
-        $this->assign('goodsType', $goodsType);
+        $this->assign('goodsType', $goodsType); 
         return $this->fetch('_gift_goods');
     }    
 
@@ -439,12 +443,23 @@ class Goods extends Base {
             $goods = new \app\common\model\Goods();
             $store_count_change_num = $data['store_count'];
         }
+        if(($data['commission_type'] == 1) && ($data['lev1'] + $data['lev2']) > 100){
+            $this->ajaxReturn(['status' => 0, 'msg' => '一级佣金加二级佣金不能超过100%', 'result' => '']);
+        }
+        if(($data['commission_type'] == 2) && ($data['lev1'] + $data['lev2']) > $data['shop_price']){
+            $this->ajaxReturn(['status' => 0, 'msg' => '一级佣金加二级佣金不能超过本店价', 'result' => '']);
+        }
         $goods->data($data, true);
         $goods->last_update = time();
         $goods->price_ladder = true;
         $goods->save();
         if(empty($spec_item)){
             update_stock_log(session('admin_id'), $store_count_change_num, ['goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name']]);//库存日志
+        } 
+        if($data['goods_id'] && ($data['lev1'] || $data['lev2'])){
+            $commission = M('goods_commission')->update(['goods_id'=>$goods['goods_id'],'lev1'=>$data['lev1'],'lev2'=>$data['lev2'],'type'=>$data['commission_type']]);
+        }elseif(!$data['goods_id'] && ($data['lev1'] || $data['lev2'])){
+            $commission = M('goods_commission')->add(['goods_id'=>$goods['goods_id'],'lev1'=>$data['lev1'],'lev2'=>$data['lev2'],'type'=>$data['commission_type']]);
         }
         $GoodsLogic = new GoodsLogic();
         $GoodsLogic->afterSave($goods['goods_id']);

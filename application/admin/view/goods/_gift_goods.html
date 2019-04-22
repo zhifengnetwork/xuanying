@@ -106,7 +106,7 @@
             <ul class="tab-base nc-row">
                 <li><a href="javascript:void(0);" data-index='1' class="tab current"><span>通用信息</span></a></li>
                 <li><a href="javascript:void(0);" data-index='2' class="tab"><span>商品相册</span></a></li>
-                <!--<li><a href="javascript:void(0);" data-index='3' class="tab"><span>商品模型</span></a></li>-->
+                <li><a href="javascript:void(0);" data-index='3' class="tab"><span>商品模型</span></a></li>
                 <li><a href="javascript:void(0);" data-index='5' class="tab"><span>积分折扣</span></a></li>
             </ul>
         </div>
@@ -140,7 +140,7 @@
                     <span class="err" id="err_goods_name"></span>
                 </dd>
             </dl>
-           <dl class="row" style='display:none;'>
+           <dl class="row">
                 <dt class="tit"><em>*</em>
                     <label>商品分类</label>
                 </dt>
@@ -171,7 +171,6 @@
                     <span id="err_goods_remark" class="err"></span>
                 </dd>
             </dl> 
-            <!--
 			<dl class="row">
                 <dt class="tit">
                     <label>商品货号</label>
@@ -181,7 +180,39 @@
                     <span class="err" id="err_goods_sn"></span>
                     <p class="notic">如果不填会自动生成</p>
                 </dd>
-            </dl>    
+            </dl>  
+            <dl class="row">
+                <dt class="tit">
+                    <label>佣金类型</label>
+                </dt>
+                <dd class="opt">
+                    <select name='commission_type' id='commission_type'>
+                        <option value='1'>比例</option>
+                        <option value='2'>金额</option>
+                    </select>
+                </dd>
+            </dl>  
+             <dl class="row">
+                <dt class="tit">
+                    <label>一级佣金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="number" min=0 max=100 value="{$goods.lev1}" name="lev1" class="input-txt"/>
+                    <span id="lev1_type"><if condition="$goods.commission_type eq 2">￥<else />%</if></span>
+                    <span class="err" id="err_lev1"></span>
+                </dd>
+            </dl>  
+            </dl>   
+             <dl class="row">
+                <dt class="tit">
+                    <label>二级佣金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="number" min=0 max=100 value="{$goods.lev2}" name="lev2" class="input-txt"/>
+                    <span id="lev2_type"><if condition="$goods.commission_type eq 2">￥<else />%</if></span>
+                    <span class="err" id="err_lev2"></span>
+                </dd>
+            </dl>             
             <dl class="row">
                 <dt class="tit">
                     <label>SPU</label>
@@ -230,7 +261,6 @@
                     </select>
                 </dd>
             </dl>
-            -->
             <dl class="row">
                 <dt class="tit"><em>*</em>
                     <label>本店售价</label>
@@ -321,7 +351,6 @@
                     <p class="notic">请上传视频格式文件</p>
                 </dd>
             </dl>
-            <!--
             <dl class="row">
                 <dt class="tit">
                     <label>商品重量</label>
@@ -346,18 +375,16 @@
                     <p class="notic"> 务必设置商品体积, 用于计算物流费.以立方米为单位</p>
                 </dd>
             </dl>
-            -->
-            <dl class="row goods_shipping" style="display: none;">
-                <dt class="tit" style="display: none;">
+            <dl class="row goods_shipping">
+                <dt class="tit">
                   <label><em>*</em>是否包邮</label>
                 </dt>
-                <dd class="opt" style="display: none;">
+                <dd class="opt">
                   <div class="onoff">
-                    <label id="is_free_shipping_label_1" for="is_free_shipping1" class="cb-enable selected">是</label>
-                    <!--
-                    <label id="is_free_shipping_label_0" for="is_free_shipping0" class="cb-disable" >否</label>
-                    <input id="is_free_shipping1" autocomplete="off" class="is_free_shipping" name="is_free_shipping" value="1" type="radio" checked="checked">
-                    <input id="is_free_shipping0" autocomplete="off" class="is_free_shipping" name="is_free_shipping" value="0" type="radio">
+                    <label id="is_free_shipping_label_1" for="is_free_shipping1" class="cb-enable <if condition='$goods.is_free_shipping eq 1'>selected</if>">是</label>
+                    <label id="is_free_shipping_label_0" for="is_free_shipping0" class="cb-disable <if condition='$goods.is_free_shipping eq 0'>selected</if>">否</label>
+                    <input id="is_free_shipping1" autocomplete="off" class="is_free_shipping" name="is_free_shipping" value="1" type="radio" <if condition="$goods[is_free_shipping] eq 1"> checked="checked"</if>>
+                    <input id="is_free_shipping0" autocomplete="off" class="is_free_shipping" name="is_free_shipping" value="0" type="radio" <if condition="$goods[is_free_shipping] eq 0"> checked="checked"</if>>
                       <div class="freight_template" style="display: none;">
                           <span>运费模板</span>
                           <select name="template_id">
@@ -368,12 +395,10 @@
                           </select>
                           <empty name="freight_template"><span style="color: red;">没有可选的运费模板，请前去<a href="{:U('Freight/index')}" target="_blank">添加</a></span></empty>
                       </div>
-                      -->
                   </div>
                     <span class="err" id="err_is_free_shipping"></span>
                 </dd>
             </dl>
-            <!--
             <dl class="row">
                 <dt class="tit">
                     <label>总库存</label>
@@ -388,8 +413,7 @@
                     </if>
                     <span class="err" id="err_store_count"></span>
                 </dd>
-            </dl>  
-            -->   
+            </dl>       
             <dl class="row">
                 <dt class="tit">
                     <label>商品关键词</label>
@@ -400,7 +424,6 @@
                     <p class="notic">多个关键词，用空格隔开</p>
                 </dd>
             </dl>
-            <!--
             <dl class="row">
                 <dt class="tit">
                     <label>是否为分销商品</label>
@@ -410,7 +433,7 @@
                         <label id="is_distribut_label_1" for="is_distribut1" class="cb-enable <if condition='$goods.is_distribut eq 1'>selected</if>">是</label>
                         <label id="is_distribut_label_0" for="is_distribut0" class="cb-disable <if condition='$goods.is_distribut eq 0'>selected</if>">否</label>
                         <input id="is_distribut1" autocomplete="off" class="is_distribut" name="is_distribut" value="1" type="radio" <if condition="$goods[is_distribut] eq 1"> checked="checked"</if>>
-                        <input id="is_distribut0" autocomplete="off" class="is_distribut" name="is_distribut" value="0" type="radio" <if condition="$goods[is_distribut] eq 0"> checked="checked"</if>>
+                        <input id="is_distribut0" autocomplete="off" class="is_distribut" name="is_distribut" value="0" type="radio" <if condition="$goods[is_distribut] eq 0"> checked="checked"</if>> -->
                     </div>
                     <span class="err" id="err_is_distribut"></span>
                     <p class="notic"></p>
@@ -446,17 +469,17 @@
                         </if>
                     <else/>
                     <div class="onoff">
-                        <label for="is_virtual1" class="cb-enable selected">是</label>
-                        <label for="is_virtual0" class="cb-disable">否</label>
-                        <input class="is_virtual" id="is_virtual1" name="is_virtual" value="1" type="radio" checked="checked">
-                        <input class="is_virtual" id="is_virtual0" name="is_virtual" value="0" type="radio">
+                        <label for="is_virtual1" class="cb-enable <if condition='$goods.is_virtual eq 1'>selected</if>">是</label>
+                        <label for="is_virtual0" class="cb-disable <if condition='$goods.is_virtual eq 0'>selected</if>">否</label>
+                        <input class="is_virtual" id="is_virtual1" name="is_virtual" value="1" type="radio" <if condition="$goods[is_virtual] eq 1"> checked="checked"</if>>
+                        <input class="is_virtual" id="is_virtual0" name="is_virtual" value="0" type="radio" <if condition="$goods[is_virtual] eq 0"> checked="checked"</if>>
                     </div>
                     </if>
                     <span class="err" id="err_is_virtual"></span>
                     <p class="notic"></p>
                 </dd>
             </dl>
-            
+
             <dl class="row">
                 <dt class="tit">
                     <label>签到免费领取</label>
@@ -485,18 +508,17 @@
                     <p class="notic">购买后得10天签到权限</p>
                 </dd>
             </dl>
-            -->
+
             <dl class="row virtual" style="display: none;">
                 <dt class="tit">
                     <label>虚拟商品有效期至</label>
                 </dt>
                 <dd class="opt virtual">
-                    <input id="virtual_indate" name="virtual_indate" value="2035-01-01" class="input-txt" type="text">
+                    <input id="virtual_indate" name="virtual_indate" value="{$goods[virtual_indate]|default=time()|date='Y-m-d',###}" class="input-txt" type="text">
                     <span class="err" id="err_virtual_indate"></span>
                     <p class="notic">虚拟商品可兑换的有效期，过期后商品不能购买，电子兑换码不能使用。</p>
                 </dd>
             </dl>
-            <!--
             <dl class="row virtual" style="display: none;">
                 <dt class="tit">
                     <label>虚拟商品购买上限</label>
@@ -508,7 +530,7 @@
                     <span class="err" id="err_virtual_limit"></span>
                     <p class="notic">请填写1~10之间的数字，虚拟商品最高购买数量不能超过10个。</p>
                 </dd>
-            </dl>-->
+            </dl>
             <dl class="row">
                 <dt class="tit">
                     <label>虚拟销售量</label>
@@ -583,14 +605,14 @@
                         <tr>
                             <td>商品模型:</td>
                             <td>
-                                <!--<a class="btn" id="new_type_info"><i class="fa fa-plus"></i>新增</a>-->
+                                <a class="btn" id="new_type_info"><i class="fa fa-plus"></i>新增</a>
                               <select name="goods_type" id="goods_type" class="form-control" style="width:200px;">
                                 <option value="0">选择商品模型</option>
                                 <foreach name="goodsType" item="vo" key="k" >
-                                    <option value="{$vo.id}"<if condition="$vo.id eq C('customize.gift_goods_type')"> selected="selected" </if> >{$vo.name}</option>
+                                    <option value="{$vo.id}" <if condition="$vo['id'] eq C('customize.gift_goods_type')"> selected="selected" </if> >{$vo.name}</option>
                                 </foreach>
                               </select>
-                                <!--<a class="btn" id="type_info"><i class="fa fa-pencil-square-o"></i>编辑</a>-->
+                                <a class="btn" id="type_info"><i class="fa fa-pencil-square-o"></i>编辑</a>
                                <span class="err" id="err_item"></span>
                             </td>
                         </tr>
@@ -612,19 +634,16 @@
         <!-- 商品模型-->
         <!--积分折扣-->
 		<div class="ncap-form-default tab_div_5" style="display:none;">
-            <!--
             <dl class="row">
                 <dt class="tit">
                     <label>价格阶梯</label>
                 </dt>
                 <dd class="opt">
-           
                     <div class="alisth0" id="alisth_0">
                         单次购买个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" <if condition="$goods['price_ladder']">value="{$goods['price_ladder'][0]['amount']}"</if> onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
                         价格<input type="text" class="input-number addprine" name="ladder_price[]"  <if condition="$goods['price_ladder']">value="{$goods['price_ladder'][0]['price']}"</if> onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >
                         <a class="p_plus" href="javascript:;"><strong>[+]</strong></a>
                     </div>
-                    
                     <volist name="goods['price_ladder']" id="vo" offset="1">
                         <div class="alisth">
                             单次购买个数达到<input type="text" class="input-number addprine" name="ladder_amount[]" value="{$vo['amount']}" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onKeyUp="this.value=this.value.replace(/[^\d.]/g,'')" style="width: 100px;" >&nbsp;
@@ -650,7 +669,7 @@
                     })
                 </script>
             </dl>  
-            -->           
+                        
             <dl class="row">
                 <dt class="tit">
                     <label>赠送积分</label>
@@ -695,7 +714,16 @@
             var type_id = $(this).val();
             get_goods_spec_select(goods_id, type_id);
             get_goods_attr_select(goods_id, type_id);
-        })
+        });
+
+        $("#commission_type").change(function(){
+            var type = $(this).val();
+            if(type == 1){
+                $('#lev1_type,#lev2_type').html('%');
+            }else if(type == 2){
+                $('#lev1_type,#lev2_type').html('￥');
+            }
+        });
     })
 
     //商品模型切换时，返回不同的规格输入框
@@ -771,7 +799,7 @@
             }
             $.ajax({
                 type: "POST",
-                url: "{:U('Goods/save_gift')}",
+                url: "{:U('Goods/save')}",
                 data: $("#addEditGoodsForm").serialize(),
                 async:false,
                 dataType: "json",
