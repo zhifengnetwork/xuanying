@@ -99,7 +99,6 @@ class Message extends Controller
 
     }
 
-
     public function write_log($content)
     {
         $content = "[".date('Y-m-d H:i:s')."]".$content."\r\n";

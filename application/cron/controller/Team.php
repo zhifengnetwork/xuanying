@@ -35,7 +35,7 @@ class Team extends Controller{
             foreach($oflist as $v1){
                 if($v1['total_amount']){
                     $Users->where(['user_id'=>$v1['user_id']])->setInc('credit2',$v1['total_amount']);     
-                    $AccountLog->add(['user_id'=>$v1['user_id'],'user_money'=>$v1['total_amount'],'pay_points'=>$v1['integral_money'],'change_time'=>time(),'desc'=>'拼团失败返回','order_sn'=>$v1['order_sn'],'order_id'=>$v1['order_id']]);
+                    $AccountLog->add(['user_id'=>$v1['user_id'],'user_money'=>$v1['total_amount'],'pay_points'=>$v1['integral_money'],'change_time'=>time(),'desc'=>'拼团失败返回','order_sn'=>$v1['order_sn'],'order_id'=>$v1['order_id'],'states'=>103]);
                 }
                 if($v1['integral_money'])
                     $Users->where(['user_id'=>$v1['user_id']])->setInc('pay_points',$v1['integral_money']);      
@@ -55,7 +55,7 @@ class Team extends Controller{
                 if(!$order_sn)continue;
                 $AuctionDeposit->where(['user_id'=>$v3['user_id'],'auction_id'=>$v2['id']])->update(['is_back'=>1]);    
                 $Users->where(['user_id'=>$v3['user_id']])->setInc('pay_points',$v2['deposit']);  
-                $AccountLog->add(['user_id'=>$v3['user_id'],'user_money'=>$v2['deposit'],'change_time'=>time(),'desc'=>'竞拍失败保证金返回']);  
+                $AccountLog->add(['user_id'=>$v3['user_id'],'user_money'=>$v2['deposit'],'change_time'=>time(),'desc'=>'竞拍失败保证金返回','states'=>104]);  
             }
             //$apinfo = $AuctionPprice->field('user_id')->where(['is_out'=>2,'auction_id'=>$v2['id'],'pay_status'=>['neq',1]])->find(); 
             //if($apinfo && (time() > ($v2['end_time']+($v2['payment_time']*60))))
@@ -63,21 +63,47 @@ class Team extends Controller{
                
     }
 
-
-    protected function sql()
-    {
-        try {
-            Db::startTrans();
-
-
-
-
-
-            Db::commit();
-        } catch (Exception $e) {
-            Db::rollback();
-            return $e->getData();
+    //大礼包季度执行，每季度1号00:02:00执行
+    public function GiftCheck(){
+        //获取上季度的开始结束时间戳
+        $season = ceil((date('n'))/3)-1;//上季度
+        $start = mktime(0, 0, 0,$season*3-3+1,1,date('Y')); //季度开始时间戳
+        $end = mktime(23,59,59,$season*3,date('t',mktime(0, 0 , 0,$season*3,1,date("Y"))),date('Y')); //季度结束时间戳       
+    
+        //获取所有城市合伙人
+        $Users = M('Users');
+        $AccountLog = M('Account_log');
+        $list = $Users->where(['is_cityvip'=>1])->column('user_id');
+        foreach($list as $v){
+            //获取团队业绩
+            $bot_arr = $UsersLogic->getUserLevBotAll($top_leader,$bot_arr);  //获取所有下级
+            $bot_arr[] = $v;
+            $total_amount = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money');
+            if($total_amount >= 2059200){ //12%
+                $price = floor(($total_amount * 12))/100;
+            }elseif($total_amount >= 1663200){ //11%
+                $price = floor(($total_amount * 11))/100;
+            }elseif($total_amount >= 1029600){ //10%
+                $price = floor(($total_amount * 10))/100;
+            }elseif($total_amount >= 633600){ //9%
+                $price = floor(($total_amount * 9))/100;
+            }elseif($total_amount >= 435600){ //8%
+                $price = floor(($total_amount * 8))/100;
+            }elseif($total_amount >= 316800){ //7%
+                $price = floor(($total_amount * 7))/100;
+            }elseif($total_amount >= 198000){ //6%
+                $price = floor(($total_amount * 6))/100;
+            }elseif($total_amount >= 99000){ //5%
+                $price = floor(($total_amount * 5))/100;
+            }elseif($total_amount >= 59400){ //4%
+                $price = floor(($total_amount * 4))/100;
+            }
+            $Users->where(['user_id'=>$v])->setInc('user_money',$price);
+            $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您的团队本季度已达到分红条件','states'=>109]);
         }
+
+        //清空上季度的quarter_bonus
+        $Users->where(['quarter_bonus'=>1])->update(['quarter_bonus'=>0]);
     }
 
 }

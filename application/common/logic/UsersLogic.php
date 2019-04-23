@@ -1558,4 +1558,41 @@ class UsersLogic extends Model
         $info = M('user_extend')->field($field)->where($map)->find();
         return !empty($info) ? $info : '';
     }
+
+    //获取用户上级
+    public function getUserLevTop($uid){
+        $leader = M('Users')->where(['user_id'=>$uid])->column('first_leader'); 
+        return $leader;
+    }
+
+    //获取用户下级
+    public function getUserLevBot($uid){
+        $arr1 = M('Users')->where(['first_leader'=>$uid])->column('user_id'); 
+        return $arr1;
+    }
+
+    //获取用户下级链
+    public function getUserLevBotAll($uid,&$arr){
+        $arr1 = $this->getUserLevBot($uid);
+        $arr = array_merge($arr,$arr1);
+
+        if($arr1){
+            foreach($arr1 as $v){
+                $this->getUserLevBotAll($v,$arr);
+            }
+        }
+        return $arr;
+    }
+
+    //获取用户上级链
+    public function getUserLevTopAll($uid,&$arr){
+        $pid = $this->getUserLevTop($uid);
+
+        if($pid){
+            $arr[] = $pid;
+            $this->getUserLevTopAll($pid,$arr);
+        }
+        return $arr;
+    }        
+
 }

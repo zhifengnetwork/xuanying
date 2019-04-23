@@ -6,6 +6,7 @@ use app\common\model\Users;
 use app\common\util\TpshopException;
 use think\Model;
 use think\Db;
+use app\common\logic\UsersLogic;
 
 /**
  * 用户类
@@ -134,10 +135,23 @@ class User
         // 客户没添加用户等级，上报没有累计消费的bug
         if($level_info){
             $update['level'] = $level_info['level_id'];
-            $update['discount'] = $level_info['discount'] / 100;
+            //$update['discount'] = $level_info['discount'] / 100;
         }
-        $update['total_amount'] = $total_amount;//更新累计修复额度
+        //$update['total_amount'] = $total_amount;//更新累计修复额度
         Db::name('users')->where("user_id", $this->user['user_id'])->save($update);
+        $top_leader = Db::name('users')->where("user_id", $this->user['user_id'])->value('top_leader');
+        //获取顶级的所有下级
+        $UsersLogic = new UsersLogic();
+        $bot_arr = $top_arr = [];
+        $bot_arr = $UsersLogic->getUserLevBotAll($top_leader,$bot_arr);
+        //$top_arr = $UsersLogic->getUserLevTopAll($top_leader,$top_arr);
+        $bot_arr[] = $top_leader;
+   
+        $total_amount = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money');
+        if($total_amount >= 59400){  //顶级成为城市合伙人
+            Db::name('users')->where(["user_id"=>$top_leader])->save(['is_cityvip'=>1]);  
+        }
+        
     }
 
     public function getUser()

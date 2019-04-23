@@ -56,9 +56,10 @@ function share_deal_after($xiaji, $shangji)
 
     write_log("xiaji:" . $xiaji);
     write_log("shangji:" . $shangji);
-
+    
+    $Users = M('users');
     if ($xiaji == $shangji) {
-        $xiaji_openid = M('users')->where(['user_id' => $xiaji])->value('openid');
+        $xiaji_openid = $Users->where(['user_id' => $xiaji])->value('openid');
         $wx_content = "此次扫码，不能绑定上下级关系。原因：请不要扫自己的二维码！你的ID:".$xiaji;
         $wechat = new \app\common\logic\wechat\WechatUtil();
         $wechat->sendMsg($xiaji_openid, 'text', $wx_content);
@@ -66,10 +67,10 @@ function share_deal_after($xiaji, $shangji)
     }
 
 
-    $is_shangji = M('users')->where(['user_id' => $xiaji])->value('first_leader');
+    $is_shangji = $Users->where(['user_id' => $xiaji])->value('first_leader');
     if ($is_shangji && (int)$is_shangji > 0) {
 
-        $xiaji_openid = M('users')->where(['user_id' => $xiaji])->value('openid');
+        $xiaji_openid = $Users->where(['user_id' => $xiaji])->value('openid');
         $wx_content = "此次扫码，不能绑定上下级关系。原因：已经存在上级！你的ID:".$xiaji;
         $wechat = new \app\common\logic\wechat\WechatUtil();
         $wechat->sendMsg($xiaji_openid, 'text', $wx_content);
@@ -77,7 +78,7 @@ function share_deal_after($xiaji, $shangji)
         return false;
     }
 
-
+    /*
     //看下级的注册时间
     $reg_time = M('users')->where(['user_id' => $xiaji])->value('reg_time');
     if ( (( time() - $reg_time ) > 86400 ) && $reg_time > 0) {
@@ -87,20 +88,33 @@ function share_deal_after($xiaji, $shangji)
         $wechat = new \app\common\logic\wechat\WechatUtil();
         $wechat->sendMsg($xiaji_openid, 'text', $wx_content);
         return false;
-    }
+    }*/
     //超过24小时 不再绑定上下级
 
 
+    $top_leader = $Users->where(['user_id'=>$shangji])->value('top_leader');
+    $res = $Users->where(['user_id' => $xiaji])->update(['first_leader' => $shangji,'bindtime'=>time(),'top_leader'=>$top_leader]);
+    //判断上级本季度是否分红，自身达到VIP董事级别，本季度至少招募两名580会员
+    $level = $Users->where(['user_id'=>$shangji])->value('level');
+    if($level == C('customize.lev3')){
+        $season = ceil((date('n'))/3);//当月是第几季度
+        $start = mktime(0, 0, 0,$season*3-3+1,1,date('Y')); //季度开始时间戳
+        $end = mktime(23,59,59,$season*3,date('t',mktime(0, 0 , 0,$season*3,1,date("Y"))),date('Y')); //季度结束时间戳
+        $num = $Users->where(['first_leader' => $shangji,'level'=>['in',C('customize.580VipTop')],'bindtime'=>['between',[$start,$end]]])->count();
+        
+        if($num >= 2){
+            $Users->where(['user_id' => $shangji])->update(['quarter_bonus' => 1]);
+        }
+    }
 
-    $res = M('users')->where(['user_id' => $xiaji])->update(['first_leader' => $shangji]);
     if ($res) {
         $before = '成功';
     }
     
      //给上级发送消息
-     $shangji_openid = M('users')->where(['user_id' => $shangji])->value('openid');
+     $shangji_openid = $Users->where(['user_id' => $shangji])->value('openid');
      if($shangji_openid){
-         $xiaji_nickname = M('users')->where(['user_id' => $xiaji])->value('nickname');
+         $xiaji_nickname = $Users->where(['user_id' => $xiaji])->value('nickname');
          if($xiaji_nickname == ''){
              $xiaji_nickname = get_nickname_new($xiaji);
          }
@@ -202,6 +216,66 @@ function jichadaili($order_id)
         $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id);
         $res = $model->bonusModel();
     }
+}
+
+//大礼包分佣
+function gift_commission($order_id){
+    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_sn,O.user_id,OG.goods_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
+    $Users = M('Users');
+    $AccountLog = M('account_log');
+    foreach($goodslist as $v){
+        if($v['type'] == 1){ //比例
+            $lev1 = floor(($v['final_price'] * $v['lev1']))/100;
+            $lev2 = floor(($v['final_price'] * $v['lev2']))/100;
+        }elseif($v['type'] == 2){ //金额
+            $lev1 = $v['lev1'];
+            $lev2 = $v['lev2'];
+        }else
+            continue;
+
+        //上级        
+        $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
+        //上级的上级
+        if(!$AccountLog->where(['user_id'=>$leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107])->find()){
+            $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
+            $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
+            $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
+            $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
+        }
+        if(!$AccountLog->where(['user_id'=>$leader_leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108])->find()){
+            $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
+            $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
+            $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);
+        }
+        //如果商品是580大礼包，给所有本季度达到分红条件的VIP董事分红5%
+        if(in_array($v['goods_id'],C('customize.580goods_id'))){
+            $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'quarter_bonus'=>1])->column('user_id');
+            $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
+            if($userlist){
+                foreach($userlist as $v){
+                    if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105])->find()){
+                        $Users->where(['user_id'=>$v])->setInc('user_money',$price);
+                        $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您本季度已达到分红条件，可参与全国580会员的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105]);
+                    }
+                }
+            }
+        }
+
+        //如果商品是3960或11880大礼包，给所有自身团队业绩达到59400的VIP董事分红
+        if(in_array($v['goods_id'],C('customize.3960goods_id'))){
+            $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'is_cityvip'=>1])->column('user_id');    
+            $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
+            if($userlist){
+                foreach($userlist as $v){
+                    if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'status'=>106])->find()){
+                        $Users->where(['user_id'=>$v])->setInc('user_money',$price);
+                        $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您已达到分红条件，可参与全国3960董事和11880VIP董事的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>106]);
+                    }
+                }
+            }    
+        }
+    }
+    
 }
 
 
@@ -1193,6 +1267,9 @@ function update_pay_status($order_sn, $ext = array())
 
         agent_performance($order['order_id']);
         //业绩（包含个人+团队）
+
+        //大礼包分佣
+        gift_commission($order['order_id']);
 
         //区域地理分钱
         $regional_agency = new \app\common\logic\RegionalAgencyLogic();
