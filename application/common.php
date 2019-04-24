@@ -236,13 +236,13 @@ function gift_commission($order_id){
         //上级        
         $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
         //上级的上级
-        if(!$AccountLog->where(['user_id'=>$leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107])->find()){
+        if(!$AccountLog->where(['user_id'=>$leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107])->find() && $leader){
             $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
             $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
             $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
             $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
         }
-        if(!$AccountLog->where(['user_id'=>$leader_leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108])->find()){
+        if(!$AccountLog->where(['user_id'=>$leader_leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108])->find() && $leader_leader){
             $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
             $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
             $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);
@@ -255,6 +255,7 @@ function gift_commission($order_id){
                 foreach($userlist as $v){
                     if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105])->find()){
                         $Users->where(['user_id'=>$v])->setInc('user_money',$price);
+                        $Users->where(['user_id'=>$v])->setInc('distribut_money',$price);
                         $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您本季度已达到分红条件，可参与全国580会员的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105]);
                     }
                 }
@@ -269,6 +270,7 @@ function gift_commission($order_id){
                 foreach($userlist as $v){
                     if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'status'=>106])->find()){
                         $Users->where(['user_id'=>$v])->setInc('user_money',$price);
+                        $Users->where(['user_id'=>$v])->setInc('distribut_money',$price);
                         $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您已达到分红条件，可参与全国3960董事和11880VIP董事的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>106]);
                     }
                 }
