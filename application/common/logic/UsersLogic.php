@@ -1573,8 +1573,9 @@ class UsersLogic extends Model
 
     //获取用户下级链
     public function getUserLevBotAll($uid,&$arr){
-        $arr1 = $this->getUserLevBot($uid);
-        $arr = array_merge($arr,$arr1);
+        if(!$arr)$arr = [];
+        $arr1 = $this->getUserLevBot($uid); 
+        if($arr1)$arr = array_merge($arr,$arr1);
 
         if($arr1){
             foreach($arr1 as $v){

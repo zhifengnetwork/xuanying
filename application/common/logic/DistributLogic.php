@@ -82,7 +82,7 @@ class DistributLogic
         // $recharge_log_where ="user_id='".$user_id."' and states =101 or states =102";
         //改写搜索条件
         $recharge_log_where ="user_id='".$user_id."' and states =101";
-        $whereor = "user_id='".$user_id."' and states =102";
+        $whereor = "user_id='".$user_id."' and states in (102,105,106,107,108,109)";
         if($pay_status){
             $pay_status['status']=$pay_status;
         }

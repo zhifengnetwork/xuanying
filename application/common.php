@@ -184,10 +184,6 @@ function jichadaili($order_id)
         return false;
     }
     $order = M('order')->where(['order_id' => $order_id])->field('user_id,order_sn')->find();
-    // 如果 订单 小于 9.9 ，不分钱
-    /*if ((float)$order['total_amount'] <= 9.9) {
-        return false;
-    }*/
 
     $userId = $order['user_id'];
     $orderSn = $order['order_sn'];
@@ -200,9 +196,6 @@ function jichadaili($order_id)
     $total = 0;
     if(!empty($goods_list)){
         foreach ($goods_list as $key =>$value){
-            if($value['shop_price'] <= 9.9){
-                continue;
-            }
             if(($value['is_distribut'] == 1) || ($value['is_agent'] == 1)){
                 $total += ($value['shop_price'] * $value['goods_num']);
             }
@@ -220,7 +213,7 @@ function jichadaili($order_id)
 
 //大礼包分佣
 function gift_commission($order_id){
-    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_sn,O.user_id,OG.goods_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
+    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
     $Users = M('Users');
     $AccountLog = M('account_log');
     foreach($goodslist as $v){
@@ -236,13 +229,14 @@ function gift_commission($order_id){
         //上级        
         $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
         //上级的上级
-        if(!$AccountLog->where(['user_id'=>$leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107])->find() && $leader){
+        if(!$AccountLog->where("user_id=$leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=107")->count() && $leader){
             $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
             $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
             $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
             $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
         }
-        if(!$AccountLog->where(['user_id'=>$leader_leader,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108])->find() && $leader_leader){
+        
+        if(!$AccountLog->where("user_id=$leader_leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=108")->count() && $leader_leader){
             $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
             $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
             $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);
@@ -252,11 +246,11 @@ function gift_commission($order_id){
             $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'quarter_bonus'=>1])->column('user_id');
             $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
             if($userlist){
-                foreach($userlist as $v){
-                    if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105])->find()){
-                        $Users->where(['user_id'=>$v])->setInc('user_money',$price);
-                        $Users->where(['user_id'=>$v])->setInc('distribut_money',$price);
-                        $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您本季度已达到分红条件，可参与全国580会员的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105]);
+                foreach($userlist as $v1){
+                    if(!$AccountLog->where("user_id=$v1 and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=105")->count()){
+                        $Users->where(['user_id'=>$v1])->setInc('user_money',$price);
+                        $Users->where(['user_id'=>$v1])->setInc('distribut_money',$price);
+                        $AccountLog->add(['user_id'=>$v1,'user_money'=>$price,'change_time'=>time(),'desc'=>'您本季度已达到分红条件，可参与全国580会员的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>105]);
                     }
                 }
             }
@@ -264,14 +258,14 @@ function gift_commission($order_id){
 
         //如果商品是3960或11880大礼包，给所有自身团队业绩达到59400的VIP董事分红
         if(in_array($v['goods_id'],C('customize.3960goods_id'))){
-            $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'is_cityvip'=>1])->column('user_id');    
+            $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'is_cityvip'=>1])->column('user_id');   
             $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
             if($userlist){
-                foreach($userlist as $v){
-                    if(!$AccountLog->where(['user_id'=>$v,'order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'status'=>106])->find()){
-                        $Users->where(['user_id'=>$v])->setInc('user_money',$price);
-                        $Users->where(['user_id'=>$v])->setInc('distribut_money',$price);
-                        $AccountLog->add(['user_id'=>$v,'user_money'=>$price,'change_time'=>time(),'desc'=>'您已达到分红条件，可参与全国3960董事和11880VIP董事的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>106]);
+                foreach($userlist as $v1){ 
+                    if(!$AccountLog->where("user_id=$v1 and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=106")->count()){  
+                        $Users->where(['user_id'=>$v1])->setInc('user_money',$price);
+                        $Users->where(['user_id'=>$v1])->setInc('distribut_money',$price);
+                        $AccountLog->add(['user_id'=>$v1,'user_money'=>$price,'change_time'=>time(),'desc'=>'您已达到分红条件，可参与全国3960董事和11880VIP董事的分红','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>106]);
                     }
                 }
             }    

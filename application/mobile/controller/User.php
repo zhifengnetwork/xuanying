@@ -89,6 +89,13 @@ class User extends MobileBase
             $money_total = $per_logic->distribut_caculate();
         }
 
+        //获取当前用户的所有下级
+        $UsersLogic = new UsersLogic();
+        $bot_arr = [];
+        $bot_arr = $UsersLogic->getUserLevBotAll($user_id,$bot_arr); 
+        $bot_arr[] = $user_id;
+        $num = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money'); 
+        $money_total['money_total'] += $num;
         $this->assign('money_total',$money_total);
 
         //上级用户信息

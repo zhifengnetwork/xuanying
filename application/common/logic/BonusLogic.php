@@ -91,8 +91,9 @@ class BonusLogic extends Model
         	return false;
         }
         $goods = $this->goods();
-        $distribut = M('distribut')->find();
-        $commission = $goods['shop_price'] * ($distribut['rate'] / 100) * $this->goodNum; //计算佣金
+		//$distribut = M('distribut')->find();
+		$rate = M('goods_category')->where(['id'=>$goods['cat_id']])->value('commission_rate');
+        $commission = $goods['shop_price'] * ($rate / 100) * $this->goodNum; //计算佣金
         $bool = M('users')->where('user_id',$distributor['first_leader'])->setInc('user_money',$commission);
 
         if ($bool !== false) {

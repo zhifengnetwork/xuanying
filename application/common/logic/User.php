@@ -135,6 +135,7 @@ class User
         // 客户没添加用户等级，上报没有累计消费的bug
         if($level_info){
             $update['level'] = $level_info['level_id'];
+            $update['is_distribut'] = 1;
             //$update['discount'] = $level_info['discount'] / 100;
         }
         //$update['total_amount'] = $total_amount;//更新累计修复额度

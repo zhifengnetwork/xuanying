@@ -11,6 +11,7 @@ namespace app\cron\controller;
 use think\Controller;
 use think\Db;
 use app\common\util\Exception;
+use app\common\logic\UsersLogic;
 
 class Team extends Controller{
     /**
@@ -66,19 +67,20 @@ class Team extends Controller{
     //大礼包季度执行，每季度1号00:02:00执行
     public function GiftCheck(){
         //获取上季度的开始结束时间戳
-        $season = ceil((date('n'))/3)-1;//上季度
+        $season = ceil((date('n'))/3);//上季度
         $start = mktime(0, 0, 0,$season*3-3+1,1,date('Y')); //季度开始时间戳
         $end = mktime(23,59,59,$season*3,date('t',mktime(0, 0 , 0,$season*3,1,date("Y"))),date('Y')); //季度结束时间戳       
     
         //获取所有城市合伙人
         $Users = M('Users');
         $AccountLog = M('Account_log');
-        $list = $Users->where(['is_cityvip'=>1])->column('user_id');
-        foreach($list as $v){
+        $list = $Users->where(['is_cityvip'=>1])->column('user_id'); $list= [1];
+        $UsersLogic = new UsersLogic();
+        foreach($list as $v){   
             //获取团队业绩
-            $bot_arr = $UsersLogic->getUserLevBotAll($top_leader,$bot_arr);  //获取所有下级
+            $bot_arr = $UsersLogic->getUserLevBotAll($v,$bot_arr);  //获取所有下级
             $bot_arr[] = $v;
-            $total_amount = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money');
+            $total_amount = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money'); 
             if($total_amount >= 2059200){ //12%
                 $price = floor(($total_amount * 12))/100;
             }elseif($total_amount >= 1663200){ //11%

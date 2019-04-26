@@ -10,13 +10,23 @@
             <li class="li3"><span>描述</span></li>
             
         </ul>
+        <table>
+            <foreach name="lists" item="v">
+            <tr style='font-size:.64rem;border-bottom:1px solid #ddd;line-height:1.0rem;'>
+            <td style='width:33.3%;text-align:center;height:2.4rem;'>{:date('Y-m-d H:i', $v[change_time])}</td>
+            <td style='width:33.3%;text-align:center;height:2.4rem;'>￥{$v[user_money]}</td>
+            <td style='width:33.3%;text-align:center;height:2.4rem;'>{$v[desc]}</td>
+            </tr>
+            </foreach>
+            <!--
         <foreach name="lists" item="v">
             <ul>   
-                <li class="li2"><span>{:date('Y-m-d', $v[change_time])}</span></li> 
-                <li class="li1" style="width:33.3%"><span>{$v[user_money]}</span></li>  
+                <li class="li2"><span>{:date('Y-m-d H:i', $v[change_time])}</span></li> 
+                <li class="li1" style="width:33.3%"><span>￥{$v[user_money]}</span></li>  
                 <li class="li3"><span>{$v[desc]}</span></li>
             </ul>
-        </foreach>
+        </foreach>-->
+        </table>
     </div>
     <div id="getmore"  style="font-size:.3rem;text-align: center;color:#888;padding:.25rem .24rem .4rem; clear:both;display: none">
         <a >已显示完所有记录</a>
