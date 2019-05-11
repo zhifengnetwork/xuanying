@@ -294,16 +294,26 @@ class User extends Base
      * 删除会员
      */
     public function delete()
-    {
-        $uid = I('get.id');
-
+    {  
+        $uid = I('post.id/d',0);
+        if(!$uid){
+            echo json_encode(['status'=>-1,'msg'=>'参数错误']); return;
+        }
         //先删除ouath_users表的关联数据
-        M('OuathUsers')->where(array('user_id' => $uid))->delete();
-        $row = M('users')->where(array('user_id' => $uid))->delete();
+        M('oauth_users')->where(array('user_id' => $uid))->delete();
+        $Users = M('Users');
+        $first_leader = $Users->where(['user_id' => $uid])->value('first_leader');
+        if($first_leader){
+            $Users->where(['first_leader'=>$uid])->update(['first_leader'=>$first_leader]);        
+        }else{
+            $first_leader = $Users->where(['mobile' => C('customize.DEF_FIRST_LEADER_MOBILE')])->value('user_id');
+            if($first_leader)$Users->where(['first_leader'=>$uid])->update(['first_leader'=>$first_leader]); 
+        }
+        $row = $Users->where(array('user_id' => $uid))->delete();
         if ($row) {
-            $this->success('成功删除会员');
+            echo json_encode(['status'=>1,'msg'=>'成功删除会员']); return;
         } else {
-            $this->error('操作失败');
+            echo json_encode(['status'=>-1,'msg'=>'操作失败']); return;
         }
     }
 

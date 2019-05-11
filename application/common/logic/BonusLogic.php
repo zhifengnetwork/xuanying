@@ -92,13 +92,21 @@ class BonusLogic extends Model
         }
         $goods = $this->goods();
 		//$distribut = M('distribut')->find();
-		$rate = M('goods_category')->where(['id'=>$goods['cat_id']])->value('commission_rate');
+		$commission_rate = M('goods_category')->field('commission_rate,commission_rate2')->($goods['cat_id']);
+		$rate = $commission_rate['commission_rate'];
         $commission = $goods['shop_price'] * ($rate / 100) * $this->goodNum; //计算佣金
-        $bool = M('users')->where('user_id',$distributor['first_leader'])->setInc('user_money',$commission);
+        $bool = M('users')->where(['user_id'=>$distributor['first_leader']])->setInc('user_money',$commission);
+
+		//查询上级的上级
+		$leader_leader = M('Users')->where(['user_id'=>$distributor['first_leader']])->value('first_leader');
+		$rate2 = $commission_rate['commission_rate2'];
+		$commission2 = $goods['shop_price'] * ($rate2 / 100) * $this->goodNum; //计算佣金
+        $bool2 = M('users')->where(['user_id'=>$leader_leader])->setInc('user_money',$commission2);
 
         if ($bool !== false) {
         	$desc = "分销所得佣金";
         	$log = $this->writeLog($distributor['first_leader'],$commission,$desc,102); //写入日志
+			$leader_leader && $this->writeLog($leader_leader,$commission2,$desc,102); //写入日志
         	return true;
         } else {
         	return false;

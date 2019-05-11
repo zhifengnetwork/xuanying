@@ -68,11 +68,12 @@
                 <td align="left" class="">
                     <div style="text-align: center; width: 120px;">{$list.reg_time|date='Y-m-d H:i',###}</div>
                 </td>
-                <td align="center" class="handle">
+                <td align="center" class="handle" user_id={$list['user_id']}> 
                     <div style="text-align: center; width: 170px; max-width:250px;">
                         <a class="btn blue" href="{:U('Admin/user/detail',array('id'=>$list['user_id']))}"><i class="fa fa-pencil-square-o"></i>详情</a>
                         <a class="btn blue" href="{:U('Admin/user/account_log',array('id'=>$list['user_id']))}"><i class="fa fa-search"></i>资金</a>
                         <a class="btn blue" href="{:U('Admin/user/address',array('id'=>$list['user_id']))}"><i class="fa fa-steam"></i>收货地址</a>
+                        <a class="btn blue" href="javascript:;" data-id="{$list['user_id']}" data-url="{:U('User/delete')}" onclick=delfun(this)><i class="fa fa-minus-circle"></i>删除用户</a>
                     </div>
                 </td>
                 <td align="" class="" style="width: 100%;">

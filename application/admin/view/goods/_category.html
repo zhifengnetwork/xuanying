@@ -142,14 +142,24 @@
       </dl>
 	  <dl class="row">
         <dt class="tit">
-          <label for="t_sort"><em>*</em>分佣比例</label>
+          <label for="t_sort"><em>*</em>分佣比例(一级)</label>
         </dt>
         <dd class="opt">
           <input type="text" class="t_mane" name="commission_rate" value="{$goods_category_info.commission_rate}">%
           <span class="err" style="color:#F00; display:none;" id="err_commission_rate"></span>
           <p class="notic">用于商城分销,微信三级分销。</p>
         </dd>
-      </dl>                         
+    </dl> 
+    <dl class="row">
+        <dt class="tit">
+          <label for="t_sort"><em>*</em>分佣比例(二级)</label>
+        </dt>
+        <dd class="opt">
+          <input type="text" class="t_mane" name="commission_rate2" value="{$goods_category_info.commission_rate2}">%
+          <span class="err" style="color:#F00; display:none;" id="err_commission_rate2"></span>
+          <p class="notic">用于商城分销,微信三级分销。</p>
+        </dd>
+    </dl>                           
       <div class="bot"><a id="submitBtn" class="ncap-btn-big ncap-btn-green" href="JavaScript:void(0);" onClick="ajax_submit_form('category_form','{:U('Goods/addEditCategory?is_ajax=1')}');">确认提交</a></div>
     </div>
     <input type="hidden" name="id" value="{$goods_category_info.id}">

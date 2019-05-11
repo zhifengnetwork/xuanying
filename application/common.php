@@ -197,7 +197,7 @@ function jichadaili($order_id)
 
     $goods_list = M('order_goods')->alias('og')
         ->join('tp_goods g ',' g.goods_id = og.goods_id')
-        ->field(" g.goods_id, og.goods_num, g.shop_price,g.is_distribut,is_agent")
+        ->field(" g.goods_id, g.cat_id, og.goods_num, g.shop_price,g.is_distribut,is_agent")
         ->where(['og.order_id' => $order_id])
         ->select();
     $total = 0;
@@ -211,6 +211,7 @@ function jichadaili($order_id)
    
 
     foreach ($goods_list as $k => $v) {
+		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
         $goodId = $v['goods_id'];
         $goodNum = $v['goods_num'];
         $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id);
@@ -1371,7 +1372,8 @@ function change_role($order_id)
 
     $goods_list = M('order_goods')->where(['order_id' => $order_id])->select();
     foreach ($goods_list as $k => $v) {
-        $goods_attr = M('goods')->where(['goods_id' => $v['goods_id']])->field('goods_id,is_distribut,is_agent')->find();
+        $goods_attr = M('goods')->where(['goods_id' => $v['goods_id']])->field('goods_id,cat_id,is_distribut,is_agent')->find();
+		if($goods_attr['cat_id'] == C('customize.gift_goods_type'))continue;
         if ($goods_attr['is_distribut'] == 1) {
             M('users')->where("user_id", $user_id)->save(array('is_distribut' => 1));
         }
