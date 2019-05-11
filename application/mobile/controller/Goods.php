@@ -331,6 +331,27 @@ class Goods extends MobileBase
             $this->assign('collect', $collect);
         }
 
+        if($goods['prom_type'] == 1){ //秒杀
+			$pinfo = M('flash_sale')->field('end_time')->find($goods['prom_id']);
+			if($pinfo['end_time'] < time()){
+				M('flash_sale')->update(['id'=>$goods['prom_id'],'is_end'=>1]);
+				M('goods')->update(['goods_id'=>$goods['goods_id'],'prom_type'=>0,'prom_id'=>0]);
+			}
+		}
+		if($goods['prom_type'] == 2){ //团购
+			$pinfo = M('group_buy')->field('end_time')->find($goods['prom_id']);
+			if($pinfo['end_time'] < time()){
+				M('group_buy')->update(['id'=>$goods['prom_id'],'is_end'=>1]);
+				M('goods')->update(['goods_id'=>$goods['goods_id'],'prom_type'=>0,'prom_id'=>0]);
+			}
+		}
+		if($goods['prom_type'] == 8){ //竞拍
+			$pinfo = M('auction')->field('end_time')->find($goods['prom_id']);
+			if($pinfo['end_time'] < time()){
+				M('goods')->update(['goods_id'=>$goods['goods_id'],'prom_type'=>0,'prom_id'=>0]);
+			}
+		}       
+
         $recommend_goods = M('goods')->where("is_recommend=1 and is_on_sale=1 and cat_id = {$goods['cat_id']}")->cache(7200)->limit(9)->field("goods_id, goods_name, shop_price")->select();
         $this->assign('recommend_goods', $recommend_goods);
         $this->assign('goods', $goods);
@@ -580,7 +601,7 @@ class Goods extends MobileBase
         if ($q) $where['goods_name'] = array('like', '%' . $q . '%');
 
         $goodsLogic = new GoodsLogic();
-        $filter_goods_id = M('goods')->where($where)->cache(true)->getField("goods_id", true);
+        $filter_goods_id = M('goods')->where($where)->getField("goods_id", true);
 
         // 过滤帅选的结果集里面找商品
         if ($brand_id || $price)// 品牌或者价格
@@ -609,10 +630,10 @@ class Goods extends MobileBase
             $goods_list = D('goods')->where("goods_id", "in", implode(',', $filter_goods_id))->order([$sort => $sort_asc])->limit($page->firstRow . ',' . $page->listRows)->field('goods_id,goods_name,comment_count,shop_price')->select();
             $filter_goods_id2 = get_arr_column($goods_list, 'goods_id');
             if ($filter_goods_id2)
-                $goods_images = M('goods_images')->where("goods_id", "in", implode(',', $filter_goods_id2))->cache(true)->select();
+                $goods_images = M('goods_images')->where("goods_id", "in", implode(',', $filter_goods_id2))->select();
         }
 
-        $goods_category = M('goods_category')->where('is_show=1')->cache(true)->getField('id,name,parent_id,level'); // 键值分类数组
+        $goods_category = M('goods_category')->where('is_show=1')->getField('id,name,parent_id,level'); // 键值分类数组
         $this->assign('goods_list', $goods_list);
         $this->assign('goods_category', $goods_category);
         $this->assign('goods_images', $goods_images);  // 相册图片

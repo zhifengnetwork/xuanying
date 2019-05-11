@@ -65,7 +65,7 @@ class Index extends Base {
     
     // 在线升级系统
     public function pushVersion()
-    {            
+    {        return;    
         if(!empty($_SESSION['isset_push']))
             return false;    
         $_SESSION['isset_push'] = 1;    

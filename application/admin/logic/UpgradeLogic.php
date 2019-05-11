@@ -17,7 +17,7 @@ class UpgradeLogic extends Model
      * 析构函数
      */
     function  __construct() {
-         
+        return;
         $this->app_path = dirname($_SERVER['SCRIPT_FILENAME']).'/'; // 当前项目路径
         $this->version_txt_path = $this->app_path.'application/admin/conf/version.php'; // 版本文件路径
         $this->curent_version = file_get_contents($this->version_txt_path); // 记录版本的常量文件         	        

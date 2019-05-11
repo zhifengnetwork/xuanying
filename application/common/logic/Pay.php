@@ -336,7 +336,8 @@ class Pay
         //预售活动暂不计算运费
         if ($this->payList[0]['prom_type'] == 4) {
             return $this;
-        }
+        } 
+		$this->payList[0]['goods']->sign_free_receive = M('goods')->where(['goods_id'=>$this->payList[0]['goods']->goods_id])->value('sign_free_receive');
         //非免费产品，内蒙、西藏、新疆满4件包邮
         if ($this->payList[0]['goods']->sign_free_receive != 1 ) {
             if ($district_id['province'] == 4670 || $district_id['province'] == 41103 || $district_id['province'] == 46047) {
@@ -427,6 +428,7 @@ class Pay
                     }
                 }
                 if($isReceive['status'] == 2){
+					$this->payList[0]['goods']->shop_price = $this->payList[0]['goods_price'];
                     if ($this->payList[0]['goods']->sign_free_receive == 1) {
                         // 免费领取的不限制数量
                         $this->orderAmount = $this->orderAmount - $this->payList[0]['goods']->shop_price * $this->totalNum; // 应付金额
@@ -462,7 +464,7 @@ class Pay
             if(!empty($EarnestMoney)){
                 $this->deposit = $EarnestMoney;
 
-                $this->orderAmount = $EarnestMoney > $query['offer_price'] ? 0 : $query['offer_price'] - $EarnestMoney;
+                $this->orderAmount = $EarnestMoney > ($query['offer_price']+$this->shippingPrice) ? 0 : $query['offer_price'] - $EarnestMoney + $this->shippingPrice;
             }
 
         }

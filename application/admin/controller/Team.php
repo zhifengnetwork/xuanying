@@ -75,7 +75,7 @@ class Team extends Base
         $data_ladder = [];
 
         if ($data['act'] == 'add')
-        {
+        {       $data['needer'] = $data['group_number'];
                 $team_id = Db::name('team_activity')->insertGetId($data);
                 if($team_id){
                     $this->ajaxReturn(['status' => 1,'msg' =>'操作成功','result' => '']);

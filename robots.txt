@@ -1,6 +1,6 @@
 #robots.txtforTPshop
 User-agent: *
-Disallow:
+Disallow: /
 Disallow: /install/ 
 Disallow: /plugins/ 
 Disallow: /public/ 

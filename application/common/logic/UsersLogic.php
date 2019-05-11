@@ -705,7 +705,11 @@ class UsersLogic extends Model
      * @return mixed
      */
     public function get_goods_collect($user_id){
-        $count = Db::name('goods_collect')->where('user_id', $user_id)->count();
+        $count = M('goods_collect')->alias('c')
+        ->field('c.collect_id,c.add_time,g.goods_id,g.goods_name,g.shop_price,g.is_on_sale,g.store_count,g.cat_id,g.is_virtual,g.original_img')
+        ->join('goods g','g.goods_id = c.goods_id','INNER')
+        ->where("c.user_id = $user_id")
+        ->count();
         $page = new Page($count,10);
         $show = $page->show();
         //获取我的收藏列表
@@ -1563,11 +1567,18 @@ class UsersLogic extends Model
     public function getUserLevTop($uid){
         $leader = M('Users')->where(['user_id'=>$uid])->column('first_leader'); 
         return $leader;
-    }
+    }    
 
     //获取用户下级
     public function getUserLevBot($uid){
-        $arr1 = M('Users')->where(['first_leader'=>$uid])->column('user_id'); 
+        //$arr1 = M('Users_mem')->where(['first_leader'=>['in',$uid]])->column('user_id');
+        if(is_array($uid)){
+            $sql = "select user_id from tp_users where first_leader in (".implode(',',$uid).")";
+        }else
+            $sql = "select user_id from tp_users where first_leader = $uid";
+            
+        $res = M('Users_mem')->query($sql);
+        $arr1 = get_arr_column($res,'user_id');          
         return $arr1;
     }
 
@@ -1578,9 +1589,9 @@ class UsersLogic extends Model
         if($arr1)$arr = array_merge($arr,$arr1);
 
         if($arr1){
-            foreach($arr1 as $v){
-                $this->getUserLevBotAll($v,$arr);
-            }
+            //foreach($arr1 as $v){
+                $this->getUserLevBotAll($arr1,$arr);
+            //}
         }
         return $arr;
     }

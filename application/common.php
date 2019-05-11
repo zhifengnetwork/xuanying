@@ -51,7 +51,7 @@ function write_log($content)
     file_put_contents($path, $content, FILE_APPEND);
 }
 
-function share_deal_after($xiaji, $shangji)
+function share_deal_after($xiaji, $shangji,$new=0)
 {
 
     write_log("xiaji:" . $xiaji);
@@ -94,6 +94,13 @@ function share_deal_after($xiaji, $shangji)
 
     $top_leader = $Users->where(['user_id'=>$shangji])->value('top_leader');
     $res = $Users->where(['user_id' => $xiaji])->update(['first_leader' => $shangji,'bindtime'=>time(),'top_leader'=>$top_leader]);
+    if($new){ //新用户邀请奖励
+        $invitation_amount = M('Config')->where("name='invitation_amount' and inc_type='shop_info'")->value('value');
+        if($invitation_amount){
+            $Users->where(['user_id'>$shangji])->setInc('user_money',$invitation_amount); 
+            M('account_log')->add(['user_id'=>$shangji,'user_money'=>$invitation_amount,'change_time'=>time(),'desc'=>'新用户邀请返现金额','states'=>110]);
+        } 
+    }
     //判断上级本季度是否分红，自身达到VIP董事级别，本季度至少招募两名580会员
     $level = $Users->where(['user_id'=>$shangji])->value('level');
     if($level == C('customize.lev3')){
@@ -229,14 +236,14 @@ function gift_commission($order_id){
         //上级        
         $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
         //上级的上级
-        if(!$AccountLog->where("user_id=$leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=107")->count() && $leader){
+        if($leader && !$AccountLog->where("user_id=$leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=107")->count()){
             $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
             $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
             $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
             $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
         }
         
-        if(!$AccountLog->where("user_id=$leader_leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=108")->count() && $leader_leader){
+        if($leader_leader && !$AccountLog->where("user_id=$leader_leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=108")->count()){
             $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
             $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
             $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);

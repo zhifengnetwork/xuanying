@@ -131,7 +131,7 @@ function getAdminInfo($admin_id){
 }
 
 function tpversion()
-{   
+{   return;
     //在线升级 
 	$isset_push = session('isset_push');         
 	if(!empty($isset_push))

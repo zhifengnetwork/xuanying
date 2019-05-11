@@ -126,6 +126,11 @@ class Api extends Base
         $session_id = I('unique_id', session_id());
         session("scene", $scene);
 
+		if($scene == 1){
+			$userinfo = M('users')->where(['mobile'=>$mobile])->count();
+			if($userinfo)ajaxReturn(array('status' => -1, 'msg' => '该手机号码已存在'));
+		}
+
         //注册
         if ($scene == 1 && !empty($verify_code)) {
             $verify = new Verify();
@@ -239,6 +244,18 @@ class Api extends Base
             $shipping_code = 'SFEXPRESS';
                 break;
         
+            case 'YZPY':
+            $shipping_code = 'CHINAPOST';
+                break;
+            
+            case 'YTO':
+            $shipping_code = 'YTO';
+                break;
+
+            case 'ZTO':
+            $shipping_code = 'ZTO';
+                break;
+
             default:
             $shipping_code = '';
                 break;
@@ -361,7 +378,7 @@ class Api extends Base
         $host = "https://wuliu.market.alicloudapi.com";//api访问链接
         $path = "/kdi";//API访问后缀
         $method = "GET";
-        $appcode = 'a65097cbc695427a801bbcf77411b33f';//替换成自己的阿里云appcode
+        $appcode = 'c5ccb196109848fe8ea5e1668410132a';//替换成自己的阿里云appcode
         $headers = array();
         array_push($headers, "Authorization:APPCODE " . $appcode);
         $querys = "no=".$invoice_no."&type=".$shipping_code;  //参数写在这里
@@ -375,7 +392,7 @@ class Api extends Base
         curl_setopt($curl, CURLOPT_FAILONERROR, false);
         curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($curl, CURLOPT_HEADER, false);
-        //curl_setopt($curl, CURLOPT_HEADER, true); 如不输出json, 请打开这行代码，打印调试头部状态码。
+        //curl_setopt($curl, CURLOPT_HEADER, true); //如不输出json, 请打开这行代码，打印调试头部状态码。
         //状态码: 200 正常；400 URL无效；401 appCode错误； 403 次数用完； 500 API网管错误
         if (1 == strpos("$".$host, "https://"))
         {

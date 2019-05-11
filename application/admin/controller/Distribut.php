@@ -30,7 +30,7 @@ class Distribut extends Base {
         $this->assign('leader', $leader);
 
         $log = M('account_log')->alias('log')->join('users', 'users.user_id = log.user_id')
-                ->field('log.*, users.agent_user')->where('log.states', ['in', ['101', '102']])
+                ->field('log.*, users.agent_user')->where('log.states', ['in', ['101', '102', '105', '106', '107', '108', '109']])
                 ->where(['order_sn'=>$order['order_sn']])->select();
 
         $chinese = ['无', '一', '二', '三', '四', '五'];
