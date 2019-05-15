@@ -94,10 +94,11 @@ function share_deal_after($xiaji, $shangji,$new=0)
 
     $top_leader = $Users->where(['user_id'=>$shangji])->value('top_leader');
     $res = $Users->where(['user_id' => $xiaji])->update(['first_leader' => $shangji,'bindtime'=>time(),'top_leader'=>$top_leader]);
+
     if($new){ //新用户邀请奖励
         $invitation_amount = M('Config')->where("name='invitation_amount' and inc_type='shop_info'")->value('value');
         if($invitation_amount){
-            $Users->where(['user_id'>$shangji])->setInc('user_money',$invitation_amount); 
+            $Users->where(['user_id'=>$shangji])->setInc('user_money',$invitation_amount); 
             M('account_log')->add(['user_id'=>$shangji,'user_money'=>$invitation_amount,'change_time'=>time(),'desc'=>'新用户邀请返现金额','states'=>110]);
         } 
     }

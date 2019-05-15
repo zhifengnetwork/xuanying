@@ -11,23 +11,26 @@ class Weixin
      * 处理接收推送消息
      */
     public function index()
-    {
+    { 
 
         $data = file_get_contents("php://input");
+        $new = 0;
     	if ($data) {
             $re = $this->xmlToArray($data);
             
             // $this->write_log(json_encode($re));
 
 	    	$url = SITE_URL.'/mobile/message/index?eventkey='.$re['EventKey'].'&openid='.$re['FromUserName'].'&event='.$re['Event'];
-	    	httpRequest($url);
+            httpRequest($url);
+            $new = 1;
         }
 
         $config = Db::name('wx_user')->find();
+        $config['new'] = $new;
         if ($config['wait_access'] == 0) {
             ob_clean();
             exit($_GET["echostr"]);
-        }
+        }           
         $logic = new WechatLogic($config);
         $logic->handleMessage();
     }

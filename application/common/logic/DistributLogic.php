@@ -90,6 +90,7 @@ class DistributLogic
         $Page = new Page($count, 15);
         $recharge_log = M('account_log')->where($recharge_log_where)
             ->whereOr($whereor)
+			->order('change_time desc')
             ->limit($Page->firstRow . ',' . $Page->listRows)
             ->select(); 
             // dump($recharge_log);

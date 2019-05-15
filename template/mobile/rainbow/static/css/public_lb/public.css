@@ -3,13 +3,13 @@
 	padding: 0;
 }
 /*字体库*/
-@font-face{
+/* @font-face{
 	font-family: 'PingFangMedium';
 	src:url("/template/mobile/rainbow/static/font/PingFangMedium.ttf");
 }
 body {
 	font-family:"PingFangMedium";
-}
+} */
 /*public 省略号*/
 .publicEllipsis {
 	overflow: hidden;
@@ -97,7 +97,7 @@ input, select {
 }
 /*头部 背景颜色*/
 .lb_headWrap_bacColor {
-	background-color: #fff;
+	background-color: #ffffff;
 }
 /*头部 字体颜色*/
 .lb_headWrap_fiontWhite {

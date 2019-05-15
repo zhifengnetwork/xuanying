@@ -16,7 +16,7 @@
                     {$user.agent_user|agent_level}
                 <else/>
                     <!-- 分销 -->
-                    <if condition="($user.is_distribut == 1)">
+                    <if condition="$user['level'] gt 0">
                         <a href="javascript:void(0);">分销商</a>
                     <else/>
                         <a href="javascript:void(0);">普通用户</a>
@@ -46,6 +46,7 @@
     </div>
     <div class="z_user_li_wrap">
         <volist name="menu_list" id="menu">
+            <if condition="$menu['menu_id'] neq 23">
             <switch name="$menu['menu_id']">
                 <case value="1">
                     <div class="z_user_list border10">
@@ -115,6 +116,21 @@
                     </div>
                 </a>
             </switch>
+            <elseif condition="$user['level'] gt 0" />
+            <a href="{$menu.menu_url}">
+                <div class="z_user_list <if condition='$menu.is_tab eq 1'>border10</if>">
+                    <div class="user_list_cont padd10">
+                        <div class="cont_fl">
+                            <img src="__PUBLIC__/static/images/w{$menu.menu_id}.png"/>
+                            <span>{$menu.menu_name}</span>
+                        </div>
+                        <div class="cont_fr">
+                            <i class="zMright"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+            </if>
         </volist>
     </div>
 </div>

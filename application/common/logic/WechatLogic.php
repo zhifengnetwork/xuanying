@@ -21,6 +21,7 @@ class WechatLogic
 {
     static private $wx_user = null;
     static private $wechat_obj;
+    private $new = 0;
 
     public function __construct($config = null)
     {
@@ -29,6 +30,7 @@ class WechatLogic
                 $config = Db::name('wx_user')->find();
             } 
             self::$wx_user = $config;
+            $this->new = $config['new'] ? $config['new'] : 0;
             self::$wechat_obj = new WechatUtil(self::$wx_user);
         }
     }
@@ -91,6 +93,7 @@ class WechatLogic
             }
 
             $userData = [
+                'openid'    => $openid,
                 'head_pic'  => $wxdata['headimgurl'],
                 'nickname'  => $wxdata['nickname'] ?: '微信用户',
                 'sex'       => $wxdata['sex'] ?: 0,
@@ -127,6 +130,7 @@ class WechatLogic
 
                
                 $is_cunzai = Db::name('users')->where(['openid'=>$openid])->find();
+
                 if(!$is_cunzai ){
                     $user_id = Db::name('users')->insertGetId($userData);
                 }
@@ -141,9 +145,10 @@ class WechatLogic
                 }
                 
                 $is_cunzai2 = Db::name('oauth_users')->where(['openid'=>$openid])->find();
-                if(!$is_cunzai2 ){
-                    Db::name('oauth_users')->insert([
-                    'user_id' => $user_id,
+
+                if(!$is_cunzai2 ){  
+                    M('oauth_users')->add([
+                    'user_id' => $user_id ? $user_id : $is_cunzai['user_id'],
                     'openid' => $openid,
                     'unionid' => isset($wxdata['unionid']) ? $wxdata['unionid'] : '',
                     'oauth' => 'weixin',
@@ -177,7 +182,7 @@ class WechatLogic
             $xiaji = Db::name('users')->where('openid', $to)->value('user_id');
             $this->write_log('to:'.$to);
             $this->write_log($xiaji);
-            share_deal_after($xiaji,$first_leader);
+            if($this->new == 0)share_deal_after($xiaji,$first_leader);
 
             $leader_nickname =  Db::name('users')->where('user_id', $first_leader)->value('nickname');
             $result_str = self::$wechat_obj->createReplyMsgOfText($from, $to, "您扫了[ $leader_nickname ]的分享，成功关注 $store_name !");
@@ -293,7 +298,7 @@ class WechatLogic
         }
 
         //创建分销二维码图片
-        empty($headPic) && $headPic = '/public/images/icon_goods_thumb_empty_300.png'; //没有头像用默认图片
+        empty($headPic) && $headPic = '/public/images/icon_goods_thumb_empty_300.png?v=1'; //没有头像用默认图片
         $shareImg = $this->createShareQrCode('.'.$qrBackImg, $qrCode['url'], $headPic);
         if (!$shareImg) {
             $this->replyError($msg, '生成图片失败');

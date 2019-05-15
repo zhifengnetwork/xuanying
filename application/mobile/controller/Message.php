@@ -82,13 +82,12 @@ class Message extends Controller
             //     'openid' => $xiaji_openid,
             //     'user_id' => $xiaji_user_id
             // );
-            M('oauth_users')->add($new_data);
-
-            $this->write_log($xiaji_user_id.'------注册成功-----'.$shangji_user_id);
+            //M('oauth_users')->add($new_data);
             $new = 1;
-        }else{
-            $xiaji_user_id = $xiaji['user_id'];
+            $this->write_log($xiaji_user_id.'------注册成功-----'.$shangji_user_id);
+        }else{  
             $new = 0;
+            $xiaji_user_id = $xiaji['user_id'];
         }
 
        //注册好了，
@@ -100,6 +99,7 @@ class Message extends Controller
 
 
     }
+
 
     public function write_log($content)
     {
