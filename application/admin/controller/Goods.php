@@ -443,7 +443,8 @@ class Goods extends Base {
             $goods = new \app\common\model\Goods();
             $store_count_change_num = $data['store_count'];
         }
-		$goods->goods_type = ($goods->cat_id == C('customize.gift_goods_cat')) ? C('customize.gift_goods_type') : $goods->goods_type;
+        //2019.5.20 注释
+		//$goods->goods_type = ($goods->cat_id == C('customize.gift_goods_cat')) ? C('customize.gift_goods_type') : $goods->goods_type;
         if(($data['commission_type'] == 1) && ($data['lev1'] + $data['lev2']) > 100){
             $this->ajaxReturn(['status' => 0, 'msg' => '一级佣金加二级佣金不能超过100%', 'result' => '']);
         }
@@ -453,6 +454,7 @@ class Goods extends Base {
         $goods->data($data, true);
         $goods->last_update = time();
         $goods->price_ladder = true;
+      
         $goods->save();
         if(empty($spec_item)){
             update_stock_log(session('admin_id'), $store_count_change_num, ['goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name']]);//库存日志
