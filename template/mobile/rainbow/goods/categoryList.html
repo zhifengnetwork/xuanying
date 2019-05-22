@@ -62,8 +62,11 @@
 									<foreach name="category.child" item="child">
 										<li class="item">
 											<a href="/Mobile/Goods/goodsInfo/id/{$child[goods_id]}.html">
-												<img src="{$child[original_img]}" />
+												<div class="imges">
+													<img src="{$child[original_img]}" />
+												</div>
 												<p>{$child[goods_name]}</p>
+												<div class="price">￥25.00</div>
 											</a>
 										</li>
 									</foreach>
