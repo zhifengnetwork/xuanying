@@ -106,6 +106,13 @@ class User extends MobileBase
                 $this->assign('leader',$leader);
             }
         }
+
+		//累计返利	101: 代理,102:分销，103拼团失败返回,104竞拍失败返回保证金,105:580=>VIP董事分红,106:3960或11880=>业绩达到59400的VIP董事分红,107:大礼包一级佣金，108：大礼包二级佣金，109：季度团队分红,110:新用户邀请奖励
+		$accountmoney = M('account_log')->where(['user_id'=>$user_id,'states'=>['in','101,102,105,106,107,108,109']])->sum('user_money');
+		$this->assign('accountmoney', $accountmoney);
+		//累计提现 状态：-2删除作废-1审核失败0申请中1审核通过2付款成功3付款失败
+		$withdrawalsmoney = M('withdrawals')->where(['user_id'=>$user_id,'status'=>2])->sum('money');
+		$this->assign('withdrawalsmoney', $withdrawalsmoney);
       
         $underling_number = M('users')->where(['user_id'=>$user_id])->value('underling_number');
         $underling_number == NULL ? $underling_number = '0' : $underling_number;
@@ -379,6 +386,27 @@ class User extends MobileBase
             exit;
         }
 
+		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
+        if(I('refresh') == '1'){
+            //删掉文件
+            @unlink(IMGROOT_PATH.'/public/share/head/'.$user_id.'.jpg');//删除头像
+            @unlink(IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg");//删除 44
+            @unlink(IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg");
+
+            //强制获取头像
+            $openid = session('user.openid');
+            $access_token = access_token();
+            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+            $resp = httpRequest($url, "GET");
+            $res = json_decode($resp, true);
+           
+            $head_pic = $res['headimgurl'];
+            if($head_pic){
+                //得到头像
+                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
+            }
+        }
+
      
         $head_pic_url = M('users')->where(['user_id'=>$user_id])->value('head_pic');
 
@@ -391,14 +419,14 @@ class User extends MobileBase
         }
         $url= "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
 
-        $url222 = C('customize.www_path') . '/public/share/code/'.$user_id.'.jpg';
+        $url222 = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
         if( @fopen( $url222, 'r' ) )
         {
             //已经有二维码了
-        	$url_code = C('customize.www_path') . '/public/share/code/'.$user_id.'.jpg';
+        	$url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
         }else{
             //还没有二维码
-            $re = $logic->getImage($url,C('customize.www_path') . '/public/share/code', $user_id.'.jpg');
+            $re = $logic->getImage($url,IMGROOT_PATH . '/public/share/code', $user_id.'.jpg');
             $url_code = $re['save_path'];
         }
         
@@ -409,19 +437,19 @@ class User extends MobileBase
 
         if($logo_url_logo_height > 420 || $logo_url_logo_width > 420){
             //压缩图片
-            $url_code = C('customize.www_path') . '/public/share/code/'.$user_id.'.jpg';
+            $url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
             $logo_url->thumb(410, 410)->save($url_code , null, 100);
         }
 
           
-        $head_url = C('customize.www_path') . '/public/share/head/'.$user_id.'.jpg';
+        $head_url = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
         if( @fopen( $head_url, 'r' ) )
         {
             //已经有二维码了
-        	$url_head_pp = C('customize.www_path') . '/public/share/head/'.$user_id.'.jpg';
+        	$url_head_pp = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
         }else{
             //还没有二维码
-            $re = $logic->getImage($head_pic_url,C('customize.www_path') . '/public/share/head', $user_id.'.jpg');
+            $re = $logic->getImage($head_pic_url,IMGROOT_PATH . '/public/share/head', $user_id.'.jpg');
             $url_head_pp = $re['save_path'];
         }
         
@@ -434,7 +462,7 @@ class User extends MobileBase
         //头像变成200
         if($logo_height > 260 || $logo_width > 260){
             //压缩图片
-             $url_head_file = C('customize.www_path') . '/public/share/head/'.$user_id.'.jpg';
+             $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
              $logo->thumb(240, 240)->save($url_head_file , null, 100);
         }
         
@@ -447,9 +475,9 @@ class User extends MobileBase
         }
         else
         {
-        	$image = \think\Image::open(C('customize.www_path') . '/public/share/bg1.jpg');
+        	$image = \think\Image::open(IMGROOT_PATH . '/public/share/bg1.jpg');
         	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_code,\think\Image::DCHQZG)->save(C('customize.www_path') . '/public/share/picture_ok44/'.$user_id.'.jpg');
+        	$image->water($url_code,\think\Image::DCHQZG)->save(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
         	
         	$pic = "/public/share/picture_ok44/".$user_id.".jpg";
         }
@@ -464,9 +492,9 @@ class User extends MobileBase
         else
         {
            
-        	$image = \think\Image::open(C('customize.www_path') . '/public/share/picture_ok44/'.$user_id.'.jpg');
+        	$image = \think\Image::open(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
         	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_head_pp,\think\Image::TOUXIANG)->save(C('customize.www_path') . '/public/share/picture_888/'.$user_id.'.jpg');
+        	$image->water($url_head_pp,\think\Image::TOUXIANG)->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
@@ -1793,7 +1821,7 @@ class User extends MobileBase
         if(empty($oauthUsers)){
             $openid = Db::name('users')->where(['user_id'=>$this->user_id])->value('openid');
         }
-        if($openid){
+        if($openid){$this->ajaxReturn(['status'=>1,'result'=>$openid]);
             if(strpos($openid, 'oqy') === 0){
                 $this->ajaxReturn(['status'=>1,'result'=>$openid]);
             }else{

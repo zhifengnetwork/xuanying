@@ -4,8 +4,6 @@
 		'gift_goods_type'	=> 14,
 		'gift_goods_cat'	=> 604,
 
-		'www_path'	=> '/www/wwwroot/xy.zhifengwangluo.com',
-
 		'lev1'	=> 1,
 		'lev2'	=> 2,
 		'lev3'	=> 3,
