@@ -1,6 +1,6 @@
 @font-face{
-	font-family: 'PingFangBold';
-	src:url("../../font/PingFangBold.ttf")
+	/* font-family: 'PingFangBold';
+	src:url("../../font/PingFangBold.ttf") */
 }
 body{
 	overflow: hidden;
@@ -27,8 +27,9 @@ body{
 .top-bar .search{
 	width: 100%;
 	height: 100%;
-	background: #f8f8f8;
-	border-radius: 0.15rem;
+	/* background: #f8f8f8; */
+	border-radius: 0.5rem;
+	border: .01rem solid #a7a7a7;
 }
 .top-bar .search form{
 	height: 100%;
@@ -75,10 +76,11 @@ body{
 /*左侧菜单*/
 .category-main .menu{
 	width: 4rem;
-	margin-right: 0.3rem;
-	background: #f7f7f7;
+	margin-right: 0.5rem;
+	/* background: #f7f7f7; */
 	height: 26.4rem;
-    overflow-y: auto;
+	overflow-y: auto;
+	border-right: .01rem solid #dadada;
 }
 .category-main .menu li{
 	height: 1.6rem;
@@ -96,7 +98,8 @@ body{
 	display: none;
 }
 .category-main .menu li.active{
-	background: #fff;
+	/* background: #fff; */
+	color: #f31313;
 }
 .category-main .menu li.active i{
 	height: 0.5rem;
@@ -148,39 +151,49 @@ body{
 	border-radius: 0.1rem;
 }
 .cate-list .item{
-	width: 48%;
-}
-.item {
-	margin: 0 0 .55rem 0;
-}
-.cate-list .item:nth-child(odd) {
-	margin: 0 .45rem .55rem 0;
+	width: 100%;
+	border: .01rem solid #dadada;
+	margin-bottom: .3rem;
+	padding: 0.3rem;
+	box-sizing: border-box;
 }
 .cate-list .item a{
-	margin: 0 auto;
 	display: block;
 	color: #101010;
 	font-size: 0.24rem;
+	display: flex;
 }
-.cate-list .item .imges {
-	margin: 0 auto .2rem;
-	width: 5.45rem;
-	height: 5.45rem;
+.cate-list .item .img-wrap{
+	width: 3rem;
+	height: 3rem;
+	margin-right: .3rem;
+	display: inline-block;
 }
-.cate-list .item .imges img{
+
+.cate-list .item .img-wrap img{
 	display: block;
 	width: 100%;
 	height: 100%;	
 }
-.cate-list .item p{
-	padding: 0 .25rem 0;
-	line-height: .6rem;
-	font-size: .5rem;
+.cate-list .item .text{
+	flex: 1;
+}
+.cate-list .item .text h3{
+	line-height: .7rem;
+	font-weight: normal;
+	margin-bottom: .3rem;
 	overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+}
+.cate-list .item p{
+	padding: 0 .25rem 0;
+	line-height: .6rem;
+	font-size: .5rem;
+	color: #646464;
+	
 }
 .cate-list .item .price {
 	padding: 0 0 0 .25rem;

@@ -8,7 +8,7 @@
 	<link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css?v=1553087156"/>
 	<link rel="stylesheet" type="text/css" href="__STATIC__/css/footer.css?v=1553087156"/>
 	<link rel="stylesheet" href="__STATIC__/css/style.css?v=1553087156">
-	<link rel="stylesheet" type="text/css" href="__STATIC__/css/category/category_zp.css?v=1553087156"/>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/category/category_zp.css?v=1553087158"/>
 	<script src="__STATIC__/js/jquery-3.1.1.min.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
 	<script src="__STATIC__/js/mobile-util.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
 	<script src="__PUBLIC__/js/global.js?v=1553087156"></script>
@@ -20,7 +20,7 @@
 				<div class="search">
 					<form action="/mobile/Goods/search.html" method="get">
 						<input type="submit" class="search-btn" value="" />
-						<input type="text" class="search-text" placeholder="搜索" name="q" />
+						<input type="text" class="search-text" placeholder="SK ll" name="q" />
 						<i class="scan"></i>
 					</form>
 				</div>
@@ -34,7 +34,7 @@
 							<li><i></i>{$vo.mobile_name}</li>
 						</foreach> -->
 						<foreach name="secondCategoryList" item="list">
-							<li <if condition="$list[id] eq 111"> class="active" </if> >{$list[name]}</li>
+							<li <if condition="$list[id] eq 111"> class="active" </if> ><i></i>{$list[name]}</li>
 						</foreach>
 						<!--<li class="active"><i></i>为您推荐</li>-->
 					</ul>
@@ -57,19 +57,16 @@
 						<!--</div>-->
 
 							<div class="cate-item">
-								<!-- <h3>{$category[name]}</h3> -->
+								<h3>{$category[name]}</h3>
 								<ul class="cate-list">
 									<foreach name="category.child" item="child">
 										<li class="item">
 											<a href="/Mobile/Goods/goodsInfo/id/{$child[goods_id]}.html">
-												<div class="img-wrap">
+												<div class="imges">
 													<img src="{$child[original_img]}" />
 												</div>
-												<div class="text">
-													<h3>{$child[goods_name]}</h3>
-													<p>用户说：用了之后效果很好</p>
-													<div class="price">￥25.00</div>
-												</div>
+												<p>{$child[goods_name]}</p>
+												<div class="price">￥25.00</div>
 											</a>
 										</li>
 									</foreach>
