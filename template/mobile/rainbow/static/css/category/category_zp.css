@@ -168,6 +168,7 @@ body{
 	height: 3rem;
 	margin-right: .3rem;
 	display: inline-block;
+	box-shadow: .03rem .05rem .06rem .03rem #c1c1c1;
 }
 
 .cate-list .item .img-wrap img{
