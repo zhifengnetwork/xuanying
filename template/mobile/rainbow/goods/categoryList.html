@@ -67,8 +67,8 @@
 												</div>
 												<div class="text">
 													<h3>{$child[goods_name]}</h3>
-													<p>用户说：用了之后效果很好</p>
-													<div class="price">￥25.00</div>
+													<p><if condition="$child.goods_remark neq ''">{$child[goods_remark]}<else />&nbsp;</if></p>
+													<div class="price">￥{$child[shop_price]}</div>
 												</div>
 											</a>
 										</li>
