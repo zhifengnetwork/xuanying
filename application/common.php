@@ -222,10 +222,16 @@ function jichadaili($order_id)
 
 //大礼包分佣
 function gift_commission($order_id){
-    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
+    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.cat_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
     $Users = M('Users');
     $AccountLog = M('account_log');
     foreach($goodslist as $v){
+        if($v['cat_id'] == C('customize.VIP99')){ //9.9VIP会员商品
+            $level = M('Users')->where(['user_id'=>$v['user_id']])->value('level');
+            if($level < C('customize.lev1')){ 
+                M('Users')->where(['user_id'=>$v['user_id']])->update(['level'=>C('customize.lev1')]);    
+            }
+        }
         if($v['type'] == 1){ //比例
             $lev1 = floor(($v['final_price'] * $v['lev1']))/100;
             $lev2 = floor(($v['final_price'] * $v['lev2']))/100;
@@ -1214,6 +1220,7 @@ function update_pay_status($order_sn, $ext = array())
         // 找出对应的订单
         $Order = new \app\common\model\Order();
         $order = $Order->master()->where("order_sn", $order_sn)->find();
+        M('Users')->where(['user_id'=>$order['user_id']])->update(['province'=>$order['province'],'city'=>$order['city'],'district'=>$order['district']]);
         if ($order['prom_type'] == 6 && $order['order_amount'] != 0) { //拼团订单
             $team = new \app\common\logic\team\Team();
             $team->setTeamActivityById($order['prom_id']);

@@ -131,7 +131,7 @@ class User
     function updateUserLevel()
     {
         $total_amount = Db::name('order')->master()->where(['user_id' => $this->user['user_id'], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money');
-        $level_info = Db::name('user_level')->where(['amount' => ['elt', $total_amount]])->order('amount desc')->find();
+        $level_info = Db::name('user_level')->where(['level_id'=>['neq',C('customize.lev1')],'amount' => ['elt', $total_amount]])->order('amount desc')->find();
         // 客户没添加用户等级，上报没有累计消费的bug
         if($level_info){
             $update['level'] = $level_info['level_id'];

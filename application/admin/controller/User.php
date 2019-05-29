@@ -119,6 +119,105 @@ class User extends Base
         return $this->fetch();
     }
 
+    public function agent_index()
+    {
+        $province = M('region')->where(array('parent_id'=>0))->select();
+        $city =  M('region')->where(array('parent_id'=>$config['province']))->select();
+        $area =  M('region')->where(array('parent_id'=>$config['city']))->select();
+        $this->assign('province',$province);
+        $this->assign('city',$city);
+        $this->assign('area',$area);        
+        return $this->fetch();
+    }
+    
+    public function ajaxagentindex()
+    {
+        // 搜索条件
+        $condition = array();
+        $nickname = I('nickname');
+        $realname = I('realname');
+        $user_id = input('user_id');
+        $mobile = I('mobile');
+        $leader = I('leader');
+        $province = I('province');
+        $city = I('city');
+        $district = I('district');
+        // dump($user_id);exit;
+        $mobile ? $condition['mobile'] = ['like', "%$mobile%"] : false;
+        $leader ? $condition['first_leader'] = $leader : false;
+        $nickname ? $condition['nickname'] = ['like', "%$nickname%"] : false;
+        $realname ? $condition['realname'] = ['like', "%$realname%"] : false;
+        $user_id ? $condition['user_id'] = $user_id : false;
+        $province && $condition['province'] = $province;
+        $city && $condition['city'] = $city;
+        $district && $condition['district'] = $district;
+        $condition['level'] = ['gt',0];
+
+        I('first_leader') && ($condition['first_leader'] = I('first_leader')); // 查看一级下线人有哪些
+        I('second_leader') && ($condition['second_leader'] = I('second_leader')); // 查看二级下线人有哪些
+        I('third_leader') && ($condition['third_leader'] = I('third_leader')); // 查看三级下线人有哪些
+        $sort_order = I('order_by') . ' ' . I('sort');
+
+        $usersModel = new Users();
+        $count = $usersModel->where($condition)->count();
+        $Page = new AjaxPage($count, 10);
+
+        if(trim($sort_order) == ''){
+            $userList = $usersModel->where($condition)->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        }else{
+            $userList = $usersModel->where($condition)->order($sort_order)->limit($Page->firstRow . ',' . $Page->listRows)->select();
+        }
+
+        $beginThismonth = mktime(0,0,0,date('m'),1,date('Y'));
+        $endThismonth = mktime(23,59,59,date('m'),date('t'),date('Y'));
+        $beginThisyear = strtotime(date('Y',time()).'-01-01 00:00:00');
+        $endThisyear = strtotime((date('Y',time())+1).'-01-01 00:00:00');
+        //获取当前用户的所有下级
+        $per_logic =  new \app\common\logic\PerformanceLogic();
+        $UsersLogic = new \app\common\logic\UsersLogic();
+        foreach($userList as $k=>$v){ 
+            $money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid']);
+            $m_money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid'],['s'=>$beginThismonth,'e'=>$endThismonth]);
+            $y_money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid'],['s'=>$beginThisyear,'e'=>$endThisyear]);
+
+            $bot_arr = [];
+            $bot_arr = $UsersLogic->getUserLevBotAll($v['user_id'],$bot_arr); 
+            $num = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money'); 
+            $money_total['money_total'] += $num;  
+            $num1 = Db::name('order')->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]],'pay_time'=>['between',[$beginThismonth,$endThismonth]]])->sum('order_amount+user_money'); 
+
+            $m_money_total['money_total'] += $num1;   
+            $num2 = Db::name('order')->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]],'pay_time'=>['between',[$beginThisyear,$endThisyear]]])->sum('order_amount+user_money'); 
+            $y_money_total['money_total'] += $num2;  
+
+            $userList[$k]['total_amount'] = $num;
+            $userList[$k]['money_total'] = $money_total['money_total'];
+            $userList[$k]['m_money_total'] = $m_money_total['money_total'];
+            $userList[$k]['y_money_total'] = $y_money_total['money_total'];
+        }  
+
+        $user_id_arr = get_arr_column($userList, 'user_id');
+        if (!empty($user_id_arr)) {
+            $first_leader = DB::query("select first_leader,count(1) as count  from __PREFIX__users where first_leader in(" . implode(',', $user_id_arr) . ")  group by first_leader");
+            $first_leader = convert_arr_key($first_leader, 'first_leader');
+
+            $second_leader = DB::query("select second_leader,count(1) as count  from __PREFIX__users where second_leader in(" . implode(',', $user_id_arr) . ")  group by second_leader");
+            $second_leader = convert_arr_key($second_leader, 'second_leader');
+
+            $third_leader = DB::query("select third_leader,count(1) as count  from __PREFIX__users where third_leader in(" . implode(',', $user_id_arr) . ")  group by third_leader");
+            $third_leader = convert_arr_key($third_leader, 'third_leader');
+        }
+        $this->assign('first_leader', $first_leader);
+        $this->assign('second_leader', $second_leader);
+        $this->assign('third_leader', $third_leader);
+        $show = $Page->show();
+        $this->assign('userList', $userList);
+        $this->assign('level', M('user_level')->getField('level,level_name'));
+        $this->assign('page', $show);// 赋值分页输出
+        $this->assign('pager', $Page);
+        return $this->fetch();
+    }    
+
     /**
      * 会员详细信息查看
      */

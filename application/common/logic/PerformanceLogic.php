@@ -51,27 +51,31 @@ class PerformanceLogic
      /**
      * 抽离
      */
-    public function distribut_caculate(){
-        $user_id = session('user.user_id');
-        $openid = session('user.openid');
-       
-        $user_agent_money = M('agent_performance')->where(['user_id'=>$user_id])->find();
-   
-        $tuandui_money =  (float)$user_agent_money['agent_per'];
+    public function distribut_caculate($user_id=false,$openid=false,$t=false){
+        $bol = (is_array($user_id)) ? true : false;
+        $user_id = $user_id ? $user_id : [session('user.user_id')];
+        $openid = $openid ? $openid : [session('user.openid')];
 
+        if($t)$where['UNIX_TIMESTAMP(update_time)'] = ['between',[$t['s'],$t['e']]];
+        $where['user_id'] = ['in',$user_id];
+        $user_agent_money = M('agent_performance')->where($where)->find();
+
+        $tuandui_money =  (float)$user_agent_money['agent_per'];
+  
         $logic = new \app\common\logic\AgentPerformanceOldLogic();
-        $oldPerformance = $logic->getAllData($openid);
+        $oldPerformance = $logic->getAllData($openid,$t);
         //这是老的历史业绩，加上新的
        
         $add_logic = new \app\common\logic\AgentPerformanceAddLogic();
-        $xiubu_yeji = $add_logic->get_bu($user_id);
+        $xiubu_yeji = $add_logic->get_bu($user_id,$t);
 
         $zong_yeji = $tuandui_money + $oldPerformance + $xiubu_yeji;
         //总业绩
- 
-        $per_logic = new \app\common\logic\PerformanceLogic();
-        $max_team_total  = $per_logic->tuandui_max_yeji($user_id);
-
+        if(!$bol){
+            $per_logic = new \app\common\logic\PerformanceLogic();
+            $max_team_total  = $per_logic->tuandui_max_yeji($user_id,$t);
+        }else
+            $max_team_total = 0;
         //加上 老系统的 最大用户业绩
         //$max_team_total = $max_team_total + session('user.team');
 
@@ -106,12 +110,14 @@ class PerformanceLogic
      * 一个人旗下  团队的  最大  的  那个业绩
      */
 
-    public function tuandui_max_yeji($user_id){
+    public function tuandui_max_yeji($user_id,$t=false){
+        $where['first_leader'] = is_array($user_id) ? ['in',$user_id] : $user_id;
+        $user = M('users')->where($where)->column('user_id');
         
-        $user = M('users')->where(['first_leader'=>$user_id])->column('user_id');
-        
-        $agent_per = M('agent_performance')->where('user_id',['in', $user])->column('user_id, agent_per');
-        
+        $where1['user_id'] = ['in', $user];
+        if($t)$where1['UNIX_TIMESTAMP(update_time)'] = ['between',[$t['s'],$t['e']]];
+        $agent_per = M('agent_performance')->where($where1)->column('user_id, agent_per');
+
         $openid = M('users')->where('user_id',['in', $user])->column('user_id, openid');
     
         // $yeji = M('agent_performance')->where('user_id', ['in', $user])->field('agent_per,user_id')->select();
@@ -125,9 +131,9 @@ class PerformanceLogic
         foreach($user as $k => $v){
             // $openid = M('users')->where(['user_id'=>$v])->value('openid');
 
-            $oldPerformance = $logic->getAllData($openid[$v]);
+            $oldPerformance = $logic->getAllData($openid[$v],$t);
 
-            $xiubu_yeji = $add_logic->get_bu($v);
+            $xiubu_yeji = $add_logic->get_bu($v,$t);
             // // $yeji[$k]['agent_per'] = $v['agent_per'] + $oldPerformance + $xiubu_yeji;
             // $agent_per = M('agent_performance')->where('user_id', $v)->value('agent_per');
         

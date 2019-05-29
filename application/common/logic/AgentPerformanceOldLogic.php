@@ -13,12 +13,14 @@ class AgentPerformanceOldLogic
     /**
      * 获取历史总业绩
      */
-    public function getAllData($openid)
+    public function getAllData($openid,$t=false)
     {   
         if(!$openid){
             return 0;
         }
-        $data = M('agent_performance_old')->where(['openid'=>$openid])->field('teams,total')->select();
+        $where['openid'] = is_array($openid) ? ['in',$openid] : $openid;
+        if($t)$where['times'] = ['between',[$t['s'],$t['e']]];
+        $data = M('agent_performance_old')->where($where)->field('teams,total')->select();
         $total = 0;
         if(!empty($data)) {
             foreach ($data as $k => $v) {

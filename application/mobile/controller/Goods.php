@@ -119,6 +119,7 @@ class Goods extends MobileBase
 
 //        $goods=$category->get_by_parensid_goods(implode(',',$ids));
 //        var_dump(array_column($categorys[0],'id'));
+		$this->assign('id',I('get.id/d',0));
         $this->assign('secondCategoryList',$secondCategoryList);
 //        $this->assign('threadCategoryList',$threadCategoryList);
 //        $this->assign('goods',$goods);

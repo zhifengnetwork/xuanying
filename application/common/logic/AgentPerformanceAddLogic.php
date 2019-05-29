@@ -37,11 +37,13 @@ class AgentPerformanceAddLogic
     /**
      * 获取修补的总数量
      */
-    public function get_bu($user_id){
+    public function get_bu($user_id,$t=false){
         if(!$user_id){
             return 0;
         }
-        $data = M('agent_performance_add')->where(['user_id'=>$user_id])->field('money')->select();
+        $where['user_id'] = is_array($user_id) ? ['in',$user_id] : $user_id;
+        if($t)$where['UNIX_TIMESTAMP(time)'] = ['between',[$t['s'],$t['e']]];
+        $data = M('agent_performance_add')->where($where)->field('money')->select();
         $total = 0;
         if(!empty($data)) {
             foreach ($data as $k => $v) {
