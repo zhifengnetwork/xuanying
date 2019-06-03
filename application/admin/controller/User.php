@@ -175,6 +175,7 @@ class User extends Base
         //获取当前用户的所有下级
         $per_logic =  new \app\common\logic\PerformanceLogic();
         $UsersLogic = new \app\common\logic\UsersLogic();
+		$Region = M('Region');
         foreach($userList as $k=>$v){ 
             $money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid']);
             $m_money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid'],['s'=>$beginThismonth,'e'=>$endThismonth]);
@@ -194,6 +195,9 @@ class User extends Base
             $userList[$k]['money_total'] = $money_total['money_total'];
             $userList[$k]['m_money_total'] = $m_money_total['money_total'];
             $userList[$k]['y_money_total'] = $y_money_total['money_total'];
+			$userList[$k]['province_name'] = $v['province'] ? $Region->where(['id'=>$v['province']])->value('name') : '';
+			$userList[$k]['city_name'] = $v['city'] ? $Region->where(['id'=>$v['city']])->value('name') : '';
+			$userList[$k]['district_name'] = $v['district'] ? $Region->where(['id'=>$v['district']])->value('name') : '';
         }  
 
         $user_id_arr = get_arr_column($userList, 'user_id');

@@ -229,7 +229,7 @@ function gift_commission($order_id){
         if($v['cat_id'] == C('customize.VIP99')){ //9.9VIP会员商品
             $level = M('Users')->where(['user_id'=>$v['user_id']])->value('level');
             if($level < C('customize.lev1')){ 
-                M('Users')->where(['user_id'=>$v['user_id']])->update(['level'=>C('customize.lev1')]);    
+                M('Users')->where(['user_id'=>$v['user_id']])->update(['level'=>C('customize.lev1'),'is_distribut'=>1]);    
             }
         }
         if($v['type'] == 1){ //比例
@@ -305,9 +305,10 @@ function agent_performance($order_id)
     $price = 0;
     if(!empty($goods_list)){
         foreach ($goods_list as $key =>$value){
+            /*
             if($value['shop_price'] <= 9.9){
                 continue;
-            }
+            }*/
             if(($value['is_distribut'] == 1) || ($value['is_agent'] == 1)){
                 $price += ($value['shop_price'] * $value['goods_num']);
             }
@@ -1220,7 +1221,7 @@ function update_pay_status($order_sn, $ext = array())
         // 找出对应的订单
         $Order = new \app\common\model\Order();
         $order = $Order->master()->where("order_sn", $order_sn)->find();
-        M('Users')->where(['user_id'=>$order['user_id']])->update(['province'=>$order['province'],'city'=>$order['city'],'district'=>$order['district']]);
+        if($order['province'])M('Users')->where(['user_id'=>$order['user_id']])->update(['province'=>$order['province'],'city'=>$order['city'],'district'=>$order['district']]);
         if ($order['prom_type'] == 6 && $order['order_amount'] != 0) { //拼团订单
             $team = new \app\common\logic\team\Team();
             $team->setTeamActivityById($order['prom_id']);
@@ -1277,7 +1278,7 @@ function update_pay_status($order_sn, $ext = array())
         //分钱
         jichadaili($order['order_id']);
 
-        agent_performance($order['order_id']);
+        //agent_performance($order['order_id']);
         //业绩（包含个人+团队）
 
         //大礼包分佣

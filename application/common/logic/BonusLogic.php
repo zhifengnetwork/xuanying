@@ -169,7 +169,7 @@ class BonusLogic extends Model
 		$leaderId = M('users')->where('user_id', $uid)->value('first_leader');
 		if(!$leaderId) return false;
 		$top_level = new LevelLogic();
-		$result = $top_level->user_in($leaderId);
+		//$result = $top_level->user_in($leaderId);
 		return true;
 	}
 	//级差,平级

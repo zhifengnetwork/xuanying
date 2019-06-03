@@ -9,6 +9,19 @@
                 <td align="left" class="">
                     <div style="text-align: center; width: 40px;">{$list.user_id}</div>
                 </td>
+
+				<td align="left" class="">
+                    <div style="text-align: center; width: 70px;">{$list.province_name}</div>
+                </td>
+
+				<td align="left" class="">
+                    <div style="text-align: center; width: 60px;">{$list.city_name}</div>
+                </td>
+
+				<td align="left" class="">
+                    <div style="text-align: center; width: 70px;">{$list.district_name}</div>
+                </td>
+
                 <td align="left" class="">
                     <div style="text-align: center; width: 150px;">{$list.user_id|get_first_leader_name}</div>
                 </td>
@@ -16,7 +29,7 @@
                     <div style="text-align: center; width: 120px;">{$list.nickname}</div>
                 </td>
                 <td align="left" class="">
-                    <div style="text-align: center; width: 80px;">{$list.realname}</div>
+                    <div style="text-align: center; width: 60px;">{$list.realname}</div>
                 </td>
                 <if condition="$level[$list.level]">
                         <td align="left" class="">

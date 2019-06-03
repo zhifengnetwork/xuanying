@@ -21,7 +21,7 @@ class LevelLogic extends Model
 		//判断是否购买指定产品
 		$con['user_id'] = $user_id;
 		$con['pay_status'] = 1;
-		$con['total_amount'] = array('egt',399);
+		//$con['total_amount'] = array('egt',399);
 		$is_399 = M('order')->where($con)->field('user_id,pay_status,total_amount')->select();
 		$num = count($is_399);
 		if($num == 0){
