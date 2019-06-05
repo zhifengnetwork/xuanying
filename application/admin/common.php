@@ -11,6 +11,7 @@ function get_nickname($user_id){
 
 function get_agent_log($user_id){
 
+	return M('Yeji')->where(['uid'=>$user_id])->sum('money');
 	$logic = new PerformanceLogic();
 	$res = $logic->distribut_caculate_by_user_id($user_id);
 	$money = $res['money_total'];

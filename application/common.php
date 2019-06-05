@@ -210,7 +210,6 @@ function jichadaili($order_id)
         }
     }
    
-
     foreach ($goods_list as $k => $v) {
 		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
         $goodId = $v['goods_id'];
@@ -218,6 +217,14 @@ function jichadaili($order_id)
         $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id);
         $res = $model->bonusModel();
     }
+
+	$Yeji = M('yeji');
+	$arr = [];
+	$UsersLogic = new \app\common\logic\UsersLogic();
+	$arr = $UsersLogic->getUserLevTopAll($userId,$arr);
+	foreach($arr as $v){
+		$Yeji->add(['uid'=>$v,'money'=>$order['order_amount'],'addtime'=>time(),'order_id'=>$order_id]);
+	}
 }
 
 //大礼包分佣

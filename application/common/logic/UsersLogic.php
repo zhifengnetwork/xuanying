@@ -1568,13 +1568,12 @@ class UsersLogic extends Model
 
     //获取用户上级
     public function getUserLevTop($uid){
-        $leader = M('Users')->where(['user_id'=>$uid])->column('first_leader'); 
+        $leader = M('Users')->where(['user_id'=>$uid])->value('first_leader');	
         return $leader;
     }    
 
     //获取用户下级
     public function getUserLevBot($uid){
-        //$arr1 = M('Users_mem')->where(['first_leader'=>['in',$uid]])->column('user_id');
         if(is_array($uid)){
             $sql = "select user_id from tp_users where first_leader in (".implode(',',$uid).")";
         }else
@@ -1604,6 +1603,7 @@ class UsersLogic extends Model
         $pid = $this->getUserLevTop($uid);
 
         if($pid){
+			if(!$arr)$arr = [];
             $arr[] = $pid;
             $this->getUserLevTopAll($pid,$arr);
         }

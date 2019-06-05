@@ -173,10 +173,11 @@ class User extends Base
         $beginThisyear = strtotime(date('Y',time()).'-01-01 00:00:00');
         $endThisyear = strtotime((date('Y',time())+1).'-01-01 00:00:00');
         //获取当前用户的所有下级
-        $per_logic =  new \app\common\logic\PerformanceLogic();
-        $UsersLogic = new \app\common\logic\UsersLogic();
+        //$per_logic =  new \app\common\logic\PerformanceLogic();
+        //$UsersLogic = new \app\common\logic\UsersLogic();
 		$Region = M('Region');
-        foreach($userList as $k=>$v){ 
+		$Order = M('Order');
+        foreach($userList as $k=>$v){ /*
             $money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid']);
             $m_money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid'],['s'=>$beginThismonth,'e'=>$endThismonth]);
             $y_money_total = $per_logic->distribut_caculate($v['user_id'],$v['openid'],['s'=>$beginThisyear,'e'=>$endThisyear]);
@@ -191,10 +192,18 @@ class User extends Base
             $num2 = Db::name('order')->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]],'pay_time'=>['between',[$beginThisyear,$endThisyear]]])->sum('order_amount+user_money'); 
             $y_money_total['money_total'] += $num2;  
 
-            $userList[$k]['total_amount'] = $num;
+            $userList[$k]['total_amount'] = $num;*/
+			/*
             $userList[$k]['money_total'] = $money_total['money_total'];
             $userList[$k]['m_money_total'] = $m_money_total['money_total'];
             $userList[$k]['y_money_total'] = $y_money_total['money_total'];
+			*/
+			$userList[$k]['total_amount'] = $Order->where(['user_id'=>$v['user_id'],'pay_status'=>1,'order_status'=>['not in',[3,5]]])->sum('total_amount');
+
+			$userList[$k]['money_total'] = M('Yeji')->where(['uid'=>$v['user_id']])->sum('money');
+            $userList[$k]['m_money_total'] = M('Yeji')->where(['uid'=>$v['user_id'],'addtime'=>['between',[$beginThismonth,$endThismonth]]])->sum('money');
+            $userList[$k]['y_money_total'] = M('Yeji')->where(['uid'=>$v['user_id'],'addtime'=>['between',[$beginThisyear,$endThisyear]]])->sum('money');
+
 			$userList[$k]['province_name'] = $v['province'] ? $Region->where(['id'=>$v['province']])->value('name') : '';
 			$userList[$k]['city_name'] = $v['city'] ? $Region->where(['id'=>$v['city']])->value('name') : '';
 			$userList[$k]['district_name'] = $v['district'] ? $Region->where(['id'=>$v['district']])->value('name') : '';
