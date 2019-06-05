@@ -191,7 +191,7 @@ function jichadaili($order_id)
     if ($r['status'] == 1) {
         return false;
     }
-    $order = M('order')->where(['order_id' => $order_id])->field('user_id,order_sn')->find();
+    $order = M('order')->where(['order_id' => $order_id])->field('user_id,total_amount,order_sn')->find();
 
     $userId = $order['user_id'];
     $orderSn = $order['order_sn'];
@@ -223,7 +223,7 @@ function jichadaili($order_id)
 	$UsersLogic = new \app\common\logic\UsersLogic();
 	$arr = $UsersLogic->getUserLevTopAll($userId,$arr);
 	foreach($arr as $v){
-		$Yeji->add(['uid'=>$v,'money'=>$order['order_amount'],'addtime'=>time(),'order_id'=>$order_id]);
+		$Yeji->add(['uid'=>$v,'money'=>$order['total_amount'],'addtime'=>time(),'order_id'=>$order_id]);
 	}
 }
 
