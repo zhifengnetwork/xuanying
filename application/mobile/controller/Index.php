@@ -39,6 +39,9 @@ class Index extends MobileBase {
         $agent_goods =  M('goods')->where("is_agent=1 and is_on_sale=1")->order('sort DESC')->cache(true,TPSHOP_CACHE_TIME)->select();//(代理商品)首页推荐商品
         $this->assign('agent_goods',$agent_goods);
 
+		//获取前两条公告
+		$articlelist = M('article')->field('article_id,title,description')->where(['cat_id'=>6,'is_open'=>1])->order('add_time desc')->limit('0,2')->select();
+		$this->assign('articlelist',$articlelist);
 
         //秒杀商品
 		$now_day = date('Y-m-d');
