@@ -223,7 +223,8 @@ function jichadaili($order_id)
 	$UsersLogic = new \app\common\logic\UsersLogic();
 	$arr = $UsersLogic->getUserLevTopAll($userId,$arr);
 	foreach($arr as $v){
-		$Yeji->add(['uid'=>$v,'money'=>$order['total_amount'],'addtime'=>time(),'order_id'=>$order_id]);
+        if(!$Yeji->where(['uid'=>$v,'order_id'=>$order_id])->count())
+		    $Yeji->add(['uid'=>$v,'money'=>$order['total_amount'],'addtime'=>time(),'order_id'=>$order_id]);
 	}
 }
 
