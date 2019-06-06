@@ -12041,5 +12041,39 @@ pre {
 	display: block;
 	width: 100%;
 }
-
-
+/*公告*/
+.announcement {
+	margin: .35rem 0;
+	padding: 0 0 0 .35rem;
+}
+.announcement div {
+	display: inline-block;
+	vertical-align: middle;
+}
+.notice {
+	width: 90%;
+}
+.scroll_div {
+    height:.65rem;
+    overflow: hidden;
+    white-space: nowrap;
+    width:100%;
+    background-color: #fff;
+    color: #fff;
+    text-align: center;
+    -float: left;
+    line-height: .35rem;
+}
+.notice-i {
+	width: .65rem;
+	height: .65rem;
+}
+.scroll_begin {
+	line-height: .65rem;
+}
+.scroll{
+	margin-left: 14rem;
+	width: 100%;
+	font-size: .52rem;
+	color: rgb(232, 25, 25);
+}
