@@ -32,11 +32,11 @@ class Index extends MobileBase {
         $thems = M('goods_category')->where('level=1')->order('sort_order')->limit(9)->cache(true,TPSHOP_CACHE_TIME)->select();
         $this->assign('thems',$thems);
         $this->assign('hot_goods',$hot_goods);
-        $favourite_goods = M('goods')->where("is_recommend=1 and is_on_sale=1 and is_distribut=0 and is_agent=0")->order('sort DESC')->limit(10)->cache(true,TPSHOP_CACHE_TIME)->select();//首页推荐商品  
-        $distribut_goods =  M('goods')->where("is_distribut=1 and is_on_sale=1")->order('sort DESC')->cache(true,TPSHOP_CACHE_TIME)->select();//(猜你喜欢)首页推荐商品
+        $favourite_goods = M('goods')->where("is_recommend=1 and is_on_sale=1 and is_distribut=0 and is_agent=0")->order('sort ASC')->limit(10)->cache(true,TPSHOP_CACHE_TIME)->select();//首页推荐商品  
+        $distribut_goods =  M('goods')->where("is_distribut=1 and is_on_sale=1")->order('sort ASC')->cache(true,TPSHOP_CACHE_TIME)->select();//(猜你喜欢)首页推荐商品
         $this->assign('distribut_goods',$distribut_goods);
 
-        $agent_goods =  M('goods')->where("is_agent=1 and is_on_sale=1")->order('sort DESC')->cache(true,TPSHOP_CACHE_TIME)->select();//(代理商品)首页推荐商品
+        $agent_goods =  M('goods')->where("is_agent=1 and is_on_sale=1")->order('sort ASC')->cache(true,TPSHOP_CACHE_TIME)->select();//(代理商品)首页推荐商品
         $this->assign('agent_goods',$agent_goods);
 
 		//获取前两条公告
@@ -267,7 +267,7 @@ class Index extends MobileBase {
             'is_distribut' => 0 ,
             'is_agent' => 0
         ];
-    	$favourite_goods = Db::name('goods')->where($where)->order('sort DESC')->page($p,C('PAGESIZE'))->cache(true,TPSHOP_CACHE_TIME)->select();//首页推荐商品
+    	$favourite_goods = Db::name('goods')->where($where)->order('sort ASC')->page($p,C('PAGESIZE'))->cache(true,TPSHOP_CACHE_TIME)->select();//首页推荐商品
     	$this->assign('favourite_goods',$favourite_goods);
     	return $this->fetch();
     }

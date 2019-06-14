@@ -3,6 +3,8 @@
 	return [
 		'gift_goods_type'	=> 14,
 		'gift_goods_cat'	=> 604,
+		'goods_cat99'	=> 584,		//9.9VIP分类ID
+		'gift_goods_cat25'	=> 609,	//2.5折分类ID
 
 		'lev1'	=> 1,
 		'lev2'	=> 2,

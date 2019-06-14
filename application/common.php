@@ -198,7 +198,7 @@ function jichadaili($order_id)
 
     $goods_list = M('order_goods')->alias('og')
         ->join('tp_goods g ',' g.goods_id = og.goods_id')
-        ->field(" g.goods_id, g.cat_id, og.goods_num, g.shop_price,g.is_distribut,is_agent")
+        ->field(" g.goods_id, g.cat_id, og.cat_id, og.goods_num, og.final_price, og.goods_price,og.member_goods_price,g.shop_price,g.is_distribut,is_agent")
         ->where(['og.order_id' => $order_id])
         ->select();
     $total = 0;
@@ -210,21 +210,27 @@ function jichadaili($order_id)
         }
     }
    
+   	$total_amount = 0;
     foreach ($goods_list as $k => $v) {
 		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
         $goodId = $v['goods_id'];
         $goodNum = $v['goods_num'];
         $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id);
         $res = $model->bonusModel();
+
+		//不是2.5折也不是9.9商品
+		if(!in_array($v['cat_id'],[C('customize.goods_cat99'),C('customize.gift_goods_cat25')]))
+			$total_amount += ($v['goods_num'] * $v['final_price']);
     }
 
+	if(!$total_amount)return;
 	$Yeji = M('yeji');
 	$arr = [];
 	$UsersLogic = new \app\common\logic\UsersLogic();
-	$arr = $UsersLogic->getUserLevTopAll($userId,$arr);
+	$arr = $UsersLogic->getUserLevTopAll($userId,$arr); 
 	foreach($arr as $v){
         if(!$Yeji->where(['uid'=>$v,'order_id'=>$order_id])->count())
-		    $Yeji->add(['uid'=>$v,'money'=>$order['total_amount'],'addtime'=>time(),'order_id'=>$order_id]);
+		    $Yeji->add(['uid'=>$v,'money'=>$total_amount,'addtime'=>time(),'order_id'=>$order_id]);
 	}
 }
 

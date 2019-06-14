@@ -304,11 +304,11 @@ class UsersLogic extends Model
             //     $map['is_distribut']  = 1;
             // } 
 			$data['unionid'] && $map['unionid'] = $data['unionid'];
-			$is_cunzai = Db::name('users')->where(array('unionid'=>$map['unionid']))->find();
+            $is_cunzai = $map['unionid'] ? Db::name('users')->where(array('unionid'=>$map['unionid']))->find() : false;
             !$is_cunzai && $is_cunzai = Db::name('users')->where(array('openid'=>$map['openid']))->find();
             if(!$is_cunzai){
                 $row_id = Db::name('users')->add($map);
-            }else{
+            }else{ 
                 Db::name('users')->where(array('openid'=>$map['openid']))->update($map);
                 $row_id = $is_cunzai['user_id'];
 
