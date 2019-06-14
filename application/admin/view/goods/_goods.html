@@ -162,6 +162,29 @@
                     <span class="err" id="err_cat_id"></span>
                 </dd>
             </dl>
+
+            <dl class="row zk">
+                <dt class="tit"><em>*</em>
+                    <label>普通会员折扣</label>
+                </dt>
+                <dd class="opt">
+                    <input type="text" value="{$goods.zk1}" name="zk1" class="input-txt"/>
+                    <span class="err" id="err_zk1"></span>
+                    <p class="notic">(如2.9，即2.9折)</p>
+                </dd>
+            </dl>
+
+            <dl class="row zk">
+                <dt class="tit"><em>*</em>
+                    <label>大礼包会员折扣</label>
+                </dt>
+                <dd class="opt zk">
+                    <input type="text" value="{$goods.zk2}" name="zk2" class="input-txt"/>
+                    <span class="err" id="err_zk2"></span>
+                    <p class="notic">(如2.5，即2.5折)</p>
+                </dd>
+            </dl>
+
             <dl class="row">
                 <dt class="tit">
                     <label>商品简介</label>
@@ -674,6 +697,8 @@
 </div>
 <div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
 <script>
+    ($('#cat_id').val() != {:C('customize.gift_goods_cat25')}) ? $('.zk').hide() : $('.zk').show();
+
     /** 商品规格相关 js*/
     $(function(){
         // 商品模型切换时 ajax 调用  返回不同的属性输入框
@@ -791,6 +816,7 @@
     $(function(){
         $(document).on("change",'#cat_id',function(){
             var v = $(this).val();
+            (v != {:C('customize.gift_goods_cat25')}) ? $('.zk').hide() : $('.zk').show();
             get_category(v,'cat_id_2','0');
             if(v==0){
                 $('#cat_id_2').empty().html("<option value='0'>请选择商品分类</option>");

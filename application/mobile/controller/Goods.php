@@ -354,8 +354,16 @@ class Goods extends MobileBase
 		}       
 
         $recommend_goods = M('goods')->where("is_recommend=1 and is_on_sale=1 and cat_id = {$goods['cat_id']}")->cache(7200)->limit(9)->field("goods_id, goods_name, shop_price")->select();
+
         $this->assign('recommend_goods', $recommend_goods);
         $this->assign('goods', $goods);
+        $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
+        if(!isset($_SESSION['think']['user']['level']) || ($_SESSION['think']['user']['level'] == 0))$zk = 10;
+        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] == 1))$zk = $goods['zk1'];
+        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] > 1))$zk = $goods['zk2'];
+        $this->assign('zk', $zk);
+        $goods_price = (!$zk && ($goods['cat_id'] != C('customize.gift_goods_cat25'))) ? $goods['shop_price'] : floor(($goods['shop_price'] * $zk))/10;
+        $this->assign('goods_price', $goods_price);
         return $this->fetch();
     }
 
@@ -436,7 +444,11 @@ class Goods extends MobileBase
         // $goods->shop_price = $goodsLogic->getGoodsPriceByLadder($goods_num, $goods['shop_price'], $goods['price_ladder']);//先使用价格阶梯
         $goods['shop_price'] = $goodsLogic->getGoodsPriceByLadder($goods_num, $goods['shop_price'], $goods['price_ladder']);//先使用价格阶梯
         $goods['shop_price'] =  $goods['shop_price'] == null ? 0 :  $goods['shop_price'];
-        
+
+        if(!isset($_SESSION['think']['user']['level']) || ($_SESSION['think']['user']['level'] == 0))$zk = 10;
+        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] == 1))$zk = $goods['zk1'];
+        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] > 1))$zk = $goods['zk2'];
+        $goods['zk_price'] = !$zk ? $goods['shop_price'] : floor(($goods['shop_price'] * $zk))/10;  
 
         if ($goodsPromFactory->checkPromType($goods['prom_type'])) {
             $goodsPromLogic = $goodsPromFactory->makeModule($goods, $specGoodsPrice);

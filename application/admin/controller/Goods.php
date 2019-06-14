@@ -385,6 +385,7 @@ class Goods extends Base {
         $this->assign('suppliersList', $suppliersList);
         $this->assign('cat_list', $cat_list);
         $this->assign('goodsType', $goodsType);
+        $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
         return $this->fetch('_goods');
     }
 
@@ -431,6 +432,10 @@ class Goods extends Base {
             $error_msg = array_values($error);
             $return_arr = ['status' => 0, 'msg' => $error_msg[0], 'result' => $error];
             $this->ajaxReturn($return_arr);
+        }
+        if(!$data['cat_id']){
+            $data['zk1'] = 0;
+            $data['zk2'] = 0;
         }
         if ($data['goods_id'] > 0) {
             $goods = \app\common\model\Goods::get($data['goods_id']);

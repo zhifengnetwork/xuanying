@@ -73,9 +73,16 @@
                 </a>
             </div>
             <div class="scunde p">
-                <span class="red" id="price">￥{$goods.shop_price}</span>
-                <span id="market_price_title">市场价：</span><span class="linethr"
-                    id="market_price">{$goods.market_price}</span>
+                <if condition="$goods.cat_id eq $gift_goods_cat25">
+                        <span class="red" id="price">￥{$goods_price}</span>
+                <span class="red linethr" id="price1">￥{$goods.shop_price}</span>
+                <span id="market_price_title">折扣：</span><span
+                    id="market_price">{$zk}折</span>
+                <else />
+                    <span class="red" id="price">￥{$goods.shop_price}</span>
+                    <span id="market_price_title">市场价：</span><span class="linethr"
+                        id="market_price">{$goods.market_price}</span>
+                </if>
                 <p class="inlist">
                     <if condition="$goods.prom_type neq 2"><span
                             style="float:left;">销量：{$goods['sales_sum']+$goods['virtual_sales_sum']}</span></if>
@@ -653,7 +660,6 @@
 
 </script>
 <script type="text/javascript">
-
     $('.contact').attr('href', "tel:{$tpshop_config['shop_info_phone']}");
 
     var commentType = 1;// 默认评论类型
@@ -672,7 +678,7 @@
     var join_cart = $('#join_cart');
     var buy_now_li = $('#buy_now_li');
     var join_cart_li = $('#join_cart_li');
-    function buy_button() {
+    function buy_button() { 
 
         var is_virtual = $("input[name='is_virtual']").val();//是否是虚拟商品
         var exchange_integral = $("input[name='exchange_integral']").val();//是否是为积分商品
@@ -684,7 +690,7 @@
         join_cart.hide();
         join_cart_li.hide();
 
-        if (is_virtual == 1) {
+        if ((is_virtual == 1) || ({$goods.cat_id} == {$gift_goods_cat25})) {
             buy_now_li.find('.choise_num').html('立即购买');
             buy_now_li.width('100%').show();
             buy_now.html('立即购买').show();
@@ -891,7 +897,11 @@
                     $('input[name="deposit_price"]').attr('value', data.result.goods.deposit_price);//订金
                     $('input[name="balance_price"]').attr('value', data.result.goods.balance_price);//尾款
                     $('input[name="ing_amount"]').attr('value', data.result.goods.ing_amount);//已预订了多少个
-                    $('#market_price').html(data.result.goods.market_price);
+                    if(data.result.goods.cat_id == {$gift_goods_cat25})
+                        $('#market_price').html(data.result.goods.zk_price);
+                    else
+                        $('#market_price').html(data.result.goods.market_price);
+
                     if (data.result.goods.is_virtual) {
                         $('.buy_limit').show();
                     } else {
@@ -1257,7 +1267,7 @@
             });
             var spec_key = goods_spec_arr.sort(sortNumber).join('_');  //排序后组合成 key
             var spec_goods_price_item = search_spec_goods_price(spec_key);
-            goods_price = spec_goods_price_item['price']; // 找到对应规格的价格
+            goods_price = Math.floor((spec_goods_price_item['price'] * {$zk})/10); // 找到对应规格的价格
             store_count = spec_goods_price_item['store_count']; // 找到对应规格的库存
         }
         var goods_num = parseInt($("input[name='goods_num']").attr('value'));
@@ -1273,7 +1283,13 @@
             $("#goods_price").html(goods_price); //变动价格显示
             $("#price").html("<em>￥</em>" + goods_price); //变动价格显示
         }
-        $('#market_price_title').html('市场价：');
+        if({$goods.cat_id} == {$gift_goods_cat25}){
+            $('#market_price_title').html('折扣：');
+            $('#market_price').html('{$zk}折');
+            $('#price1').html(spec_goods_price_item['price']);
+        }else
+            $('#market_price_title').html('市场价：');
+
         $('#spec_store_count').html(store_count);
         $('#number').attr('max', store_count);
         $('.spec_store_count').html(store_count);
