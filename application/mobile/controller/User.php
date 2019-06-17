@@ -382,10 +382,16 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
+		/*
         if($userinfo['is_distribut'] == 0 && $userinfo['is_agent'] == 0){
             $this->redirect('fenxiang_no');
             exit;
+        }*/
+		if(!$userinfo['level']){
+            $this->redirect('fenxiang_no');
+            exit;
         }
+
 
 		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
         if(I('refresh') == '1'){
