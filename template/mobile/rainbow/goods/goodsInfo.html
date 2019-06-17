@@ -74,8 +74,8 @@
             </div>
             <div class="scunde p">
                 <if condition="$goods.cat_id eq $gift_goods_cat25">
-                        <span class="red" id="price">￥{$goods_price}</span>
-                <span class="red linethr" id="price1">￥{$goods.shop_price}</span>
+                        <span>折后价：<span class="red" id="price">￥{$goods_price}</span></span>
+						<span>原价：<span class="red linethr" id="price1">￥{$goods.shop_price}</span></span>
                 <span id="market_price_title">折扣：</span><span
                     id="market_price">{$zk}折</span>
                 <else />

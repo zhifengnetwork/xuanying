@@ -239,11 +239,13 @@ function gift_commission($order_id){
     $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.cat_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
     $Users = M('Users');
     $AccountLog = M('account_log');
+    //订单用户的级别
+    $user_level = $Users->where(['user_id'=>$goodslist[0]['user_id']])->value('level');
     foreach($goodslist as $v){
         if($v['cat_id'] == C('customize.VIP99')){ //9.9VIP会员商品
-            $level = M('Users')->where(['user_id'=>$v['user_id']])->value('level');
+            $level = $Users->where(['user_id'=>$v['user_id']])->value('level');
             if($level < C('customize.lev1')){ 
-                M('Users')->where(['user_id'=>$v['user_id']])->update(['level'=>C('customize.lev1'),'is_distribut'=>1]);    
+                $Users->where(['user_id'=>$v['user_id']])->update(['level'=>C('customize.lev1'),'is_distribut'=>1]);    
             }
         }
         if($v['type'] == 1){ //比例
@@ -254,21 +256,29 @@ function gift_commission($order_id){
             $lev2 = $v['lev2'];
         }else
             continue;
-
+          
         //上级        
         $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
         //上级的上级
         if($leader && !$AccountLog->where("user_id=$leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=107")->count()){
-            $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
-            $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
-            $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
-            $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
+            $leader_level = $Users->where(['user_id'=>$leader])->value('level');
+            //上级必须不低于订单用户的级别
+            if($user_level <= $leader_level){
+                $leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
+                $Users->where(['user_id'=>$leader])->setInc('user_money',$lev1);
+                $Users->where(['user_id'=>$leader])->setInc('distribut_money',$lev1);
+                $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
+            }
         }
         
         if($leader_leader && !$AccountLog->where("user_id=$leader_leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=108")->count()){
-            $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
-            $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
-            $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);
+            $leader_leader_level = $Users->where(['user_id'=>$leader_leader])->value('level');
+            //上级必须不低于订单用户的级别
+            if($user_level <= $leader_leader_level){
+                $Users->where(['user_id'=>$leader_leader])->setInc('user_money',$lev2);
+                $Users->where(['user_id'=>$leader_leader])->setInc('distribut_money',$lev2);
+                $AccountLog->add(['user_id'=>$leader_leader,'user_money'=>$lev2,'change_time'=>time(),'desc'=>'二级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>108]);
+            }
         }
         //如果商品是580大礼包，给所有本季度达到分红条件的VIP董事分红5%
         if(in_array($v['goods_id'],C('customize.580goods_id'))){
