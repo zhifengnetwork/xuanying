@@ -218,7 +218,7 @@ class Cart extends MobileBase {
                 ->useCouponById($coupon_id)->getAuction()->getUserSign()->useUserMoney($user_money)
                 ->usePayPoints($pay_points,false,'mobile');
             // 提交订单
-            if ($_REQUEST['act'] == 'submit_order') {
+            if ($_REQUEST['act'] == 'submit_order') { 
                 $placeOrder = new PlaceOrder($pay);
                 $placeOrder->setMobile($mobile)->setUserAddress($address)->setConsignee($consignee)->setInvoiceTitle($invoice_title)
                     ->setUserNote($user_note)->setTaxpayer($taxpayer)->setInvoiceDesc($invoice_desc)->setPayPsw($pay_pwd)->setTakeTime($take_time)->addNormalOrder();

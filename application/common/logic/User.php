@@ -139,7 +139,7 @@ class User
             //$update['discount'] = $level_info['discount'] / 100;
         }
         //$update['total_amount'] = $total_amount;//更新累计修复额度
-        Db::name('users')->where("user_id", $this->user['user_id'])->save($update);
+        if($update)Db::name('users')->where("user_id", $this->user['user_id'])->save($update);
         $top_leader = Db::name('users')->where("user_id", $this->user['user_id'])->value('top_leader');
         //获取顶级的所有下级
         $UsersLogic = new UsersLogic();
