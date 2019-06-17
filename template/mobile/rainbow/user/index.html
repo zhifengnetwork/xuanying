@@ -11,8 +11,11 @@
             </div>
             <div class="user_top_title">
                 <br>
-                <!-- 代理 -->
+                <if condition="$user.is_cityvip eq 1">
+				城市合伙人
+				<else />
                 {$user.level|agent_level}
+				</if>
             </div>
         </div>
         <div class="z_user_down">
