@@ -5,13 +5,13 @@
     <!-- <meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no" /> -->
 	<title>分类</title>
 	<!-- <script src="__STATIC__/js/public/rem.js"></script> -->
-	<link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css?v=1553087156"/>
-	<link rel="stylesheet" type="text/css" href="__STATIC__/css/footer.css?v=1553087156"/>
-	<link rel="stylesheet" href="__STATIC__/css/style.css?v=1553087156">
-	<link rel="stylesheet" type="text/css" href="__STATIC__/css/category/category_zp.css?v=1553087156"/>
-	<script src="__STATIC__/js/jquery-3.1.1.min.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
-	<script src="__STATIC__/js/mobile-util.js?v=1553087156" type="text/javascript" charset="utf-8"></script>
-	<script src="__PUBLIC__/js/global.js?v=1553087156"></script>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/reset.css?v=888"/>
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/footer.css?v=888"/>
+	<link rel="stylesheet" href="__STATIC__/css/style.css?v=888">
+	<link rel="stylesheet" type="text/css" href="__STATIC__/css/category/category_zp.css?v=888"/>
+	<script src="__STATIC__/js/jquery-3.1.1.min.js?v=888" type="text/javascript" charset="utf-8"></script>
+	<script src="__STATIC__/js/mobile-util.js?v=888" type="text/javascript" charset="utf-8"></script>
+	<script src="__PUBLIC__/js/global.js?v=888"></script>
 </head>
 <body>
 	<div class="wrapper">
@@ -62,8 +62,9 @@
 												</div>
 												<div class="text">
 													<h3>{$child[goods_name]}</h3>
-													<p><if condition="$child.goods_remark neq ''">{$child[goods_remark]}<else />&nbsp;</if></p>
-													<div class="price">￥{$child[shop_price]}</div>
+													<p><if condition="$child.goods_remark neq ''">{$child[goods_remark]}<else /></if></p>
+													<p class="now_price">现价￥{$child[shop_price]}</p>
+													<span class="price">原价￥{$child[shop_price]}</span>  <span class="zhekou">7折</span>
 												</div>
 											</a>
 										</li>
@@ -125,7 +126,7 @@
 	</div>
 
 
-	<script src="__STATIC__/js/category/category_zp.js?v=1553087156"></script>
+	<script src="__STATIC__/js/category/category_zp.js?v=888"></script>
 
 </body>
 </html>
