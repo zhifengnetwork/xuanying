@@ -165,7 +165,7 @@
                                             </if>
                                         </div>
                                         <div class="goods-name">
-                                            <a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
+                                            <a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">{$goods.goods_name}</a>
                                         </div>
                                         <div class="goods-price">商城价：￥{$goods.price}</div>
                                     </div>
@@ -182,7 +182,7 @@
                                                 <div class="goods-thumb"><img style="width: 162px;height: 162px" src="{$goods['goods_id']|goods_thum_images=162,162,$goods.spec_goods_price['item_id']}"/></div>
                                                 <div class="goods-name">
                                                     <a target="_blank"
-                                                       href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id'],'item_id'=>$goods.spec_goods_price['item_id']))}">{$goods.goods_name}{$goods.spec_goods_price.key_name}</a>
+                                                       href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods['goods_id'],'item_id'=>$goods.spec_goods_price['item_id']))}">{$goods.goods_name}{$goods.spec_goods_price.key_name}</a>
                                                 </div>
                                                 <div class="goods-price">商城价：￥{$goods.spec_goods_price.price}</div>
                                             </div>

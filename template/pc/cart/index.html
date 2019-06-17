@@ -222,7 +222,7 @@
 										</div>
 										<div class="column t-goods">
 											<p class="msp_spname">
-												<a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart.goods_name}</a>
+												<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart.goods_name}</a>
 												<!--团购--><if condition="$cart[prom_type] eq 2"><img  width="80" height="60" src="/public/images/groupby2.jpg" style="vertical-align:middle"></if>
 												<!--抢购--><if condition="$cart[prom_type] eq 1"><img  width="40" height="40" src="/public/images/qianggou2.jpg" style="vertical-align:middle"></if>
 											</p>
@@ -296,7 +296,7 @@
 											</div>
 											<div class="column t-goods">
 												<p class="msp_spname">
-													<a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart_v[goods_id]))}">{$cart_v.goods_name}</a>
+													<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart_v[goods_id]))}">{$cart_v.goods_name}</a>
 													<!--团购--><if condition="$cart_v[prom_type] eq 2"><img  width="80" height="60" src="/public/images/groupby2.jpg" style="vertical-align:middle"></if>
 													<!--抢购--><if condition="$cart_v[prom_type] eq 1"><img  width="40" height="40" src="/public/images/qianggou2.jpg" style="vertical-align:middle"></if>
 												</p>
@@ -380,7 +380,7 @@
 									</div>
 									<div class="column t-goods">
 										<p class="msp_spname">
-											<a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart.goods_name}</a>
+											<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart.goods_name}</a>
 											<!--团购--><if condition="$cart[prom_type] eq 2"><img  width="80" height="60" src="/public/images/groupby2.jpg" style="vertical-align:middle"></if>
 											<!--抢购--><if condition="$cart[prom_type] eq 1"><img  width="40" height="40" src="/public/images/qianggou2.jpg" style="vertical-align:middle"></if>
 										</p>
@@ -548,12 +548,12 @@
 									<li>
 										<div class="itemgoodbox">
 											<div class="p-img" >
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
 													<img src="{$like.goods_id|goods_thum_images=160,160}">
 												</a>
 											</div>
 											<div class="p-name">
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
 											</div>
 											<div class="p-price">
 												<strong><em>￥</em><i>{$like.shop_price}</i></strong>
@@ -572,12 +572,12 @@
 									<li>
 										<div class="itemgoodbox">
 											<div class="p-img" >
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
 													<img src="{$like.goods_id|goods_thum_images=160,160}">
 												</a>
 											</div>
 											<div class="p-name">
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
 											</div>
 											<div class="p-price">
 												<strong><em>￥</em><i>{$like.shop_price}</i></strong>
@@ -596,12 +596,12 @@
 									<li>
 										<div class="itemgoodbox">
 											<div class="p-img" >
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">
 													<img src="{$like.goods_id|goods_thum_images=160,160}">
 												</a>
 											</div>
 											<div class="p-name">
-												<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
+												<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$like['goods_id']))}">{$like.goods_name}</a>
 											</div>
 											<div class="p-price">
 												<strong><em>￥</em><i>{$like.shop_price}</i></strong>
@@ -1197,7 +1197,7 @@
                             if(data.result[i].goods[0].is_virtual != 1){
                                 products_html +=  '<a onclick="javascript:AjaxAddCart('+data.result[i].goods_id+',1);" class="btn-append"><b></b>加入购物车</a>';
                             }else{
-                                products_html +=  '<a href="/index.php/home/Goods/goodsInfo/id/'+data.result[i].goods_id+'" class="btn-append"><b></b>加入购物车</a>';
+                                products_html +=  '<a href="/index.php/Mobile/Goods/goodsInfo/id/'+data.result[i].goods_id+'" class="btn-append"><b></b>加入购物车</a>';
                             }
                             products_html += '</div></div></li>';
                             if(i%4 == 3){
@@ -1247,7 +1247,7 @@
                             if(data.result[i].goods[0].is_virtual != 1){
                                 products_html +=  '<a onclick="javascript:AjaxAddCart('+data.result[i].goods_id+',1);" class="btn-append"><b></b>加入购物车</a>';
                             }else{
-                                products_html +=  '<a href="/index.php/home/Goods/goodsInfo/id/'+data.result[i].goods_id+'" class="btn-append"><b></b>加入购物车</a>';
+                                products_html +=  '<a href="/index.php/Mobile/Goods/goodsInfo/id/'+data.result[i].goods_id+'" class="btn-append"><b></b>加入购物车</a>';
                             }
                             products_html += '</div></div></li>';
                             if(i%4 == 3){

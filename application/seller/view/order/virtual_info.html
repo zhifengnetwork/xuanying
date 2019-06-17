@@ -158,11 +158,11 @@
                         <tbody>
                         <tr>
                             <td class="w30">
-                                <div class="goods-thumb"><a href="{:U('Home/Goods/goodsInfo',array('id'=>$order_goods['goods_id']))}" target="_blank">
+                                <div class="goods-thumb"><a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$order_goods['goods_id']))}" target="_blank">
                                     <img alt="" src="{$order_goods['goods_id']|goods_thum_images=240,240}"/> </a></div>
                             </td>
                             <td style="text-align: left;">
-                                <a href="{:U('Home/Goods/goodsInfo',array('id'=>$order_goods['goods_id']))}" target="_blank">{$order_goods.goods_name}</a>
+                                <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$order_goods['goods_id']))}" target="_blank">{$order_goods.goods_name}</a>
                                 使用时效：即日起 至 {$order_goods.virtual_indate|date='Y-m-d',###}
                             </td>
                             <td class="w80">￥{$order_goods.goods_price}</td>

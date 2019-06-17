@@ -158,12 +158,12 @@ class MessageActivity extends Model
             case 'flash_sale_activity':
                 // 抢购
                 $flash_sale = Db::name('flash_sale')->where('id', $data['prom_id'])->find(); 
-                $uri = U("Home/Goods/goodsInfo", ['id' => $flash_sale['goods_id'], 'item_id' => $flash_sale['item_id']]);
+                $uri = U("Mobile/Goods/goodsInfo", ['id' => $flash_sale['goods_id'], 'item_id' => $flash_sale['item_id']]);
                 break;
             case 'group_buy_activity':
                 // 团购
                 $flash_sale = Db::name('group_buy')->where('id', $data['prom_id'])->find(); 
-                $uri = U("Home/Goods/goodsInfo", ['id' => $flash_sale['goods_id'], 'item_id' => $flash_sale['item_id']]);
+                $uri = U("Mobile/Goods/goodsInfo", ['id' => $flash_sale['goods_id'], 'item_id' => $flash_sale['item_id']]);
                 break;
             case 'prom_goods_activity':
             case 'prom_order_activity':
@@ -173,7 +173,7 @@ class MessageActivity extends Model
             case 'combination_activity':
                 // 搭配购 主商品
                 $goods_id = Db::name('combination_goods')->where(['combination_id' => $data['prom_id'], 'is_master' => 1])->value('goods_id'); 
-                $uri = U("Home/Goods/goodsInfo", ['id' => $goods_id]);
+                $uri = U("Mobile/Goods/goodsInfo", ['id' => $goods_id]);
                 break;
             case 'team_activity':
                 // 拼团 只有手机有 Mobile/Goods/goodsInfo/id/309/item_id/0

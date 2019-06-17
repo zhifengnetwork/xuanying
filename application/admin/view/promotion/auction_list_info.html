@@ -43,7 +43,7 @@
 							<div style="float: left;margin-right: 10px" class="selected-group-goods">
 								<div class="goods-thumb"><img style="width: 162px;height: 162px"  <notempty name="info['specGoodsPrice']">src="{$info['specGoodsPrice']['spec_img']}"<else/>src="{$info['goods_id']|goods_thum_images=162,162}"</notempty>/></div>
 								<div class="goods-name">
-									<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$info['goods_id']))}">{$info.goods_name}</a>
+									<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$info['goods_id']))}">{$info.goods_name}</a>
 								</div>
 								<div class="goods-price">
 									<notempty name="info['specGoodsPrice']">

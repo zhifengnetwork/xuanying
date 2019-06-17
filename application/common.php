@@ -211,6 +211,7 @@ function jichadaili($order_id)
     }
    
    	$total_amount = 0;
+	$user_level = M('Users')->where(['user_id'=>$userId])->value('level');
     foreach ($goods_list as $k => $v) {
 		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
         $goodId = $v['goods_id'];
@@ -221,6 +222,10 @@ function jichadaili($order_id)
 		//不是2.5折也不是9.9商品
 		if(!in_array($v['cat_id'],[C('customize.goods_cat99'),C('customize.gift_goods_cat25')]))
 			$total_amount += ($v['goods_num'] * $v['final_price']);
+		
+		if($v['cat_id'] == C('customize.goods_cat99')){
+			if($user_level < 1)M('Users')->where(['user_id'=>$userId])->update(['level'=>1]);
+		}
     }
 
 	if(!$total_amount)return;

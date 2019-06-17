@@ -21,11 +21,11 @@
                                 <a href="javascript:void(0);" class="del js_delete" onclick="header_cart_del({$cart.id});ajax_side_cart_list();">×</a>
 
                                 <p class="i fl mr5">
-                                    <a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}"> <img src="{$cart.goods_id|goods_thum_images=50,50}" height="50" width="50" alt="" title=""></a>
+                                    <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}"> <img src="{$cart.goods_id|goods_thum_images=50,50}" height="50" width="50" alt="" title=""></a>
                                 </p>
 
                                 <div class="fl">
-                                    <a class="tp-scart-gname" href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart[goods_name]}</a>
+                                    <a class="tp-scart-gname" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}">{$cart[goods_name]}</a>
                                     <p class="p">
                                         <span class="fl js_mini_num"> * {$cart[goods_num]} 件 </span>
                                         <span class="fr">￥{$cart[member_goods_price]}</span>

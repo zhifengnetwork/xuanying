@@ -277,7 +277,7 @@
 								<li>
 									<div class="goods-extra clearfix">
 										<div class="p-img">
-											<a target="_blank" href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">
+											<a target="_blank" href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods['goods_id']))}">
 												<img src="{$goods.goods_id|goods_thum_images=102,102}" alt="">
 											</a>
 											<div class="p-img-tips" id="goods_shipping_img_{$goods[goods_id]}" style="display: none">暂无商品</div>
@@ -285,7 +285,7 @@
 										<div class="goods-msg clearfix">
 											<div class="goods-msg-gel">
 												<div class="p-name">
-													<a href="{:U('Home/Goods/goodsInfo',array('id'=>$goods['goods_id']))}" target="_blank">{$goods.goods_name}</a>
+													<a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$goods['goods_id']))}" target="_blank">{$goods.goods_name}</a>
 												</div>
 												<div class="p-price"><php>if(empty($point_rate)) $point_rate=10;</php>
 													<strong class="tp-price" style="width: 130px">￥ {$goods['shop_price']} + {$goods['exchange_integral']}积分</strong>

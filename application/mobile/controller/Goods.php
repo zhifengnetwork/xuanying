@@ -109,18 +109,23 @@ class Goods extends MobileBase
 //        $ids=array_column($threadCategoryList,'id');
         //获取这些三级栏目的商品
 
+		$user_level = $_SESSION['think']['user']['level'] ? $_SESSION['think']['user']['level'] : 0;
         foreach($secondCategoryList as $k=>$v){
             $threadCategorysGoods=$category->get_by_parensid_goods($v['id']);
             if(empty($threadCategorysGoods)){
                 continue;
             }
             $secondCategoryList[$k]['child']=$category->get_by_parensid_goods($v);
+			$secondCategoryList[$k]['child']['zk'] = 10;
+			if($user_level == 1)$secondCategoryList[$k]['child']['zk'] = $secondCategoryList[$k]['child']['zk1'];
+			if($user_level > 1)$secondCategoryList[$k]['child']['zk'] = $secondCategoryList[$k]['child']['zk2'];
         }
 
 //        $goods=$category->get_by_parensid_goods(implode(',',$ids));
 //        var_dump(array_column($categorys[0],'id'));
 		$this->assign('id',I('get.id/d',0));
         $this->assign('secondCategoryList',$secondCategoryList);
+		$this->assign('gift_goods_cat25',C('customize.gift_goods_cat25'));
 //        $this->assign('threadCategoryList',$threadCategoryList);
 //        $this->assign('goods',$goods);
 

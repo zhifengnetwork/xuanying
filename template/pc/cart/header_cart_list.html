@@ -18,11 +18,11 @@
                     <div class="c-item clearfix">
                         <a href="javascript:void(0);" class="del js_delete"
                            onclick="header_cart_del({$cart.id}),ajax_side_cart_list();">×</a>
-                        <a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}" class="goods-pic fl">
+                        <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}" class="goods-pic fl">
                             <img src="{$cart.goods_id|goods_thum_images=50,50}" alt="" title="{$cart[goods_name]}">
                         </a>
                         <div class="goods-cont fl">
-                            <a href="{:U('Home/Goods/goodsInfo',array('id'=>$cart[goods_id]))}" class="goods-name">{$cart[goods_name]}</a>
+                            <a href="{:U('Mobile/Goods/goodsInfo',array('id'=>$cart[goods_id]))}" class="goods-name">{$cart[goods_name]}</a>
                             <p class="num fl"> * {$cart[goods_num]}件</p>
                             <p class="red fr">￥{$cart[member_goods_price]}</p>
                         </div>
