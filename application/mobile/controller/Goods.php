@@ -358,6 +358,7 @@ class Goods extends MobileBase
         $this->assign('recommend_goods', $recommend_goods);
         $this->assign('goods', $goods);
         $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
+        $zk = 10;
         if(!isset($_SESSION['think']['user']['level']) || ($_SESSION['think']['user']['level'] == 0))$zk = 10;
         if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] == 1))$zk = $goods['zk1'];
         if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] > 1))$zk = $goods['zk2'];

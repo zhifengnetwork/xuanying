@@ -1267,7 +1267,7 @@
             });
             var spec_key = goods_spec_arr.sort(sortNumber).join('_');  //排序后组合成 key
             var spec_goods_price_item = search_spec_goods_price(spec_key);
-            goods_price = Math.floor((spec_goods_price_item['price'] * {$zk})/10); // 找到对应规格的价格
+            goods_price = Math.floor((spec_goods_price_item['price'] * {$zk}))/10; // 找到对应规格的价格
             store_count = spec_goods_price_item['store_count']; // 找到对应规格的库存
         }
         var goods_num = parseInt($("input[name='goods_num']").attr('value'));

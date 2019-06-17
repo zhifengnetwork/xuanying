@@ -208,6 +208,7 @@ class CartLogic extends Model
             }
         }
 
+		$zk = 10;
         if(!$user['level'])$zk = 10;
         if(($user['level'] == 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk1'];
         if(($user['level'] > 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk2'];
