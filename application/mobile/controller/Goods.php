@@ -118,8 +118,12 @@ class Goods extends MobileBase
             $secondCategoryList[$k]['child']=$category->get_by_parensid_goods($v);
 			foreach($secondCategoryList[$k]['child'] as $k1=>$v1){
 				$zk = 10;
-				if($user_level == 1)$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk1']==0 ? $zk : $v1['zk1'];
-				if($user_level > 1)$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk2']==0 ? $zk : $v1['zk2'];
+				if($user_level == 1)
+					$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk1']==0 ? $zk : $v1['zk1'];
+				else if($user_level > 1)
+					$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk2']==0 ? $zk : $v1['zk2'];
+				else
+					$secondCategoryList[$k]['child'][$k1]['zk'] = $zk;
 
 				$secondCategoryList[$k]['child'][$k1]['now_price'] = floor($v1['shop_price'] * $secondCategoryList[$k]['child'][$k1]['zk'])/10;
 			}
