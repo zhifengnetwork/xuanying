@@ -212,7 +212,7 @@ class CartLogic extends Model
         if(!$user['level'])$zk = 10;
         if(($user['level'] == 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk1'];
         if(($user['level'] > 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk2'];
-        $buyGoods['goods_price'] = $buyGoods['member_goods_price'] = floor(($buyGoods['goods_price'] * $zk))/10;
+        $buyGoods['goods_price'] = $buyGoods['member_goods_price'] = floor(($buyGoods['goods_price'] * $zk)*10000)/100000;
 
         $cart = new Cart();
         $buyGoods['member_goods_price']?$buyGoods['member_goods_price']=round($buyGoods['member_goods_price'],2):'';
