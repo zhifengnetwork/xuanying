@@ -252,6 +252,9 @@ class Groupbuy extends MobileBase
             $this->assign('region', $region);
         }
         
+		$info['shop_price'] = $info['group_price'];
+		$info['price'] = $info['group_price'];
+
         # 组装数据
         $info['price'] = $buy_type == 1 ? $info['shop_price'] : $info['group_price'];
         $info['buy_type'] = $buy_type;
@@ -259,8 +262,7 @@ class Groupbuy extends MobileBase
 		$info['found_id'] = $found_id; 
         $info['wprice'] = (intval($info['price'] * 100) * $buy_num) / 100;
         $info['user_money'] = $user['user_money'];
-        // dump($info);exit;
-        
+         //dump($info);exit;
 
         $this->assign('info', $info);
         return $this->fetch();
@@ -510,8 +512,8 @@ class Groupbuy extends MobileBase
 							'found_user_id'			=> $found_info['user_id'],
 							'team_id'				=> $info['team_id']
 						]);
-						M('team_found')->setInc('join');
-						M('team_found')->setDec('need');
+						M('team_found')->where(['found_id'=>$data['found_id']])->setInc('join');	
+						M('team_found')->where(['found_id'=>$data['found_id']])->setDec('need');	
 						if($needer == 0){
                             M('team_found')->update(['found_id'=>$data['found_id'],'status'=>2]);
                             M('team_follow')->update(['found_id'=>$data['found_id'],'status'=>2]);
