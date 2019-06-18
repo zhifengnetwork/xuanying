@@ -181,7 +181,7 @@ return array(
 		
 	'marketing'=>array('name'=>'营销','child'=>array(
 			array('name' => '促销活动','child' => array(
-					array('name' => '抢购管理', 'act'=>'flash_sale', 'op'=>'Promotion'),
+					array('name' => '秒杀管理', 'act'=>'flash_sale', 'op'=>'Promotion'),
 					array('name' => '团购管理', 'act'=>'group_buy_list', 'op'=>'Promotion'),
 					array('name' => '竞拍管理', 'act'=>'auction_list', 'op'=>'Promotion'),
 					// array('name' => '优惠促销', 'act'=>'prom_goods_list', 'op'=>'Promotion'),
