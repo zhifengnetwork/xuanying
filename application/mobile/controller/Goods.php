@@ -116,9 +116,13 @@ class Goods extends MobileBase
                 continue;
             }
             $secondCategoryList[$k]['child']=$category->get_by_parensid_goods($v);
-			$secondCategoryList[$k]['child']['zk'] = 10;
-			if($user_level == 1)$secondCategoryList[$k]['child']['zk'] = $secondCategoryList[$k]['child']['zk1'];
-			if($user_level > 1)$secondCategoryList[$k]['child']['zk'] = $secondCategoryList[$k]['child']['zk2'];
+			foreach($secondCategoryList[$k]['child'] as $k1=>$v1){
+				$zk = 10;
+				if($user_level == 1)$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk1']==0 ? $zk : $v1['zk1'];
+				if($user_level > 1)$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk2']==0 ? $zk : $v1['zk2'];
+
+				$secondCategoryList[$k]['child'][$k1]['now_price'] = floor($v1['shop_price'] * $secondCategoryList[$k]['child'][$k1]['zk'])/10;
+			}
         }
 
 //        $goods=$category->get_by_parensid_goods(implode(',',$ids));
