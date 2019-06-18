@@ -212,6 +212,7 @@ class FlashSaleLogic extends Prom
         $buyGoods['member_goods_price'] = $this->flashSale['price'];
         $buyGoods['prom_type'] = 1;
         $buyGoods['prom_id'] = $this->flashSale['id'];
+        $buyGoods['goods_price'] = $this->flashSale['price'];
         return $buyGoods;
     }
 }
