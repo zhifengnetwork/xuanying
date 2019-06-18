@@ -41,27 +41,18 @@
 }
 
 .fu{
-	
-	width:5.5rem;
-	height: 2.5rem;
-	overflow: hidden;
-	position: relative;
-	top: 1rem;
-	left: 50%;
-	transform: translate(-50%,0);
-	
-	
+	margin: .65rem .52rem 0 .52rem;
+	width:6.24rem;
+	height: 3rem;		
 }
 
 
 .img{
 	
-	width:5.5rem;
-	/*margin: 0 7%;*/
-	position: absolute;
-	left: 50%;
-	transform: translate(-50%,0);
-
+	margin: 0 auto;
+	display: block;
+	max-width: 100%;
+	height: 100%;
 	
 }
 .bottom{

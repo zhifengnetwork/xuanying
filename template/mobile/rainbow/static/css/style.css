@@ -509,6 +509,7 @@ header .sea-box input {
 	width:100%
 }
 .dh nav {
+	padding-left: 1.52667rem;
 	margin-top:.42667rem;
 	margin-bottom:.42667rem;
 	overflow:hidden
@@ -516,7 +517,7 @@ header .sea-box input {
 .dh nav a {
 	display:block;
 	float:left;
-	width:25%;
+	width:30%;
 	text-align:center;
 	margin:.42667rem 0
 }
@@ -3031,6 +3032,58 @@ input:-ms-input-placeholder {
 	position:relative;
 	left:6.4rem
 }
+/*新增会员等级折扣价格选择*/
+.market_wrap {
+	position: relative;
+}
+.de_font .market_wrap .price {
+	font-size: .69733rem;
+	font-weight: 600;
+	color: rgba(242,48,48,0.9);
+	line-height: .85rem;
+}
+.de_font .market_wrap .rank_list {
+	position: relative;
+	margin-left: 1.55rem;
+	padding: 0 0 0 .25rem;
+	display: inline-block;
+	vertical-align: middle;
+	width: 50%;
+	height: .85rem;
+	border: 1px solid #333;
+	font-size: .59733rem;
+	line-height: .85rem;
+}
+.de_font .market_wrap .rank_list span {
+	color: #333;
+	line-height: .85rem;
+}
+.de_font .market_wrap .rank_list .icon {
+	position: absolute;
+	top: .25rem;
+	right: .15rem;
+	display: inline-block;
+	width: .45rem;
+	height: .25rem;
+	background: url(../images/d.png) no-repeat;
+	background-size: 100% 100%;
+}
+.popout_wrap {
+	padding: 0 0 0 .25rem;
+	position: absolute;
+	top: .85rem;
+	left: 23.5%;
+	width: 50%;
+	font-size: .59733rem;
+	background: #f5f5f5;
+}
+.popout_wrap ul {
+	display: none;
+}
+.popout_wrap ul li {
+	line-height: .95rem;
+}
+
 .de_font .scunde .red {
 	color:#ec5151;
 	font-size:.64rem;

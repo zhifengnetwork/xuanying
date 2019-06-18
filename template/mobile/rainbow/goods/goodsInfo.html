@@ -73,7 +73,7 @@
                 </a>
             </div>
             <div class="scunde p">
-                <if condition="$goods.cat_id eq $gift_goods_cat25">
+                <!--<if condition="$goods.cat_id eq $gift_goods_cat25">
                         <span>折后价：<span class="red" id="price">￥{$goods_price}</span></span>
 						<span>原价：<span class="red linethr" id="price1">￥{$goods.shop_price}</span></span>
                 <span id="market_price_title">折扣：</span><span
@@ -82,7 +82,42 @@
                     <span class="red" id="price">￥{$goods.shop_price}</span>
                     <span id="market_price_title">市场价：</span><span class="linethr"
                         id="market_price">{$goods.market_price}</span>
-                </if>
+                </if>-->
+                <!--新增会员等级折扣价格选择-->
+                	<div class="market_wrap">
+                		<!--折后价-->
+                		<span class="price">￥100</span>
+                		
+                		<div class="rank_list">
+                			<span class="lose wrap_com">580VIP以上等级2.5折</span>
+                			<span class="icon"></span>
+                		</div>
+                		<!--下拉框-->
+                		<div class="popout_wrap">
+                			<ul class="popout list_wrap">
+                				<li>580VIP以上等级2.5折</li>
+                				<li>9.9VIP等级2.3折</li>
+                				<li>普通会员0折</li>
+                			</ul>
+	                	</div>
+	                	
+                	</div>
+                	<script>
+                		$(function() {
+				    		// 下拉列表
+							$(".rank_list").click(function(){
+								$(".list_wrap").toggle();
+							})
+				    		// 取值
+							$(".list_wrap li").click(function(){
+								var val = $(this).html();
+								$(".wrap_com").html(val);
+								$("#level").val($(this).attr('lev_id'));
+								$(".list_wrap").toggle();
+							})
+				       	});
+                	</script>
+                <!---->
                 <p class="inlist">
                     <if condition="$goods.prom_type neq 2"><span
                             style="float:left;">销量：{$goods['sales_sum']+$goods['virtual_sales_sum']}</span></if>
