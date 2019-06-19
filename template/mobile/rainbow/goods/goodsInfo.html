@@ -84,24 +84,32 @@
                         id="market_price">{$goods.market_price}</span>
                 </if>-->
                 <!--新增会员等级折扣价格选择-->
+                    
                 	<div class="market_wrap">
                 		<!--折后价-->
-                		<span class="price">￥100</span>
-                		
+                		<span class="price" id="price">￥{$goods_price}</span>
+                		<if condition="$goods.cat_id eq $gift_goods_cat25">
                 		<div class="rank_list">
-                			<span class="lose wrap_com">580VIP以上等级2.5折</span>
+                            <if condition="$level eq 0">
+                            <span class="lose wrap_com">普通会员原价&nbsp;&nbsp;</span>
+                            <elseif condition="$level eq 1" />
+                            <span class="lose wrap_com">9.9VIP等级{$goods.zk2}折&nbsp;&nbsp;</span>
+                            <else />
+                            <span class="lose wrap_com">580VIP以上等级{$goods.zk1}折&nbsp;&nbsp;</span>
+                            </if>
                 			<span class="icon"></span>
                 		</div>
                 		<!--下拉框-->
                 		<div class="popout_wrap">
                 			<ul class="popout list_wrap">
-                				<li>580VIP以上等级2.5折</li>
-                				<li>9.9VIP等级2.3折</li>
-                				<li>普通会员0折</li>
+                				<li>580VIP及以上等级{$goods.zk1}折</li>
+                				<li>9.9VIP等级{$goods.zk2}折</li>
+                				<li>普通会员原价</li>
                 			</ul>
 	                	</div>
-	                	
-                	</div>
+                        </if>
+                    </div>
+                    
                 	<script>
                 		$(function() {
 				    		// 下拉列表
@@ -116,7 +124,8 @@
 								$(".list_wrap").toggle();
 							})
 				       	});
-                	</script>
+                    </script>
+                    
                 <!---->
                 <p class="inlist">
                     <if condition="$goods.prom_type neq 2"><span
@@ -1321,7 +1330,7 @@
         if({$goods.cat_id} == {$gift_goods_cat25}){
             $('#market_price_title').html('折扣：');
             $('#market_price').html('{$zk}折');
-            $('#price1').html(spec_goods_price_item['price']);
+            //$('#price1').html(spec_goods_price_item['price']);
         }else
             $('#market_price_title').html('市场价：');
 

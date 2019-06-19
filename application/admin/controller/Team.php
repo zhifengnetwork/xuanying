@@ -77,7 +77,7 @@ class Team extends Base
         if ($data['act'] == 'add')
         {       $data['needer'] = $data['group_number'];
                 $team_id = Db::name('team_activity')->insertGetId($data);
-                if($team_id){
+                if(false !== $team_id){
                     $this->ajaxReturn(['status' => 1,'msg' =>'操作成功','result' => '']);
                 }else{
                     $this->ajaxReturn(['status' => 0,'msg' =>'操作失败','result' => '']);
@@ -86,7 +86,7 @@ class Team extends Base
         if ($data['act'] == 'edit')
         {
                 $res = Db::name('team_activity')->where('team_id', $data['team_id'])->update($data);
-                if($res){
+                if(false !== $res){
                     $this->ajaxReturn(['status' => 1,'msg' =>'操作成功','result' => '']);
                 }else{
                     $this->ajaxReturn(['status' => 0,'msg' =>'操作失败','result' => '']);
