@@ -528,7 +528,9 @@ class Groupbuy extends MobileBase
 					if($found_ins){
 						# 更新用户余额
 						session('user.user_money',$ruser_money);
-						Db::execute("update `tp_users` set `user_money` = '$ruser_money' where `user_id` = '$user_id'");
+                        Db::execute("update `tp_users` set `user_money` = '$ruser_money' where `user_id` = '$user_id'");
+                        if($auser_money)
+                            M('account_log')->add(['user_id'=>$user_id,'user_money'=>0-$auser_money,'change_time'=>time(),'desc'=>'拼团使用余额','order_sn'=>$order_sn,'order_id'=>$order_insid,'states'=>111]);
 						ajaxReturn(['status'=>1, 'msg'=>'订单提交成功', 'type' => 2,'order_sn'=>$order_sn]);
 					}else{
 						Db::execute("delete from `tp_order` where `order_id` = '$order_insid'");
@@ -538,6 +540,8 @@ class Groupbuy extends MobileBase
                     # 更新用户余额
                     session('user.user_money',$ruser_money);
                     Db::execute("update `tp_users` set `user_money` = '$ruser_money' where `user_id` = '$user_id'");
+                    if($auser_money)
+                        M('account_log')->add(['user_id'=>$user_id,'user_money'=>0-$auser_money,'change_time'=>time(),'desc'=>'拼团使用余额','order_sn'=>$order_sn,'order_id'=>$order_insid,'states'=>111]);
                     ajaxReturn(['status'=>1, 'msg'=>'订单提交成功', 'type' => 1,'order_sn'=>$order_sn]);
                 }
             }else{
