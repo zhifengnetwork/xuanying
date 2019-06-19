@@ -302,6 +302,7 @@ class Goods extends MobileBase
         $this->assign('recommend_goods', $recommend_goods);
       
         $this->assign('goods', $goods);
+        $this->assign('gift_goods_cat25',C('customize.gift_goods_cat25'));
         return $this->fetch();
     }
 

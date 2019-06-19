@@ -617,7 +617,7 @@
         join_cart.hide();
         join_cart_li.hide();
 
-        if(is_virtual == 1){
+        if ((is_virtual == 1) || ({$goods.cat_id} == {$gift_goods_cat25})) {
             buy_now_li.find('.choise_num').html('立即购买');
             buy_now_li.width('100%').show();
             buy_now.html('立即购买').show();
