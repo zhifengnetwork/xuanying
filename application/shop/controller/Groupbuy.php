@@ -113,6 +113,7 @@ class Groupbuy extends MobileBase
                     ->field('`found_id`,`found_time`,`found_end_time`,`user_id`,`nickname`,`head_pic`,`order_id`,`join`,`need`')
                     ->order('found_end_time asc')
                     ->where('team_id',$info['team_id'])
+                    ->where('need','>',0)
                     ->where('found_time', '<', time())
 					->where('found_end_time', '>', time())
                     ->where('status', 1)
