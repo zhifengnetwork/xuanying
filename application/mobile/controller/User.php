@@ -387,6 +387,7 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }*/
+        $level = M('Users')->where(['user_id'=>$user_id])->value('level');
 		if(!$userinfo['level']){
             $this->redirect('fenxiang_no');
             exit;

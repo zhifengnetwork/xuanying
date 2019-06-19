@@ -53,7 +53,7 @@ class Order extends MobileBase
         $where_arr = [
             'user_id'=>$this->user_id,
             'deleted'=>0,//删除的订单不列出来
-            'prom_type'=>['lt',5],//虚拟拼团订单不列出来
+            'prom_type'=>['in',[0,1,2,3,4,5,6]],//虚拟拼团订单不列出来
         ];
         if($is_shop){
             $where_arr['shop_id'] = ['gt', 0];
@@ -73,6 +73,7 @@ class Order extends MobileBase
                 }
             })
             ->limit($Page->firstRow . ',' . $Page->listRows)->order("order_id DESC")->select();
+
         $this->assign('order_list', $order_list);   
         if ($_GET['is_ajax']) {
             return $this->fetch('ajax_order_list');

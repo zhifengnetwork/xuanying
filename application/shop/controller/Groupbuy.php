@@ -519,7 +519,9 @@ class Groupbuy extends MobileBase
 							'team_id'				=> $info['team_id']
 						]);
 						M('team_found')->where(['found_id'=>$data['found_id']])->setInc('join');	
-						M('team_found')->where(['found_id'=>$data['found_id']])->setDec('need');	
+                        M('team_found')->where(['found_id'=>$data['found_id']])->setDec('need');
+                        $needer = M('team_found')->where(['found_id'=>$data['found_id']])->value('need');
+
 						if($needer == 0){
                             M('team_found')->update(['found_id'=>$data['found_id'],'status'=>2]);
                             M('team_follow')->update(['found_id'=>$data['found_id'],'status'=>2]);
