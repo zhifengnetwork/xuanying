@@ -504,8 +504,9 @@ class Groupbuy extends MobileBase
 						# 组装sql语句
 						$found_sql = "insert into `tp_team_found` (`found_time`,`found_end_time`,`user_id`,`team_id`,`nickname`,`head_pic`,`order_id`,`join`,`need`,`price`,`goods_price`,`status`) values ('$found_time','$found_end_time','$user_id','$info[team_id]','$user[nickname]','$head_pic','$order_insid','1','$needer','$final_price','$price','$status')";
 						
-						$found_ins = Db::execute($found_sql);
-						if($needer == 0)M('team_found')->update(['found_id'=>Db::name('team_follow')->getLastInsID(),'status'=>2]);
+                        $found_ins = Db::execute($found_sql);
+                        M('Order')->update(['order_id'=>$order_insid,'order_prom_id'=>Db::name('team_found')->getLastInsID()]);
+						//if($needer == 0)M('team_found')->update(['found_id'=>Db::name('team_found')->getLastInsID(),'status'=>2]);
 						
 					}else{
 						$found_ins = M('team_follow')->add([
@@ -523,8 +524,8 @@ class Groupbuy extends MobileBase
                         $needer = M('team_found')->where(['found_id'=>$data['found_id']])->value('need');
 
 						if($needer == 0){
-                            M('team_found')->update(['found_id'=>$data['found_id'],'status'=>2]);
-                            M('team_follow')->update(['found_id'=>$data['found_id'],'status'=>2]);
+                            M('team_found')->update(['found_id'=>$data['found_id'],'status'=>4]);
+                            M('team_follow')->where(['found_id'=>$data['found_id']])->update(['status'=>4]);
                         }
 					}
 					if($found_ins){

@@ -35,6 +35,7 @@ class Auction extends Validate
         'preview_time.require'    => '请选择预展时间',
         'end_time.checkTime'      => '结束时间不能早于开始时间',
         'payment_time.require'    => '请填写货款支付时间',
+        //'payment_time.gt'         => '货款支付时间必须是大于0的数字',
         'deposit.require'         => '请填写保证金',
         'reserve_price.require'   => '请填写保留价',
         'start_price.require'     => '请填写起拍价',

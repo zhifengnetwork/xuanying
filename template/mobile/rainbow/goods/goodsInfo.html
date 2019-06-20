@@ -104,7 +104,7 @@
                 			<ul class="popout list_wrap">
                 				<li>580VIP及以上等级{$goods.zk1}折</li>
                 				<li>9.9VIP等级{$goods.zk2}折</li>
-                				<li>普通会员原价</li>
+                				<li>普通用户原价</li>
                 			</ul>
 	                	</div>
                         </if>
@@ -1331,6 +1331,8 @@
         if({$goods.cat_id} == {$gift_goods_cat25}){
             $('#market_price_title').html('折扣：');
             $('#market_price').html('{$zk}折');
+            goods_price = Math.floor(goods_price * {$zk} * 100)/1000;
+            $("#price").html("<em>￥</em>" + goods_price);
             //$('#price1').html(spec_goods_price_item['price']);
         }else
             $('#market_price_title').html('市场价：');

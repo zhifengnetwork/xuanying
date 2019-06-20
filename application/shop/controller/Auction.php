@@ -181,8 +181,11 @@ class Auction extends MobileBase
     {
         $auction_id = input("aid/d", 0);
         $victory = M('AuctionPrice')->where(['user_id' => $this->user_id, 'auction_id' => $auction_id, 'is_read' => 0])->order('offer_price desc')->find();
+        $auctioninfo = M('Auction')->field('end_time,payment_time')->find($auction_id);
+
+        $bol = (time() < ($auctioninfo['end_time'] + $auctioninfo['payment_time'] * 60)) + 0 ;
         if(!empty($victory)){
-            $this->ajaxReturn(['status' => 1, 'msg'=>$victory['is_out']]);
+            $this->ajaxReturn(['status' => 1, 'msg'=>$victory['is_out'],'payment_time'=>$bol]);
         } else {
             $this->ajaxReturn(['status'=>0]);
         }

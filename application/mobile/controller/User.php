@@ -347,7 +347,8 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
-        if($userinfo['is_distribut'] == 0 && $userinfo['is_agent'] == 0){
+
+        if(!$userinfo['level']){
             $this->redirect('fenxiang_no');
             exit;
         }
@@ -378,7 +379,7 @@ class User extends MobileBase
             exit;
         }
         $userinfo = M('users')->where(['user_id'=>$user_id])->find();
-        if(!$userinfo){
+        if(!$userinfo || $userinfo['level']){
             $this->redirect('fenxiang_no');
             exit;
         }
@@ -387,12 +388,6 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }*/
-        $level = M('Users')->where(['user_id'=>$user_id])->value('level');
-		if(!$userinfo['level']){
-            $this->redirect('fenxiang_no');
-            exit;
-        }
-
 
 		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
         if(I('refresh') == '1'){

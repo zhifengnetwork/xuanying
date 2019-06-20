@@ -109,7 +109,7 @@ class Goods extends MobileBase
 //        $ids=array_column($threadCategoryList,'id');
         //获取这些三级栏目的商品
 
-		$user_level = $_SESSION['think']['user']['level'] ? $_SESSION['think']['user']['level'] : 0;
+		$user_level = $_SESSION['think']['user']['user_id'] ? M('Users')->where(['user_id'=>$_SESSION['think']['user']['user_id']])->value('level') : 0;
         foreach($secondCategoryList as $k=>$v){
             $threadCategorysGoods=$category->get_by_parensid_goods($v['id']);
             if(empty($threadCategorysGoods)){
@@ -373,13 +373,14 @@ class Goods extends MobileBase
         $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
         
         $zk = 10;
-        if(!isset($_SESSION['think']['user']['level']) || ($_SESSION['think']['user']['level'] == 0))$zk = 10;
-        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] == 1))$zk = $goods['zk1'];
-        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] > 1))$zk = $goods['zk2'];
+        $level = $_SESSION['think']['user']['user_id'] ? M('Users')->where(['user_id'=>$_SESSION['think']['user']['user_id']])->value('level') : 0;
+        if(!isset($level) || ($level == 0))$zk = 10;
+        if(isset($level) && ($level == 1))$zk = $goods['zk1'];
+        if(isset($level) && ($level > 1))$zk = $goods['zk2'];
         $this->assign('zk', $zk);
         $goods_price = (!$zk && ($goods['cat_id'] != C('customize.gift_goods_cat25'))) ? $goods['shop_price'] : floor(($goods['shop_price'] * $zk))/10;
         $this->assign('goods_price', $goods_price);
-        $this->assign('level', $_SESSION['think']['user']['level']);
+        $this->assign('level', $level);
 
         return $this->fetch();
     }
@@ -462,9 +463,9 @@ class Goods extends MobileBase
         $goods['shop_price'] = $goodsLogic->getGoodsPriceByLadder($goods_num, $goods['shop_price'], $goods['price_ladder']);//先使用价格阶梯
         $goods['shop_price'] =  $goods['shop_price'] == null ? 0 :  $goods['shop_price'];
 
-        if(!isset($_SESSION['think']['user']['level']) || ($_SESSION['think']['user']['level'] == 0))$zk = 10;
-        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] == 1))$zk = $goods['zk1'];
-        if(isset($_SESSION['think']['user']['level']) && ($_SESSION['think']['user']['level'] > 1))$zk = $goods['zk2'];
+        if(!isset($level) || ($level == 0))$zk = 10;
+        if(isset($level) && ($level == 1))$zk = $goods['zk1'];
+        if(isset($level) && ($level > 1))$zk = $goods['zk2'];
         $goods['zk_price'] = !$zk ? $goods['shop_price'] : floor(($goods['shop_price'] * $zk))/10;  
 
         if ($goodsPromFactory->checkPromType($goods['prom_type'])) {

@@ -89,8 +89,8 @@ return array(
             array('name' => '发货单处理', 'act' => 'delivery_order_handle', 'op' => 'Order'),
             //array('name' => '首页滚动', 'act' => 'index', 'op' => 'Virtual'),
             // array('name' => '发票管理','act'=>'index', 'op'=>'Invoice'),
-            //     array('name' => '拼团列表','act'=>'team_list','op'=>'Team'),
-            //     array('name' => '拼团订单','act'=>'order_list','op'=>'Team'),
+                 array('name' => '拼团列表','act'=>'team_list','op'=>'Team'),
+                 array('name' => '拼团订单','act'=>'order_list','op'=>'Team'),
             //     array('name' => '上门自提','act'=>'index','op'=>'ShopOrder'),
         )),
         array('name' => '广告', 'child' => array(

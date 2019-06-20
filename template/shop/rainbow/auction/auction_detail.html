@@ -230,8 +230,8 @@
 </div>
 <div id="mask3">
 	<div class="tanchuk">
-		<p class="paicheng">竞拍失败</p>
-		<p class="paicheng1">抱歉，竞拍失败，下次继续努力</p>
+		<p class="paicheng" id='sb1'>竞拍失败</p>
+		<p class="paicheng1" id='sb2'>抱歉，竞拍失败，下次继续努力</p>
 		<p id="tobuy1">完成</p>
 	</div>
 </div>
@@ -245,7 +245,7 @@
 		<if condition="$auction.delay_end_time lt time() AND $auction.is_end eq 0">submit_order();</if>
 		<if condition="$auction.start_time lt time()">
 			//定义参数 显示出GetRTime()方法 1000毫秒以后启动
-			var timer_rt = window.setInterval("GetRTime({$auction.delay_end_time})", 100);
+			<if condition="$auction.delay_end_time gt time()">timer_rt = window.setInterval("GetRTime({$auction.delay_end_time})", 100);</if>
 			//每5秒请求一次是否有新出价
 			var clock = window.setInterval(function(){
 				var goods_id = $('input[name="goods_id"]').val();
@@ -369,11 +369,18 @@
 				if (data.status == -100){
 					location.href = "{:U('Shop/User/login')}";
 				}
-				if (data.status == 1 && data.msg == 2) {
+				if ((data.status == 1) && (data.msg == 2) && data.payment_time) {
 					$("#mask").show();
 					return false;
 				}
-				if (data.status == 1 && data.msg == 0) {
+				if((data.msg == 2) && !data.payment_time){
+					$("#sb1").html('支付时间已过');
+					$("#sb2").html('抱歉，您的竞拍已过支付时间！');
+					$("#mask3").show();
+				}
+				if (data.status == 1 && data.msg == 0) {				
+					$("#sb1").html('竞拍失败');
+					$("#sb2").html('抱歉，竞拍失败，下次继续努力！');
 					$("#mask3").show();
 				}
 

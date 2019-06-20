@@ -78,7 +78,7 @@ class Report extends Base
              ->field('og.goods_name,og.goods_id,og.goods_sn,sum(og.goods_num) as sale_num,sum(og.goods_num*og.goods_price) as sale_amount ')
              ->join('order od','og.order_id=od.order_id','LEFT')
              ->where($where)->group('og.goods_id')->order('sale_num DESC')
-             ->limit($Page->firstRow,$Page->listRows)->cache(true,3600)->select();
+             ->limit($Page->firstRow,$Page->listRows)->select(); 
 		$this->assign('list',$res);
         $this->assign('page',$Page);
         $this->assign('p',I('p/d',1));
