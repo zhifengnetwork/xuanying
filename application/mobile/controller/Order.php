@@ -53,7 +53,7 @@ class Order extends MobileBase
         $where_arr = [
             'user_id'=>$this->user_id,
             'deleted'=>0,//删除的订单不列出来
-            'prom_type'=>['in',[0,1,2,3,4,5,6]],//虚拟拼团订单不列出来
+            'prom_type'=>['in',[0,1,2,3,4,5,6,8]],//虚拟拼团订单不列出来
         ];
         if($is_shop){
             $where_arr['shop_id'] = ['gt', 0];

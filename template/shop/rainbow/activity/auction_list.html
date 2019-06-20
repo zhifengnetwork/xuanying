@@ -33,14 +33,36 @@
 		</div>
 	</div>
 
-	<div class="shopkill">
-		<!--竞拍商品-s-->
-		<ul style="list-style:none;">
-		<if condition="empty($commodity)">
-			<li style="text-align: center;font-size:36px;margin-top:15px;">暂无竞拍商品...<li>
-		</if>
-		</ul>
-	</div>
+	<div class="tab_bigbox">
+			<div class="tab_boxtop">
+				<p class="tab_boxtop_p tab">正在竞拍</p>
+				<p class="tab_boxtop_p">我的竞拍</p>
+			</div>
+			<div class="tab_boxconnect" style="height:100%;">
+				<div class="div_show">
+					<div class="shopkill">
+							<!--竞拍商品-s-->
+							<ul style="list-style:none;">
+								<if condition="empty($commodity)">
+									<li style="text-align: center;font-size:36px;margin-top:15px;line-height: 41px;">暂无竞拍商品...
+									<li>
+								</if>
+							</ul>
+						</div>
+				</div>
+				<div>
+					<div class="shopkill">
+						<!--竞拍商品-s-->
+						<ul style="list-style:none;">
+							<if condition="empty($commodity)">
+								<li style="text-align: center;font-size:36px;margin-top:15px;">暂无竞拍商品...
+								<li>
+							</if>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
 
 </div>
 
@@ -81,6 +103,13 @@
 			}
 		}
 	);
+	// tab切換
+	$('.tab_boxtop p').click(function (event) {
+			$(this).addClass('tab');
+			$(this).siblings().removeClass('tab');
+			$('.tab_boxconnect div').eq($(this).index()).addClass('div_show');
+			$('.tab_boxconnect div').eq($(this).index()).siblings().removeClass('div_show');
+		})
 </script>
 
 <script src="__STATIC__/js/public/jquery-1.8.3.min.js"></script>
