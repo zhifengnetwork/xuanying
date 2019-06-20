@@ -23,7 +23,7 @@
 	width: 50%;
 	text-align: center;
 }
-.tab_boxconnect div{
+.tab_boxconnect>div{
 	display: none;
 }
 .tab_boxconnect .div_show{

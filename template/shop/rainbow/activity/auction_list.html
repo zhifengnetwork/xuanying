@@ -40,22 +40,24 @@
 			</div>
 			<div class="tab_boxconnect">
 				<div class="div_show">
-					<div class="shopkill">
-							<!--竞拍商品-s-->
-							<ul style="list-style:none;">
-								<if condition="empty($commodity)">
-									<li style="text-align: center;font-size:36px;margin-top:15px;line-height: 41px;">暂无竞拍商品...
-									<li>
-								</if>
-							</ul>
-						</div>
+					<div class="shopkill  kkk   ">
+						<!--竞拍商品-s-->
+						<ul style="list-style:none;">
+							<if condition="empty($commodity)">
+								<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">
+									暂无竞拍商品..5555.
+								<li>
+							</if>
+						</ul>
+					</div>
 				</div>
 				<div>
 					<div class="shopkill">
 						<!--竞拍商品-s-->
 						<ul style="list-style:none;">
 							<if condition="empty($commodity)">
-								<li style="text-align: center;font-size:36px;margin-top:15px;">暂无竞拍商品...
+								<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">
+									暂无竞拍商品...6666
 								<li>
 							</if>
 						</ul>
@@ -106,8 +108,8 @@
 		$('.tab_boxtop p').click(function (event) {
 			$(this).addClass('tab');
 			$(this).siblings().removeClass('tab');
-			$('.tab_boxconnect div').eq($(this).index()).addClass('div_show');
-			$('.tab_boxconnect div').eq($(this).index()).siblings().removeClass('div_show');
+			$('.tab_boxconnect>div').eq($(this).index()).addClass('div_show');
+			$('.tab_boxconnect>div').eq($(this).index()).siblings().removeClass('div_show');
 		})
 	</script>
 
