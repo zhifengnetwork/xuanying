@@ -52,6 +52,6 @@ class GoodsCategory extends Model {
         if(empty($parensids)){
             return array();
         }
-        return Db::name('goods')->whereIn('cat_id',$parensids)->where('is_on_sale',1)->order('goods_id','asc')->column('goods_id,cat_id,goods_name,shop_price,goods_remark,original_img,zk1,zk2');
+        return Db::name('goods')->whereIn('cat_id',$parensids)->where('is_on_sale',1)->order('goods_id','asc')->column('goods_id,cat_id,goods_name,shop_price,market_price,goods_remark,original_img,zk1,zk2');
     }
 }

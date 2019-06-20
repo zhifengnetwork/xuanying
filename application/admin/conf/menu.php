@@ -236,7 +236,7 @@ return array(
         //     array('name' => '苹果APP管理', 'act'=>'ios_audit', 'op'=>'MobileApp'),
         // ))
     )),
-
+/*
     'pickup' => array('name' => '门店', 'child' => array(
         array('name' => '门店管理', 'child' => array(
             array('name' => '门店列表', 'act' => 'index', 'op' => 'shop'),
@@ -253,11 +253,11 @@ return array(
         // 		array('name' => '取货码核销', 'act'=>'verification', 'op'=>'Pickup'),
         // ))
     )),
-
+    
     'seller' => array('name' => '商家管理', 'child' => array(
         array('name' => '商家管理', 'child' => array(
             array('name' => '商家列表', 'act' => 'seller_list', 'op' => 'SellerManagement'),
             //array('name' => '商家门店管理', 'act' => 'store_list', 'op' => 'SellerManagement'),
         ))
-    )),
+    )),*/
 );
