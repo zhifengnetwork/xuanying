@@ -336,7 +336,7 @@ class User extends MobileBase
      * 新的分享
      */
     public function fenxiang()
-    {
+    { 
         $user_id = session('user.user_id');
         if(!$user_id){
             $this->redirect('fenxiang_no');
@@ -348,7 +348,7 @@ class User extends MobileBase
             exit;
         }
 
-        if(!$userinfo['level']){
+        if(!$userinfo['level']){	
             $this->redirect('fenxiang_no');
             exit;
         }
@@ -379,7 +379,7 @@ class User extends MobileBase
             exit;
         }
         $userinfo = M('users')->where(['user_id'=>$user_id])->find();
-        if(!$userinfo || $userinfo['level']){
+        if(!$userinfo || !$userinfo['level']){
             $this->redirect('fenxiang_no');
             exit;
         }

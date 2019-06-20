@@ -46,8 +46,10 @@ class PlaceOrder
         $this->order = new Order();
     }
 
-    public function addNormalOrder()
+    public function addNormalOrder($prom_type=0,$prom_id=0)
     {
+        if($prom_type)$this->promType = $prom_type;
+        if($prom_id)$this->promId = $prom_id;
         $this->check();
         $this->queueInc();
         $this->addOrder();
