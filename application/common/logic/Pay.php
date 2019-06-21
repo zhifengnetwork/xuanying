@@ -451,7 +451,7 @@ class Pay
      * @return int
      */
     public function getAuction()
-    {
+    {   dump($this->payList[0]); exit;
         if($this->payList[0]['prom_type'] != 8)return $this;
         $query = Db::name('AuctionPrice')
             ->where(['auction_id' => $this->payList[0]['prom_id'], 'is_out' => 2])
