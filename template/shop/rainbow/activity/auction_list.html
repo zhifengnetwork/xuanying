@@ -40,24 +40,24 @@
 			</div>
 			<div class="tab_boxconnect">
 				<div class="div_show">
-					<div class="shopkill  kkk   ">
+					<div class="shopkill shopkill1">
 						<!--竞拍商品-s-->
 						<ul style="list-style:none;">
 							<if condition="empty($commodity)">
 								<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">
-									暂无竞拍商品..5555.
+									暂无竞拍商品...
 								<li>
 							</if>
 						</ul>
 					</div>
 				</div>
 				<div>
-					<div class="shopkill">
+					<div class="shopkill shopkill2">
 						<!--竞拍商品-s-->
 						<ul style="list-style:none;">
 							<if condition="empty($commodity)">
 								<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">
-									暂无竞拍商品...6666
+									暂无竞拍商品...
 								<li>
 							</if>
 						</ul>
@@ -71,7 +71,8 @@
 	<script src="__STATIC__/js/jquery-3.1.1.min.js" type="text/javascript" charset="utf-8"></script>
 	<script>
 		$(function () {
-			ajax_sourch_submit()
+			ajax_sourch_submit();
+			ajax_getmyauction();
 		})
 
 		var page = 0;//页数
@@ -86,13 +87,32 @@
 				url: "/index.php?m=Shop&c=Activity&a=ajax_auction&p=" + page,
 				success: function (data) {
 					if ($.trim(data)) {
-						$(".shopkill").append(data);
+						$(".shopkill1").append(data);
 					} else {
+						$html = '<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">暂无竞拍商品...<li>';
+						$(".shopkill1 ul").append($html);
 						return false;
 					}
 				}
 			});
 		}
+
+		function ajax_getmyauction() {
+			++page;
+			$.ajax({
+				type: "GET",
+				url: "/index.php?m=Shop&c=Activity&a=ajax_getmyauction&p=" + page,
+				success: function (data) {
+					if ($.trim(data)) {
+						$(".shopkill2").append(data);
+					} else {
+						$html = '<li style="text-align: center;font-size:.3rem;margin-top:15px;line-height: 41px;">暂无竞拍商品...<li>';
+						$(".shopkill2 ul").append($html);
+						return false;
+					}
+				}
+			});
+		}		
 		//滚动加载更多
 		$(window).scroll(
 			function () {

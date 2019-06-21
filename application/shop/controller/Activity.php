@@ -174,7 +174,7 @@ class Activity extends MobileBase {
     }
 
     public function ajax_getmyauction(){
-        $user_id = $_SESSION['think']['user']['user_id'];$user_id=9;
+        $user_id = $_SESSION['think']['user']['user_id'];
         $list = [];
         if($user_id){
             //$this->redirect('Mobile/User/login');
@@ -186,7 +186,7 @@ class Activity extends MobileBase {
                 $num = $Order->where(['user_id'=>$v['user_id'],'prom_type'=>8,'prom_id'=>$v['id']])->count();
                 if($num)unset($list[$k]);
             }
-        }  
+        }
         $this->assign('auction_goods', $list);
         return $this->fetch('ajax_auction');       
     }
@@ -209,7 +209,6 @@ class Activity extends MobileBase {
             ->where($where)
             ->page($p,10)
             ->select();
-
         $this->assign('auction_goods',$auction_goods);
         return $this->fetch();
     }
