@@ -187,8 +187,8 @@
                 </dt>
                 <dd class="opt">
                     <select name='commission_type' id='commission_type'>
-                        <option value='1'>比例</option>
-                        <option value='2'>金额</option>
+                        <option value='1' <if condition="$goods.commission_type eq 1">selected</if>>比例</option>
+                        <option value='2' <if condition="$goods.commission_type eq 2">selected</if>>金额</option>
                     </select>
                 </dd>
             </dl>  
