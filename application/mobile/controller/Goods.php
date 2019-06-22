@@ -126,6 +126,7 @@ class Goods extends MobileBase
                     $secondCategoryList[$k]['child'][$k1]['zk'] = $zk;                   
 
 				$secondCategoryList[$k]['child'][$k1]['now_price'] = floor($v1['shop_price'] * $secondCategoryList[$k]['child'][$k1]['zk'])/10;
+				if($v1['cat_id'] == C('customize.gift_goods_cat25'))$secondCategoryList[$k]['child'][$k1]['market_price'] = $v1['shop_price'];           
 			}
         }
 

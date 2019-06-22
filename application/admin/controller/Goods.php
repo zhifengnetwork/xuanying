@@ -372,12 +372,18 @@ class Goods extends Base {
             $level_cat = $GoodsLogic->find_parent_cat($goods['cat_id']); // 获取分类默认选中的下拉框
             $level_cat2 = $GoodsLogic->find_parent_cat($goods['extend_cat_id']); // 获取分类默认选中的下拉框
             $brandList = $GoodsLogic->getSortBrands($goods['cat_id']);   //获取三级分类下的全部品牌
+
+            $commission = M('goods_commission')->find($goods_id);
+            $goods['lev1'] = $commission ? $commission['lev1'] : 0;
+            $goods['lev2'] = $commission ? $commission['lev2'] : 0;
+            $goods['commission_type'] = $commission ? $commission['type'] : 0;
+
             $this->assign('goods', $goods);
             $this->assign('level_cat', $level_cat);
             $this->assign('level_cat2', $level_cat2);
             $this->assign('brandList', $brandList);
         }
-        $cat_list = Db::name('goods_category')->where("parent_id = 0")->select(); // 已经改成联动菜单
+        $cat_list = Db::name('goods_category')->where("parent_id = 0 and id <>".C('customize.gift_goods_cat'))->select(); // 已经改成联动菜单
         $goodsType = Db::name("GoodsType")->select();
         $suppliersList = Db::name("suppliers")->where(['is_check'=>1])->select();
         $freight_template = Db::name('freight_template')->where('')->select();
@@ -460,7 +466,8 @@ class Goods extends Base {
         $goods->last_update = time();
         $goods->price_ladder = true;
       
-        $goods->save();
+        $res = $goods->save(); 
+        if(!$data['goods_id'])$data['goods_id'] = $goods->goods_id;
         if(empty($spec_item)){
             update_stock_log(session('admin_id'), $store_count_change_num, ['goods_id' => $goods['goods_id'], 'goods_name' => $goods['goods_name']]);//库存日志
         } 

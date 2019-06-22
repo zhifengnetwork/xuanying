@@ -184,7 +184,7 @@ function getAllUp($invite_id, &$userList = array())
  * 级差代理
  * 登记等级 分钱
  */
-function jichadaili($order_id)
+function jichadaili($order_id,$old_level=0)
 {
     $r = M('order_divide')->where(['order_id' => $order_id])->find();
     //记录表
@@ -198,7 +198,7 @@ function jichadaili($order_id)
 
     $goods_list = M('order_goods')->alias('og')
         ->join('tp_goods g ',' g.goods_id = og.goods_id')
-        ->field(" g.goods_id, g.cat_id, og.cat_id, og.goods_num, og.final_price, og.goods_price,og.member_goods_price,g.shop_price,g.is_distribut,is_agent")
+        ->field(" g.goods_id, g.cat_id, og.cat_id, og.goods_num, og.final_price, og.goods_price,og.member_goods_price,g.shop_price,g.is_distribut,is_agent,g.zk1,g.zk2")
         ->where(['og.order_id' => $order_id])
         ->select();
     $total = 0;
@@ -211,12 +211,20 @@ function jichadaili($order_id)
     }
    
    	$total_amount = 0;
-	$user_level = M('Users')->where(['user_id'=>$userId])->value('level');
+    $user_level = M('Users')->where(['user_id'=>$userId])->value('level');
     foreach ($goods_list as $k => $v) {
 		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
         $goodId = $v['goods_id'];
         $goodNum = $v['goods_num'];
-        $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id);
+
+        if($old_level <= 0)
+            $zk = 10;
+        if($old_level <= 1)
+            $zk = $v['zk1'];    
+        else
+            $zk = $v['zk2'];       
+
+        $model = new BonusLogic($userId, $goodId, $goodNum, $orderSn, $order_id, $v['cat_id'] , $zk);
         $res = $model->bonusModel();
 
 		//不是2.5折也不是9.9商品
@@ -1283,6 +1291,7 @@ function update_pay_status($order_sn, $ext = array())
         }
         // 给他升级, 根据order表查看消费记录 给他会员等级升级 修改他的折扣 和 总金额
         $User = new \app\common\logic\User();
+        $old_level = M('Users')->where(['user_id'=>$order['user_id']])->value('level');
         $User->setUserById($order['user_id']);
         $User->updateUserLevel();
         // 记录订单操作日志
@@ -1305,7 +1314,7 @@ function update_pay_status($order_sn, $ext = array())
         change_role($order['order_id']);
 
         //分钱
-        jichadaili($order['order_id']);
+        jichadaili($order['order_id'],$old_level);
 
         //agent_performance($order['order_id']);
         //业绩（包含个人+团队）

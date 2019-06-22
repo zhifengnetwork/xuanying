@@ -164,6 +164,39 @@
             </dl>
 
             <dl class="row zk">
+                <dt class="tit">
+                    <label>佣金类型</label>
+                </dt>
+                <dd class="opt">
+                    <select name='commission_type' id='commission_type'>
+                        <option value='1'>比例</option>
+                        <option value='2'>金额</option>
+                    </select>
+                </dd>
+            </dl>  
+             <dl class="row zk">
+                <dt class="tit">
+                    <label>一级佣金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="number" min=0 max=100 value="{$goods.lev1}" name="lev1" class="input-txt"/>
+                    <span id="lev1_type"><if condition="$goods.commission_type eq 2">￥<else />%</if></span>
+                    <span class="err" id="err_lev1"></span>
+                </dd>
+            </dl>  
+            </dl>   
+             <dl class="row zk">
+                <dt class="tit">
+                    <label>二级佣金</label>
+                </dt>
+                <dd class="opt">
+                    <input type="number" min=0 max=100 value="{$goods.lev2}" name="lev2" class="input-txt"/>
+                    <span id="lev2_type"><if condition="$goods.commission_type eq 2">￥<else />%</if></span>
+                    <span class="err" id="err_lev2"></span>
+                </dd>
+            </dl>               
+
+            <dl class="row zk">
                 <dt class="tit"><em>*</em>
                     <label>普通会员折扣</label>
                 </dt>
@@ -707,7 +740,16 @@
             var type_id = $(this).val();
             get_goods_spec_select(goods_id, type_id);
             get_goods_attr_select(goods_id, type_id);
-        })
+        });
+
+        $("#commission_type").change(function(){
+            var type = $(this).val();
+            if(type == 1){
+                $('#lev1_type,#lev2_type').html('%');
+            }else if(type == 2){
+                $('#lev1_type,#lev2_type').html('￥');
+            }
+        });      
     })
 
     //商品模型切换时，返回不同的规格输入框
