@@ -106,17 +106,16 @@ class BonusLogic extends Model
 		}
 		$leader_level = M('Users')->where(['user_id'=>$distributor['first_leader']])->value('level');
 		if($leader_level){
-			$rate = $commission_rate['commission_rate'];
-			$commission = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate / 100) * $this->goodNum) : $rate; //计算佣金
+			$rate = $commission_rate['commission_rate'] * $this->goodNum;
+			$commission = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate / 100)) : $rate; //计算佣金
 			$bool = M('users')->where(['user_id'=>$distributor['first_leader']])->setInc('user_money',$commission);
 		}
-
 		//查询上级的上级
 		$leader_leader = M('Users')->where(['user_id'=>$distributor['first_leader']])->value('first_leader');
 		$leader_leader_level = M('Users')->where(['user_id'=>$leader_leader])->value('level');
 		if($leader_leader_level){
-			$rate2 = $commission_rate['commission_rate2'];
-			$commission2 = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate2 / 100) * $this->goodNum) : $rate2; //计算佣金
+			$rate2 = $commission_rate['commission_rate2'] * $this->goodNum;
+			$commission2 = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate2 / 100)) : $rate2; //计算佣金
 			$bool2 = M('users')->where(['user_id'=>$leader_leader])->setInc('user_money',$commission2);
 		}
 

@@ -249,7 +249,7 @@ function jichadaili($order_id,$old_level=0)
 
 //大礼包分佣
 function gift_commission($order_id){
-    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.cat_id,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
+    $goodslist = M('order_goods')->alias('OG')->join('tp_order O','O.order_id=OG.order_id','left')->join('tp_goods_commission GC','OG.goods_id=GC.goods_id','left')->field('O.order_id,O.order_sn,O.user_id,OG.goods_id,OG.cat_id,OG.goods_num,OG.final_price,GC.lev1,GC.lev2,GC.type')->where(['O.order_id'=>$order_id,'OG.cat_id'=>C('customize.gift_goods_cat')])->select();
     $Users = M('Users');
     $AccountLog = M('account_log');
     //订单用户的级别
@@ -262,11 +262,11 @@ function gift_commission($order_id){
             }
         }
         if($v['type'] == 1){ //比例
-            $lev1 = floor(($v['final_price'] * $v['lev1']))/100;
-            $lev2 = floor(($v['final_price'] * $v['lev2']))/100;
+            $lev1 = (floor(($v['final_price'] * $v['lev1']))/100) * $v['goods_num'];
+            $lev2 = (floor(($v['final_price'] * $v['lev2']))/100) * $v['goods_num'];
         }elseif($v['type'] == 2){ //金额
-            $lev1 = $v['lev1'];
-            $lev2 = $v['lev2'];
+            $lev1 = $v['lev1'] * $v['goods_num'];
+            $lev2 = $v['lev2'] * $v['goods_num'];
         }else
             continue;
           
@@ -296,7 +296,7 @@ function gift_commission($order_id){
         //如果商品是580大礼包，给所有本季度达到分红条件的VIP董事分红5%
         if(in_array($v['goods_id'],C('customize.580goods_id'))){
             $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'quarter_bonus'=>1])->column('user_id');
-            $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
+            $price = (floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100) * $v['goods_num'];
             if($userlist){
                 foreach($userlist as $v1){
                     if(!$AccountLog->where("user_id=$v1 and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=105")->count()){
@@ -311,7 +311,7 @@ function gift_commission($order_id){
         //如果商品是3960或11880大礼包，给所有自身团队业绩达到59400的VIP董事分红
         if(in_array($v['goods_id'],C('customize.3960goods_id'))){
             $userlist = $Users->where(['level'=>['in',C('customize.11880VipTop')],'is_cityvip'=>1])->column('user_id');   
-            $price = floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100;
+            $price = (floor(($v['final_price'] * C('customize.VIP11880_BONUS')))/100) * $v['goods_num'];
             if($userlist){
                 foreach($userlist as $v1){ 
                     if(!$AccountLog->where("user_id=$v1 and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=106")->count()){  
