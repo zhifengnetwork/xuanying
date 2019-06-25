@@ -129,6 +129,25 @@
                     <span>购物车</span>
                 </span>
             </a>-->
+            <a href="{:U('shop/Activity/auction_list')}">
+					<span>
+                    <img src="__STATIC__/images/sucai.png" alt="" /><br />
+                    <span>素材区</span>
+					</span>
+				</a>
+				<a href="{:U('shop/Activity/auction_list')}">
+					<span>
+                    <img src="__STATIC__/images/clube.png" alt="" /><br />
+                    <span>我的团队</span>
+					</span>
+				</a>
+				<a href="{:U('shop/Activity/auction_list')}">
+					<span>
+                    <img src="__STATIC__/images/fengxiao.png" alt="" /><br />
+                    <span>我的分销</span>
+					</span>
+				</a>
+				
 
 			</nav>
 		</div>
@@ -148,21 +167,7 @@
 	        </div>            
         </div>
 		</if>
-		<if condition="$articlelist[1]['description'] neq ''">
-        <!-- 公告=>2 -->
-        <div class="announcement">
-            <img src="__STATIC__/images/not.png" alt="" class="notice-i"> 
-            <span class="not">公告:</span> 
-	        <div class="notice">
-	            <div id="div" class="scroll_div">
-			        <div id="begin" class="scroll_begin">
-			        	<span class="scroll">{$articlelist[1]['description']}</span>
-			        </div>
-			        <div id="end" class="scroll_end"></div>
-			   	</div>
-	        </div>            
-        </div>
-		</if>
+		
 		
 		<!--秒杀-start-->
 		<div class="floor secondkill">
@@ -201,12 +206,12 @@
 		<div class="banner ma-to-20">
 			<adv limit="1" item="v" pid="400">
 				<a href="{$v.ad_link}">
-					<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}" />
+					<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}"  class="tupian_pic"/>
 				</a>
 			</adv>
 		</div>
 		<div class="floor advertisement">
-			<div class="content">
+			<!--<div class="content">
 				<div class="le lefhe fl">
 					<adv limit="1" item="v" pid="301">
 						<a href="{$v.ad_link}">
@@ -233,7 +238,33 @@
 					</adv>
 
 				</div>
+			</div>-->
+			<div class="pic_1">
+				<div class="left_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan"/>
+					<img  src="__STATIC__/images/tuangou.png" class="tuan"/>
+				</div>
+				<div class="right_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan5"/>
+				</div>	
 			</div>
+			<div class="price_2">
+				<div class="right_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan5"/>
+				</div>	
+				<div class="right_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan5"/>
+				</div>	
+			</div>
+			<div class="price_2">
+				<div class="right_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan5"/>
+				</div>	
+				<div class="right_ear">
+					<img  src="__STATIC__/images/tuangou.png" class="tuan5"/>
+				</div>	
+			</div>
+			
 		</div>
 		<!--广告位-end-->
 
