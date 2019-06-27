@@ -12174,7 +12174,8 @@ pre {
 .right_ear a{
 	
 	display:inline-block;
-	height:3.9rem
+	height:3.9rem;
+	width: 103%;
 	
 }
 .left_img{
