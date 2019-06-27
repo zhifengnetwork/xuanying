@@ -21,14 +21,18 @@ class BonusLogic extends Model
 	private $goodNum;//商品数量
 	private $orderSn;//订单编号
 	private $orderId;//订单id
+	private $catId;//商品分类
+	private $zk;//商品折扣
 
-	public function __construct($userId,  $goodId, $goodNum, $orderSn, $orderId)
+	public function __construct($userId,  $goodId, $goodNum, $orderSn, $orderId, $catId=0,$zk=10)
 	{	
 		$this->userId = $userId;
 		$this->goodId = $goodId;
 		$this->goodNum = $goodNum;
 		$this->orderSn = $orderSn;
 		$this->orderId = $orderId;
+		$this->catId = $catId;
+		$this->zk = $zk;
 	}
 
 
@@ -90,27 +94,35 @@ class BonusLogic extends Model
         if (!$distributor['first_leader']){
         	return false;
         }
-        $goods = $this->goods();
-		//$distribut = M('distribut')->find();
-		$commission_rate = M('goods_category')->field('commission_rate,commission_rate2')->find($goods['cat_id']);
-		$rate = $commission_rate['commission_rate'];
-        $commission = $goods['shop_price'] * ($rate / 100) * $this->goodNum; //计算佣金
-        $bool = M('users')->where(['user_id'=>$distributor['first_leader']])->setInc('user_money',$commission);
-
+		$goods = $this->goods();
+		if($this->catId == C('customize.gift_goods_cat25')){
+			$goods['shop_price'] = floor($goods['shop_price'] * $this->zk)/10;
+			$commission_rate = M('goods_commission')->field('lev1 as commission_rate,lev2 as commission_rate2,type')->find($this->goodId);
+		}elseif($this->catId == C('customize.gift_goods_cat'))
+			return false;
+		else{
+			$commission_rate = M('goods_category')->field('commission_rate,commission_rate2')->find($goods['cat_id']);
+			$commission_rate['type'] = 1;
+		}
+		$leader_level = M('Users')->where(['user_id'=>$distributor['first_leader']])->value('level');
+		if($leader_level){
+			$rate = $commission_rate['commission_rate'] * $this->goodNum;
+			$commission = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate / 100)) : $rate; //计算佣金
+			$bool = M('users')->where(['user_id'=>$distributor['first_leader']])->setInc('user_money',$commission);
+		}
 		//查询上级的上级
 		$leader_leader = M('Users')->where(['user_id'=>$distributor['first_leader']])->value('first_leader');
-		$rate2 = $commission_rate['commission_rate2'];
-		$commission2 = $goods['shop_price'] * ($rate2 / 100) * $this->goodNum; //计算佣金
-        $bool2 = M('users')->where(['user_id'=>$leader_leader])->setInc('user_money',$commission2);
+		$leader_leader_level = M('Users')->where(['user_id'=>$leader_leader])->value('level');
+		if($leader_leader_level){
+			$rate2 = $commission_rate['commission_rate2'] * $this->goodNum;
+			$commission2 = ($commission_rate['type'] == 1) ? ($goods['shop_price'] * ($rate2 / 100)) : $rate2; //计算佣金
+			$bool2 = M('users')->where(['user_id'=>$leader_leader])->setInc('user_money',$commission2);
+		}
 
-        if ($bool !== false) {
-        	$desc = "分销所得佣金";
-        	$log = $this->writeLog($distributor['first_leader'],$commission,$desc,102); //写入日志
-			$leader_leader && $this->writeLog($leader_leader,$commission2,$desc,102); //写入日志
-        	return true;
-        } else {
-        	return false;
-        }
+		$desc = "分销所得佣金";
+		if($commission && $leader_level)$this->writeLog($distributor['first_leader'],$commission,$desc,102); //写入日志
+		if($commission2 && $leader_leader && $leader_leader_level)$this->writeLog($leader_leader,$commission2,$desc,102); //写入日志
+		return true;
 	}
 	//记录日志
 	public function writeLog($userId,$money,$desc,$states)

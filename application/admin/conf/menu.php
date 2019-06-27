@@ -80,7 +80,7 @@ return array(
         )),
         array('name' => '订单', 'child' => array(
             array('name' => '订单列表', 'act' => 'index', 'op' => 'Order'),
-            array('name' => '虚拟订单', 'act' => 'virtual_list', 'op' => 'Order'),
+            //array('name' => '虚拟订单', 'act' => 'virtual_list', 'op' => 'Order'),
             array('name' => '发货单', 'act' => 'delivery_list', 'op' => 'Order'),
             array('name' => '退款单', 'act' => 'refund_order_list', 'op' => 'Order'),
             array('name' => '退换货', 'act' => 'return_list', 'op' => 'Order'),
@@ -236,7 +236,7 @@ return array(
         //     array('name' => '苹果APP管理', 'act'=>'ios_audit', 'op'=>'MobileApp'),
         // ))
     )),
-
+/*
     'pickup' => array('name' => '门店', 'child' => array(
         array('name' => '门店管理', 'child' => array(
             array('name' => '门店列表', 'act' => 'index', 'op' => 'shop'),
@@ -253,11 +253,11 @@ return array(
         // 		array('name' => '取货码核销', 'act'=>'verification', 'op'=>'Pickup'),
         // ))
     )),
-
+    
     'seller' => array('name' => '商家管理', 'child' => array(
         array('name' => '商家管理', 'child' => array(
             array('name' => '商家列表', 'act' => 'seller_list', 'op' => 'SellerManagement'),
             //array('name' => '商家门店管理', 'act' => 'store_list', 'op' => 'SellerManagement'),
         ))
-    )),
+    )),*/
 );

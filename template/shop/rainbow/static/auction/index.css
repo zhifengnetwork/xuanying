@@ -11,8 +11,30 @@
 	-moz-box-sizing: border-box;
 	/*margin-top: 80px;*/
 }
-.section{
-	
+/* tab_box */
+.tab_boxtop{
+	height: .88rem;
+	margin: .1rem 0;
+}
+.tab_bigbox .tab_boxtop_p {
+	float: left;
+	line-height: .88rem;
+	font-size: .3rem;
+	width: 50%;
+	text-align: center;
+}
+.tab_boxconnect>div{
+	display: none;
+}
+.tab_boxconnect .div_show{
+	display: block;
+	height: 100%;
+}
+.tab{
+	color: red;
+}
+
+.section{	
 	width: 96%;
 	height: 5.53rem;
 	margin: 3% 2%;

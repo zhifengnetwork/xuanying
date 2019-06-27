@@ -1,0 +1,54 @@
+<include file="public/layout" />
+<style>
+    .err{color:#F00; display:none;}
+</style>
+<script src="__ROOT__/public/static/js/layer/laydate/laydate.js"></script>
+<body style="background-color: #FFF; overflow: auto;">
+<div id="toolTipLayer" style="position: absolute; z-index: 9999; display: none; visibility: visible; left: 95px; top: 573px;"></div>
+<div id="append_parent"></div>
+<div id="ajaxwaitid"></div>
+<div class="page">
+    <div class="fixed-bar">
+        <div class="item-title"><a class="back" href="javascript:history.back();" title="返回列表"><i class="fa fa-arrow-circle-o-left"></i></a>
+            <div class="subject">
+                <h3>拼团管理 - 拼团详情</h3>
+                <h5>网站系统拼团详情页</h5>
+            </div>
+        </div>
+    </div>
+
+	<table style='width:500px;'>
+		<tr style='width:400px;font-size:18px;'>
+			<th>团长头像</th>
+			<th>团长昵称</th>
+			<th>开团时间</th>
+		</tr>
+		<tr style='width:100px;border-bottom:1px solid #000;'>
+			<td>
+				<img src='{$foundinfo.head_pic}' style='width:60px;height:60px;border-radius:50%;' /> 
+			</td>
+			<td>{$foundinfo.nickname}</td>
+			<td>{:date('Y-m-d H:i:s',$foundinfo['found_time'])}</td>
+		</tr>
+	</table>
+
+	<table style='width:500px;'>
+			<tr style='width:400px;font-size:18px;'>
+				<th>团员头像</th>
+				<th>团员昵称</th>
+				<th>参团时间</th>
+			</tr>
+			<volist name='follow' id='v'>
+			<tr style='width:100px;border-bottom:1px solid #000;'>
+				<td>
+					<img src='{$v.follow_user_head_pic}' style='width:60px;height:60px;border-radius:50%;' /> 
+				</td>
+				<td>{$v.follow_user_nickname}</td>
+				<td>{:date('Y-m-d H:i:s',$v['follow_time'])}</td>
+			</tr>
+			</volist>
+		</table>	
+</div>
+
+</body>
+</html>
