@@ -351,6 +351,8 @@ class User extends MobileBase
         if(!$userinfo['level']){	
             $this->redirect('fenxiang_no');
         }
+
+        $this->redirect('fenxiang1');
     }
 
 
@@ -379,15 +381,11 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
-		/*
-        if($userinfo['is_distribut'] == 0 && $userinfo['is_agent'] == 0){
-            $this->redirect('fenxiang_no');
-            exit;
-        }*/
-
+	
 		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
         if(I('refresh') == '1'){
             //删掉文件
+            @unlink(IMGROOT_PATH.'/public/share/code/'.$user_id.'.jpg');//删除头像
             @unlink(IMGROOT_PATH.'/public/share/head/'.$user_id.'.jpg');//删除头像
             @unlink(IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg");//删除 44
             @unlink(IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg");
@@ -406,7 +404,6 @@ class User extends MobileBase
             }
         }
 
-     
         $head_pic_url = M('users')->where(['user_id'=>$user_id])->value('head_pic');
 
         $logic = new ShareLogic();
@@ -437,49 +434,49 @@ class User extends MobileBase
         if($logo_url_logo_height > 420 || $logo_url_logo_width > 420){
             //压缩图片
             $url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
-            $logo_url->thumb(410, 410)->save($url_code , null, 100);
+            $logo_url->thumb(135, 135)->save($url_code , null, 100);
         }
 
           
-        $head_url = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
-        if( @fopen( $head_url, 'r' ) )
-        {
-            //已经有二维码了
-        	$url_head_pp = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
-        }else{
-            //还没有二维码
-            $re = $logic->getImage($head_pic_url,IMGROOT_PATH . '/public/share/head', $user_id.'.jpg');
-            $url_head_pp = $re['save_path'];
-        }
+        // $head_url = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
+        // if( @fopen( $head_url, 'r' ) )
+        // {
+        //     //已经有二维码了
+        // 	$url_head_pp = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
+        // }else{
+        //     //还没有二维码
+        //     $re = $logic->getImage($head_pic_url,IMGROOT_PATH . '/public/share/head', $user_id.'.jpg');
+        //     $url_head_pp = $re['save_path'];
+        // }
         
 
         //判断图片大小
-        $logo = \think\Image::open($url_head_pp);
-        $logo_width = $logo->height();
-        $logo_height = $logo->width();
+        // $logo = \think\Image::open($url_head_pp);
+        // $logo_width = $logo->height();
+        // $logo_height = $logo->width();
  
-        //头像变成200
-        if($logo_height > 260 || $logo_width > 260){
-            //压缩图片
-             $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
-             $logo->thumb(240, 240)->save($url_head_file , null, 100);
-        }
+        // //头像变成200
+        // if($logo_height > 260 || $logo_width > 260){
+        //     //压缩图片
+        //      $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
+        //      $logo->thumb(240, 240)->save($url_head_file , null, 100);
+        // }
         
         //得到二维码的绝对路径
 
-        $pic = IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg";
-        if( @fopen( $pic, 'r' ) )
-        {
-        	$pic = "/share/picture_ok44/".$user_id.".jpg";
-        }
-        else
-        {
-        	$image = \think\Image::open(IMGROOT_PATH . '/public/share/bg1.jpg');
-        	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_code,\think\Image::DCHQZG)->save(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
+        // $pic = IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg";
+        // if( @fopen( $pic, 'r' ) )
+        // {
+        // 	$pic = "/share/picture_ok44/".$user_id.".jpg";
+        // }
+        // else
+        // {
+        // 	$image = \think\Image::open(IMGROOT_PATH . '/public/share/bg1.jpg');
+        // 	// 给原图左上角添加水印并保存water_image.png
+        // 	$image->water($url_code,\think\Image::DCHQZG)->save(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
         	
-        	$pic = "/public/share/picture_ok44/".$user_id.".jpg";
-        }
+        // 	$pic = "/public/share/picture_ok44/".$user_id.".jpg";
+        // }
     
         //再次叠加
 
@@ -491,9 +488,12 @@ class User extends MobileBase
         else
         {
            
-        	$image = \think\Image::open(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
-        	// 给原图左上角添加水印并保存water_image.png
-        	$image->water($url_head_pp,\think\Image::TOUXIANG)->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
+            // $image = \think\Image::open(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
+            $image = \think\Image::open(IMGROOT_PATH . '/public/share/bg1.jpg');
+            
+            // 给原图左上角添加水印并保存water_image.png
+            // TOUXIANG
+        	$image->water($url_code,[45,670])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
