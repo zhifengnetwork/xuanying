@@ -342,21 +342,21 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
-        $userinfo = M('users')->where(['user_id'=>$user_id])->find();
+        $userinfo = M('users')->where(['user_id'=>$user_id])->field('user_id,level')->find();
         if(!$userinfo){
             $this->redirect('fenxiang_no');
             exit;
         }
-
-        if(!$userinfo['level']){
+        
+        if($userinfo['level'] > 0){
+            $this->redirect('fenxiang1');
+            //正在跳转
+        }else{
             $this->redirect('fenxiang_no');
-            exit;
         }
-
-        $this->redirect('fenxiang1');
-        //正在跳转
     }
-    
+
+
     /**
      * 没权限
      */
@@ -373,13 +373,12 @@ class User extends MobileBase
         
         $user_id = session('user.user_id');
 
-       
         if(!$user_id){
             $this->redirect('fenxiang_no');
             exit;
         }
         $userinfo = M('users')->where(['user_id'=>$user_id])->find();
-        if(!$userinfo || $userinfo['level']){
+        if(!$userinfo || !$userinfo['level']){
             $this->redirect('fenxiang_no');
             exit;
         }
@@ -471,7 +470,7 @@ class User extends MobileBase
         
         //得到二维码的绝对路径
 
-        $pic = "/www/wwwroot/www.dchqzg1688.com/public/share/picture_ok44/'.$user_id.'.jpg";
+        $pic = IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg";
         if( @fopen( $pic, 'r' ) )
         {
         	$pic = "/share/picture_ok44/".$user_id.".jpg";
@@ -487,7 +486,7 @@ class User extends MobileBase
     
         //再次叠加
 
-        $pic111 = "/www/wwwroot/www.dchqzg1688.com/public/share/picture_888/".$user_id.".jpg";
+        $pic111 = IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg";
         if( @fopen( $pic111, 'r' ) )
         {
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
