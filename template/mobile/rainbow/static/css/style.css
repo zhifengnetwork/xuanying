@@ -12137,7 +12137,7 @@ pre {
 	color: rgb(232, 25, 25);
 }
 .pic_1{
-	width: 98%;
+	width: 99%;
 	
 }
 .left_ear{
@@ -12164,4 +12164,32 @@ pre {
 	width: 49%;
 	height: 3.9rem;
 	display: inline-block;
+}
+.left_ear a{
+	display: inline-block;
+    width: 49.3%;
+    padding: 0;
+    margin: 0;
+}
+.right_ear a{
+	
+	display:inline-block;
+	height:3.9rem
+	
+}
+.left_img{
+   width: 100%!important;
+   height: 100%;!important	
+}
+.right_img{
+	width: 100%;
+	height: 100%;}
+
+.tuan333{
+	width: 100%;
+	height: 100%;
+	display: inline-block;
+}
+.price_2{
+	height: 3.9rem;
 }
