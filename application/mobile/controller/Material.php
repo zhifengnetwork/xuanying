@@ -17,6 +17,10 @@ class Material extends MobileBase {
      * @time 2019-3
      */
     public function index(){  
+		//检测权限
+		$level = M('Users')->where(['user_id'=>$_SESSION['think']['user']['user_id']])->value('level');
+		if(!$level)$this->error('您无权限查看此内容！');
+
         // 获取素材分类渲染到页面
         $catWhere = " show_in_nav=1";
         $category = M('material_cat')->field('cat_id, cat_name')->where($catWhere)->order('sort_order')->select();   
