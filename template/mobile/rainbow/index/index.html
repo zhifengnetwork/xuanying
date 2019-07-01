@@ -303,22 +303,23 @@
 			<div class="advertisement">
 				<div class="content">
 					<div class="le re fl">
-						<adv limit="1" item="v" pid="303">
+						<tpshop item="v" sql="select ad_link,ad_code,ad_name as title,bgcolor as style from tp_ad where pid=2 order by orderby asc limit 1">
 							<a href="{$v[ad_link]}">
 								<div class="td">
 									<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}" />
 								</div>
 							</a>
-						</adv>
+						</tpshop>
 					</div>
+					
 					<div class="le lefhe fr">
-						<adv limit="2" item="v" pid="304">
+						<tpshop item="v" sql="select ad_link,ad_code,ad_name as title,bgcolor as style from tp_ad where pid=2 order by orderby asc limit 1,2">
 							<a href="{$v[ad_link]}">
 								<div class="td">
 									<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}" />
 								</div>
 							</a>
-						</adv>
+						</tpshop>
 					</div>
 				</div>
 			</div>
@@ -332,7 +333,7 @@
 			</div>
 			<div class="hotsome">
 				<div class="bloc hottop">
-					<adv limit="1" item="v" pid="305">
+					<tpshop item="v" sql="select ad_link,ad_code,ad_name as title,bgcolor as style from tp_ad where pid=2 order by orderby asc limit 3,1">
 						<div class="le fl">
 							<a href="{$v[ad_link]}">
 								<div class="td">
@@ -340,8 +341,8 @@
 								</div>
 							</a>
 						</div>
-					</adv>
-					<adv limit="1" item="v" pid="306">
+					</tpshop>
+					<tpshop item="v" sql="select ad_link,ad_code,ad_name as title,bgcolor as style from tp_ad where pid=2 order by orderby asc limit 4,1">
 						<div class="le fr">
 							<a href="{$v[ad_link]}">
 								<div class="td">
@@ -349,15 +350,15 @@
 								</div>
 							</a>
 						</div>
-					</adv>
+					</tpshop>
 				</div>
 				<div class="bloc">
 					<div class="le foura">
-						<adv limit="4" item="v" pid="307">
+						<tpshop item="v" sql="select ad_link,ad_code,ad_name as title,bgcolor as style from tp_ad where pid=2 order by orderby asc limit 5,4">
 							<a href="{$v[ad_link]}">
 								<img src="{$v[ad_code]}" title="{$v[title]}" style="{$v[style]}" />
 							</a>
-						</adv>
+						</tpshop>
 					</div>
 				</div>
 			</div>

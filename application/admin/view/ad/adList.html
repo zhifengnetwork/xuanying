@@ -67,9 +67,10 @@
               <th align="center" abbr="article_time" axis="col6" class="">
                 <div style="text-align: center; width: 100px;" class="">新窗口</div>
               </th>
+			  <!--
               <th align="center" abbr="article_time" axis="col6" class="">
                 <div style="text-align: center; width: 100px;" class="">显示</div>
-              </th>
+              </th>-->
               <th align="center" abbr="article_time" axis="col6" class="">
                 <div style="text-align: center; width: 100px;" class="">排序</div>
               </th>              
@@ -139,7 +140,7 @@
                       <span class="no" onClick="changeTableVal('ad','ad_id','{$vo.ad_id}','target',this)" ><i class="fa fa-ban"></i>否</span>
                     </if>
                   </div>
-                </td>   
+                </td>   <!--
                 <td align="center" class="">
                   <div style="text-align: center; width: 100px;">
                     <if condition='$vo[enabled] eq 1'>
@@ -148,7 +149,7 @@
                       <span class="no" onClick="changeTableVal('ad','ad_id','{$vo.ad_id}','enabled',this)" ><i class="fa fa-ban"></i>否</span>
                     </if>
                   </div>
-                </td>                             
+                </td>      -->                       
               <td align="center">
                 <div style="text-align: center; width: 100px;">
                   <input type="text" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" onBlur="changeTableVal('ad','ad_id','{$vo.ad_id}','orderby',this)" size="4" value="{$vo.orderby}" />
@@ -156,7 +157,7 @@
               </td>
                 <td align="center" class="handle">
                   <div style="text-align: center; width: 100px;">                    
-                    <a class="btn red" onClick="delfunc(this)" data-url="{:U('Ad/adHandle')}" data-id="{$vo.ad_id}"><i class="fa fa-trash-o"></i>删除</a>                                                            
+                    <!--<a class="btn red" onClick="delfunc(this)" data-url="{:U('Ad/adHandle')}" data-id="{$vo.ad_id}"><i class="fa fa-trash-o"></i>删除</a>				-->                                              
                     <a href="{:U('Ad/ad',array('act'=>'edit','ad_id'=>$vo['ad_id']))}" class="btn blue"><i class="fa fa-pencil-square-o"></i>编辑</a> </div>
                   </div>
                 </td>

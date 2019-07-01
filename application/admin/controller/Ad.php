@@ -62,7 +62,7 @@ class Ad extends Base{
 		$where['enabled'] = 1;
         $count = $Ad->where($where)->count();// 查询满足要求的总记录数
         $Page = $pager = new Page($count,10);// 实例化分页类 传入总记录数和每页显示的记录数
-        $res = $Ad->where($where)->order('pid desc')->limit($Page->firstRow.','.$Page->listRows)->select();
+        $res = $Ad->where($where)->order('ad_id asc')->limit($Page->firstRow.','.$Page->listRows)->select();
         $list = array();
         if($res){
         	$media = array('图片','文字','flash');
@@ -82,7 +82,6 @@ class Ad extends Base{
         //判断API模块存在
         if(is_dir(APP_PATH."/api")) $this->assign('is_exists_api',1);
        
-        
         return $this->fetch();
     }
     
