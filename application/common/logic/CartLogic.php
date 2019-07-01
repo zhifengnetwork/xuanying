@@ -217,8 +217,8 @@ class CartLogic extends Model
 
 		$zk = 10;
         if(!$user['level'])$zk = 10;
-        if(($user['level'] == 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk1'];
-        if(($user['level'] > 1) && ($this->goods['cat_id'] == C('customize.gift_goods_cat25')))$zk = $this->goods['zk2'];
+        if(($user['level'] == 1) && (($this->goods['cat_id'] == C('customize.gift_goods_cat25')) || ($this->goods['cat_id'] == C('customize.gift_goods_cat'))))$zk = $this->goods['zk1'];
+        if(($user['level'] > 1) && (($this->goods['cat_id'] == C('customize.gift_goods_cat25')) || ($this->goods['cat_id'] == C('customize.gift_goods_cat'))))$zk = $this->goods['zk2'];
         $buyGoods['goods_price'] = $buyGoods['member_goods_price'] = floor(($buyGoods['goods_price'] * $zk)*10000)/100000;
 
         $cart = new Cart();
@@ -936,7 +936,21 @@ class CartLogic extends Model
     {
         $total_fee = $goods_fee = $goods_num = 0;//初始化数据。商品总额/节约金额/商品总共数量
         if ($cartList) {
-            foreach ($cartList as $cartKey => $cartItem) {
+            //$level = M('Users')->where(['user_id'=>$this->user_id])->value('level');
+            foreach ($cartList as $cartKey => $cartItem) {/*
+                if(($cartItem['cat_id'] == C('customize.gift_goods_cat')) || ($cartItem['cat_id'] == C('customize.gift_goods_cat25'))){
+                    $goods = M('Goods')->field('zk1,zk2')->find($cartItem['goods_id']);
+                    $zk = 10;
+
+                    if(!isset($level) || ($level == 0))$zk = 10;
+                    if(isset($level) && ($level == 1))$zk = $goods['zk1'];
+                    if(isset($level) && ($level > 1))$zk = $goods['zk2'];    
+
+                    if($zk != 10){
+                        $goods_fee = (floor(($cartItem['goods_fee'] * $zk))/10); 
+                    }
+                }*/
+
                 $total_fee += $cartItem['goods_fee'];
                 $goods_fee += $cartItem['cut_fee'];
                 $goods_num += $cartItem['goods_num'];

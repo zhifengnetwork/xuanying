@@ -123,7 +123,12 @@ class Goods extends MobileBase
 				else if($user_level > 1)
 					$secondCategoryList[$k]['child'][$k1]['zk'] = $v1['zk2']==0 ? $zk : $v1['zk2'];
 				else
-                    $secondCategoryList[$k]['child'][$k1]['zk'] = $zk;                   
+                    $secondCategoryList[$k]['child'][$k1]['zk'] = $zk;    
+
+                if(($secondCategoryList[$k]['child'][$k1]['zk'] < 10) && ($v1['cat_id'] == C('customize.gift_goods_cat'))){
+                    $num = M('Order_goods')->alias('OG')->join('order O','OG.order_id=O.order_id','left')->where(['O.user_id'=>$_SESSION['think']['user']['user_id'],'OG.goods_id'=>$secondCategoryList[$k]['child'][$k1]['goods_id'],'O.pay_status'=>1,'O.order_status'=>['not in',[3,5]]])->sum('OG.goods_num');
+                    if(!$num)$secondCategoryList[$k]['child'][$k1]['zk'] = 10;
+                }
 
 				$secondCategoryList[$k]['child'][$k1]['now_price'] = floor($v1['shop_price'] * $secondCategoryList[$k]['child'][$k1]['zk'])/10;
 				if($v1['cat_id'] == C('customize.gift_goods_cat25'))$secondCategoryList[$k]['child'][$k1]['market_price'] = $v1['shop_price'];           
@@ -372,12 +377,19 @@ class Goods extends MobileBase
         $this->assign('recommend_goods', $recommend_goods);
         $this->assign('goods', $goods);
         $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
+        $this->assign('gift_goods_cat', C('customize.gift_goods_cat'));
         
         $zk = 10;
         $level = $_SESSION['think']['user']['user_id'] ? M('Users')->where(['user_id'=>$_SESSION['think']['user']['user_id']])->value('level') : 0;
         if(!isset($level) || ($level == 0))$zk = 10;
         if(isset($level) && ($level == 1))$zk = $goods['zk1'];
         if(isset($level) && ($level > 1))$zk = $goods['zk2'];
+
+        if(($zk < 10) && ($goods['cat_id'] == C('customize.gift_goods_cat'))){
+            $num = M('Order_goods')->alias('OG')->join('order O','OG.order_id=O.order_id','left')->where(['O.user_id'=>$_SESSION['think']['user']['user_id'],'OG.goods_id'=>$goods_id,'O.pay_status'=>1,'O.order_status'=>['not in',[3,5]]])->sum('OG.goods_num');
+            if(!$num)$zk = 10;
+        }
+
         $this->assign('zk', $zk);
         $goods_price = (!$zk && ($goods['cat_id'] != C('customize.gift_goods_cat25'))) ? $goods['shop_price'] : floor(($goods['shop_price'] * $zk))/10;
         $this->assign('goods_price', $goods_price);

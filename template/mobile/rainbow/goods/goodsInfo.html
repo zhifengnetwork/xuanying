@@ -88,23 +88,23 @@
                 	<div class="market_wrap">
                 		<!--折后价-->
                 		<span class="price" id="price">￥{$goods_price}</span>
-                		<if condition="$goods.cat_id eq $gift_goods_cat25">
+                		<if condition="$goods.cat_id eq $gift_goods_cat25 or $goods.cat_id eq $gift_goods_cat">
                 		<div class="rank_list">
                             <if condition="$level eq 0">
-                            <span class="lose wrap_com">普通会员原价&nbsp;&nbsp;</span>
+                            <span class="lose wrap_com"><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>普通会员原价&nbsp;&nbsp;</span>
                             <elseif condition="$level eq 1" />
-                            <span class="lose wrap_com">9.9VIP等级{$goods.zk1}折&nbsp;&nbsp;</span>
+                            <span class="lose wrap_com"><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>9.9VIP等级{$goods.zk1}折&nbsp;&nbsp;</span>
                             <else />
-                            <span class="lose wrap_com">580VIP以上等级{$goods.zk2}折&nbsp;&nbsp;</span>
+                            <span class="lose wrap_com"><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>580VIP以上等级{$goods.zk2}折&nbsp;&nbsp;</span>
                             </if>
                 			<span class="icon"></span>
                 		</div>
                 		<!--下拉框-->
                 		<div class="popout_wrap">
                 			<ul class="popout list_wrap">
-                				<li>580VIP及以上等级{$goods.zk1}折</li>
-                				<li>9.9VIP等级{$goods.zk2}折</li>
-                				<li>普通用户原价</li>
+                				<li><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>580VIP及以上等级{$goods.zk1}折</li>
+                				<li><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>9.9VIP等级{$goods.zk2}折</li>
+                				<li><if condition="$goods.cat_id eq $gift_goods_cat">第二次购买</if>普通用户原价</li>
                 			</ul>
 	                	</div>
                         </if>
@@ -735,7 +735,7 @@
         join_cart.hide();
         join_cart_li.hide();
 
-        if ((is_virtual == 1) || ({$goods.cat_id} == {$gift_goods_cat25})) {
+        if ((is_virtual == 1) || ({$goods.cat_id} == {$gift_goods_cat25}) || ({$goods.cat_id} == {$gift_goods_cat})) {
             buy_now_li.find('.choise_num').html('立即购买');
             buy_now_li.width('100%').show();
             buy_now.html('立即购买').show();
@@ -942,7 +942,7 @@
                     $('input[name="deposit_price"]').attr('value', data.result.goods.deposit_price);//订金
                     $('input[name="balance_price"]').attr('value', data.result.goods.balance_price);//尾款
                     $('input[name="ing_amount"]').attr('value', data.result.goods.ing_amount);//已预订了多少个
-                    if(data.result.goods.cat_id == {$gift_goods_cat25})
+                    if((data.result.goods.cat_id == {$gift_goods_cat25}) || (data.result.goods.cat_id == {$gift_goods_cat}))
                         $('#market_price').html(data.result.goods.zk_price);
                     else
                         $('#market_price').html(data.result.goods.market_price);
@@ -1328,11 +1328,12 @@
             $("#goods_price").html(goods_price); //变动价格显示
             $("#price").html("<em>￥</em>" + goods_price); //变动价格显示
         }
-        if({$goods.cat_id} == {$gift_goods_cat25}){
+        if(({$goods.cat_id} == {$gift_goods_cat25}) || ({$goods.cat_id} == {$gift_goods_cat})){
             $('#market_price_title').html('折扣：');
             $('#market_price').html('{$zk}折');
             goods_price = Math.floor(goods_price * {$zk} * 100)/1000;
             $("#price").html("<em>￥</em>" + goods_price);
+            $("#goods_price").html(goods_price);
             //$('#price1').html(spec_goods_price_item['price']);
         }else
             $('#market_price_title').html('市场价：');
