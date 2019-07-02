@@ -274,6 +274,7 @@ function gift_commission($order_id){
           
         //上级        
         $leader = $Users->where(['user_id'=>$v['user_id']])->value('first_leader');
+		//$leader_leader = $leader ? $Users->where(['user_id'=>$leader])->value('first_leader') : 0;
         //上级的上级
         if($leader && !$AccountLog->where("user_id=$leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=107")->count()){
             $leader_level = $Users->where(['user_id'=>$leader])->value('level');
@@ -285,7 +286,7 @@ function gift_commission($order_id){
                 $AccountLog->add(['user_id'=>$leader,'user_money'=>$lev1,'change_time'=>time(),'desc'=>'一级返佣','order_sn'=>$v['order_sn'],'order_id'=>$v['order_id'],'states'=>107]);
             }
         }
-        
+
         if($leader_leader && !$AccountLog->where("user_id=$leader_leader and order_sn='{$v['order_sn']}' and order_id={$v['order_id']} and 'status'=108")->count()){
             $leader_leader_level = $Users->where(['user_id'=>$leader_leader])->value('level');
             //上级必须不低于订单用户的级别
