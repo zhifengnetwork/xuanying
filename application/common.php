@@ -242,6 +242,8 @@ function jichadaili($order_id,$old_level=0)
 	$UsersLogic = new \app\common\logic\UsersLogic();
 	$arr = $UsersLogic->getUserLevTopAll($userId,$arr); 
 	foreach($arr as $v){
+		$leader_level = M('Users')->where(['user_id'=>$v])->value('level');
+		if($leader_level < $user_level)continue;
         if(!$Yeji->where(['uid'=>$v,'order_id'=>$order_id])->count())
 		    $Yeji->add(['uid'=>$v,'money'=>$total_amount,'addtime'=>time(),'order_id'=>$order_id]);
 	}
