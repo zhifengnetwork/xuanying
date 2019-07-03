@@ -405,7 +405,7 @@ class User extends MobileBase
         }
 
         $head_pic_url = M('users')->where(['user_id'=>$user_id])->value('head_pic');
-
+       
         $logic = new ShareLogic();
         $ticket = $logic->get_ticket($user_id);
 
@@ -437,7 +437,6 @@ class User extends MobileBase
             $logo_url->thumb(152, 152)->save($url_code , null, 100);
         }
 
-          
         $head_url = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
         if( @fopen( $head_url, 'r' ) )
         {
@@ -488,7 +487,8 @@ class User extends MobileBase
 
         //得到二维码的绝对路径
 
-        $pic = IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg";
+        $pic = IMGROOT_PATH."/public/share/picture_ok44/".$user_id.".jpg";
+              
         if( @fopen( $pic, 'r' ) )
         {
             $pic = "/public/share/picture_ok44/".$user_id.".jpg";
@@ -502,7 +502,7 @@ class User extends MobileBase
             $pic = "/public/share/picture_ok44/".$user_id.".jpg";
         }
 
-
+        
         $picture = $pic.'?v='.time();
 
         $this->assign('pic',$picture);
