@@ -369,7 +369,7 @@ class User extends MobileBase
      */
     public function fenxiang1()
     {
-        
+       
         $user_id = session('user.user_id');
 
         if(!$user_id){
@@ -381,9 +381,9 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
-	
 		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
         if(I('refresh') == '1'){
+          
             //删掉文件
             @unlink(IMGROOT_PATH.'/public/share/code/'.$user_id.'.jpg');//删除头像
             @unlink(IMGROOT_PATH.'/public/share/head/'.$user_id.'.jpg');//删除头像
@@ -391,17 +391,17 @@ class User extends MobileBase
             @unlink(IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg");
 
             //强制获取头像
-            $openid = session('user.openid');
-            $access_token = access_token();
-            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-            $resp = httpRequest($url, "GET");
-            $res = json_decode($resp, true);
+            // $openid = session('user.openid');
+            // $access_token = access_token();
+            // $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+            // $resp = httpRequest($url, "GET");
+            // $res = json_decode($resp, true);
            
-            $head_pic = $res['headimgurl'];
-            if($head_pic){
-                //得到头像
-                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
-            }
+            // $head_pic = $res['headimgurl'];
+            // if($head_pic){
+            //     //得到头像
+            //     M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
+            // }
         }
 
         $head_pic_url = M('users')->where(['user_id'=>$user_id])->value('head_pic');
@@ -434,7 +434,7 @@ class User extends MobileBase
         if($logo_url_logo_height > 420 || $logo_url_logo_width > 420){
             //压缩图片
             $url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
-            $logo_url->thumb(152, 152)->save($url_code , null, 100);
+            $logo_url->thumb(156, 156)->save($url_code , null, 100);
         }
 
         $head_url = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
@@ -458,7 +458,7 @@ class User extends MobileBase
         if($logo_height > 260 || $logo_width > 260){
             //压缩图片
              $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
-             $logo->thumb(30, 30)->save($url_head_file , null, 100);
+             $logo->thumb(32, 32)->save($url_head_file , null, 100);
         }
         
       
@@ -478,7 +478,7 @@ class User extends MobileBase
             
             // 给原图左上角添加水印并保存water_image.png
             // TOUXIANG
-        	$image->water($url_code,[187,318])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
+        	$image->water($url_code,[180,308])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
@@ -497,7 +497,7 @@ class User extends MobileBase
         {
             $image = \think\Image::open(IMGROOT_PATH . $picture);
             // 给原图左上角添加水印并保存water_image.png
-            $image->water($url_head_file,[250,382])->save(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
+            $image->water($url_head_file,[246,378])->save(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
             
             $pic = "/public/share/picture_ok44/".$user_id.".jpg";
         }
