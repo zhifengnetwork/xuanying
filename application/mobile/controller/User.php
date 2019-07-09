@@ -478,7 +478,7 @@ class User extends MobileBase
             
             // 给原图左上角添加水印并保存water_image.png
             // TOUXIANG
-        	$image->water($url_code,[189,320])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
+        	$image->water($url_code,[187,318])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
