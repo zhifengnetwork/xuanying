@@ -156,7 +156,7 @@ return array(
         array('name' => '会员管理', 'child' => array(
             array('name' => '会员列表', 'act' => 'index', 'op' => 'User'),
             array('name' => '分销会员列表', 'act' => 'agent_index', 'op' => 'User'),
-            array('name' => '快速更改等级', 'act' => 'changelevel', 'op' => 'User'),
+            //array('name' => '快速更改等级', 'act' => 'changelevel', 'op' => 'User'),
             // array('name'=>'会员等级','act'=>'levelList','op'=>'User'),
         )),
         array('name' => '充值提现', 'child' => array(
