@@ -55,7 +55,7 @@ class Index extends Base {
         // "{"code":"0","msgId":"19031122454723995","time":"20190311224547","errorMsg":""}"
     }
 
-    public function index(){      
+    public function index(){
 
         // 如果是手机跳转到 手机模块
         if(isMobile()){

@@ -730,7 +730,7 @@
 </div>
 <div id="goTop"> <a href="JavaScript:void(0);" id="btntop"><i class="fa fa-angle-up"></i></a><a href="JavaScript:void(0);" id="btnbottom"><i class="fa fa-angle-down"></i></a></div>
 <script>
-    ($('#cat_id').val() != {:C('customize.gift_goods_cat25')}) ? $('.zk').hide() : $('.zk').show();
+    (($('#cat_id').val() != {:C('customize.gift_goods_cat25')}) && ($('#cat_id').val() != {:C('customize.goods_cat99')})) ? $('.zk').hide() : $('.zk').show();
 
     /** 商品规格相关 js*/
     $(function(){
@@ -858,7 +858,7 @@
     $(function(){
         $(document).on("change",'#cat_id',function(){
             var v = $(this).val();
-            (v != {:C('customize.gift_goods_cat25')}) ? $('.zk').hide() : $('.zk').show();
+            ((v != {:C('customize.gift_goods_cat25')}) && (v != {:C('customize.goods_cat99')})) ? $('.zk').hide() : $('.zk').show();
             get_category(v,'cat_id_2','0');
             if(v==0){
                 $('#cat_id_2').empty().html("<option value='0'>请选择商品分类</option>");

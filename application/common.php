@@ -213,7 +213,7 @@ function jichadaili($order_id,$old_level=0)
    	$total_amount = 0;
     $user_level = M('Users')->where(['user_id'=>$userId])->value('level');
     foreach ($goods_list as $k => $v) {
-		if($v['cat_id'] == C('customize.gift_goods_type'))continue;
+		//if($v['cat_id'] == C('customize.gift_goods_cat'))continue;
         $goodId = $v['goods_id'];
         $goodNum = $v['goods_num'];
 
@@ -257,6 +257,7 @@ function gift_commission($order_id){
     //订单用户的级别
     $user_level = $Users->where(['user_id'=>$goodslist[0]['user_id']])->value('level');
     foreach($goodslist as $v){
+        if(!in_array($v['goods_id'],C('customize.giftgoods')))continue;
         if($v['cat_id'] == C('customize.VIP99')){ //9.9VIP会员商品
             $level = $Users->where(['user_id'=>$v['user_id']])->value('level');
             if($level < C('customize.lev1')){ 
@@ -1326,8 +1327,8 @@ function update_pay_status($order_sn, $ext = array())
         gift_commission($order['order_id']);
 
         //区域地理分钱
-        $regional_agency = new \app\common\logic\RegionalAgencyLogic();
-        $regional_agency->fenqian($order['order_id']);
+        //$regional_agency = new \app\common\logic\RegionalAgencyLogic();
+        //$regional_agency->fenqian($order['order_id']);
 
         //虚拟服务类商品支付
         if ($order['prom_type'] == 5) {
@@ -1372,7 +1373,7 @@ function update_pay_status($order_sn, $ext = array())
 
 
         // 买了399的东西
-        can_super_nsign($order['order_id'], $order['user_id']);
+        //can_super_nsign($order['order_id'], $order['user_id']);
     }
 }
 

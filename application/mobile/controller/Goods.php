@@ -125,9 +125,11 @@ class Goods extends MobileBase
 				else
                     $secondCategoryList[$k]['child'][$k1]['zk'] = $zk;    
 
-                if(($secondCategoryList[$k]['child'][$k1]['zk'] < 10) && ($v1['cat_id'] == C('customize.gift_goods_cat'))){
+                $secondCategoryList[$k]['child'][$k1]['sec'] = 0;    
+                if(($secondCategoryList[$k]['child'][$k1]['zk'] < 10) && ($v1['cat_id'] == C('customize.gift_goods_cat')) && (in_array($v1['goods_id'],C('customize.giftgoods')))){
                     $num = M('Order_goods')->alias('OG')->join('order O','OG.order_id=O.order_id','left')->where(['O.user_id'=>$_SESSION['think']['user']['user_id'],'OG.goods_id'=>$secondCategoryList[$k]['child'][$k1]['goods_id'],'O.pay_status'=>1,'O.order_status'=>['not in',[3,5]]])->sum('OG.goods_num');
                     if(!$num)$secondCategoryList[$k]['child'][$k1]['zk'] = 10;
+                    $secondCategoryList[$k]['child'][$k1]['sec'] = 1;
                 }
 
 				$secondCategoryList[$k]['child'][$k1]['now_price'] = floor($v1['shop_price'] * $secondCategoryList[$k]['child'][$k1]['zk'])/10;
@@ -374,6 +376,8 @@ class Goods extends MobileBase
 
         $recommend_goods = M('goods')->where("is_recommend=1 and is_on_sale=1 and cat_id = {$goods['cat_id']}")->cache(7200)->limit(9)->field("goods_id, goods_name, shop_price")->select();
 
+        $goods['sec'] = (!in_array($goods_id,C('customize.giftgoods'))) ? 0 : 1;
+
         $this->assign('recommend_goods', $recommend_goods);
         $this->assign('goods', $goods);
         $this->assign('gift_goods_cat25', C('customize.gift_goods_cat25'));
@@ -385,7 +389,7 @@ class Goods extends MobileBase
         if(isset($level) && ($level == 1))$zk = $goods['zk1'];
         if(isset($level) && ($level > 1))$zk = $goods['zk2'];
 
-        if(($zk < 10) && ($goods['cat_id'] == C('customize.gift_goods_cat'))){
+        if(($zk < 10) && ($goods['cat_id'] == C('customize.gift_goods_cat')) && (in_array($goods_id,C('customize.giftgoods')))){
             $num = M('Order_goods')->alias('OG')->join('order O','OG.order_id=O.order_id','left')->where(['O.user_id'=>$_SESSION['think']['user']['user_id'],'OG.goods_id'=>$goods_id,'O.pay_status'=>1,'O.order_status'=>['not in',[3,5]]])->sum('OG.goods_num');
             if(!$num)$zk = 10;
         }

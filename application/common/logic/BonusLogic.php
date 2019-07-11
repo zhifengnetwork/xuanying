@@ -95,7 +95,7 @@ class BonusLogic extends Model
         	return false;
         }
 		$goods = $this->goods();
-		if($this->catId == C('customize.gift_goods_cat25')){
+		if(($this->catId == C('customize.gift_goods_cat25')) || ($this->catId == C('customize.goods_cat99')) || (($this->catId == C('customize.gift_goods_cat')) && !in_array($this->goodId,C('customize.giftgoods')))){
 			$goods['shop_price'] = floor($goods['shop_price'] * $this->zk)/10;
 			$commission_rate = M('goods_commission')->field('lev1 as commission_rate,lev2 as commission_rate2,type')->find($this->goodId);
 		}elseif($this->catId == C('customize.gift_goods_cat'))
@@ -195,7 +195,7 @@ class BonusLogic extends Model
 
 
 	public function bonus($meetUser,$price)
-	{
+	{   return;
 		$logName  = '级差奖';
 		//获取分红比例
 		$rateArr  = $this->get_js_rate();
