@@ -378,7 +378,7 @@ class Api extends Base
         $host = "https://wuliu.market.alicloudapi.com";//api访问链接
         $path = "/kdi";//API访问后缀
         $method = "GET";
-        $appcode = 'c5ccb196109848fe8ea5e1668410132a';//替换成自己的阿里云appcode
+        $appcode = '807a5e8bf9e94595965aaff81da2ed96';//替换成自己的阿里云appcode
         $headers = array();
         array_push($headers, "Authorization:APPCODE " . $appcode);
         $querys = "no=".$invoice_no."&type=".$shipping_code;  //参数写在这里
