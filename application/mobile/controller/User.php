@@ -391,17 +391,18 @@ class User extends MobileBase
             @unlink(IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg");
 
             //强制获取头像
-            // $openid = session('user.openid');
-            // $access_token = access_token();
-            // $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-            // $resp = httpRequest($url, "GET");
-            // $res = json_decode($resp, true);
+            $openid = session('user.openid');
+            $access_token = access_token();
+            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+            $resp = httpRequest($url, "GET");
+            $res = json_decode($resp, true);
            
-            // $head_pic = $res['headimgurl'];
-            // if($head_pic){
-            //     //得到头像
-            //     M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
-            // }
+            $head_pic = $res['headimgurl'];
+            if($head_pic){
+                //得到头像
+                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
+            }
+            
         }
 
         $head_pic_url = M('users')->where(['user_id'=>$user_id])->value('head_pic');
