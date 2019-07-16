@@ -457,9 +457,14 @@ class User extends MobileBase
  
         //头像变成200
         if($logo_height > 35 || $logo_width > 35){
+
             //压缩图片
              $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
              $logo->thumb(32, 32)->save($url_head_file , null, 100);
+
+        }else{
+            
+            $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
         }
         
         //再次叠加
