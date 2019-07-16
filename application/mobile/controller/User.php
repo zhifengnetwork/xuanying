@@ -387,7 +387,7 @@ class User extends MobileBase
             //删掉文件
             @unlink(IMGROOT_PATH.'/public/share/code/'.$user_id.'.jpg');//删除头像
             @unlink(IMGROOT_PATH.'/public/share/head/'.$user_id.'.jpg');//删除头像
-            @unlink(IMGROOT_PATH."/public/share/picture_ok44/'.$user_id.'.jpg");//删除 44
+            @unlink(IMGROOT_PATH."/public/share/picture_ok44/".$user_id.".jpg");//删除 44
             @unlink(IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg");
 
             //强制获取头像
