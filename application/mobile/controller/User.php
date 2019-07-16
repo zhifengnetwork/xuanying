@@ -455,14 +455,12 @@ class User extends MobileBase
         $logo_height = $logo->width();
  
         //头像变成200
-        if($logo_height > 260 || $logo_width > 260){
+        if($logo_height > 35 || $logo_width > 35){
             //压缩图片
              $url_head_file = IMGROOT_PATH . '/public/share/head/'.$user_id.'.jpg';
              $logo->thumb(32, 32)->save($url_head_file , null, 100);
         }
         
-      
-    
         //再次叠加
 
         $pic111 = IMGROOT_PATH."/public/share/picture_888/".$user_id.".jpg";
@@ -472,7 +470,6 @@ class User extends MobileBase
         }
         else
         {
-           
             // $image = \think\Image::open(IMGROOT_PATH . '/public/share/picture_ok44/'.$user_id.'.jpg');
             $image = \think\Image::open(IMGROOT_PATH . '/public/share/bg1.jpg');
             
