@@ -3,8 +3,44 @@ namespace app\mobile\controller;
 
 use Think\Db;
 use app\common\logic\wechat\WechatUtil;
+use app\common\model\Users as UserModel;
 
 class Index extends MobileBase {
+    public $user_id = 0;
+    public $user = array();
+
+    /*
+    * 初始化操作
+    */
+    public function _initialize()
+    {
+        parent::_initialize();
+        if (session('?user')) {
+            $User = new UserModel();
+            $session_user = session('user');
+            $this->user = $User->where('user_id', $session_user['user_id'])->find();
+            if(!empty($this->user->auth_users)){
+                $session_user = array_merge($this->user->toArray(), $this->user->auth_users[0]);
+                session('user', $session_user);  //覆盖session 中的 user
+            }
+            $this->user_id = $this->user['user_id'];
+            $this->assign('user', $this->user); //存储用户信息0
+        }
+        $nologin = array(
+            'login', 'pop_login', 'do_login', 'logout', 'verify', 'set_pwd', 'finished',
+            'verifyHandle', 'reg', 'send_sms_reg_code', 'find_pwd', 'check_validate_code',
+            'forget_pwd', 'check_captcha', 'check_username', 'send_validate_code', 'express' , 'bind_guide', 'bind_account','bind_reg'
+        );
+        $is_bind_account = tpCache('basic.is_bind_account');
+        if (!$this->user_id && !in_array(ACTION_NAME, $nologin)) {
+            if(strstr($_SERVER['HTTP_USER_AGENT'],'MicroMessenger') && $is_bind_account){
+                header("location:" . U('Mobile/User/bind_guide'));//微信浏览器, 调到绑定账号引导页面
+            }else{
+                header("location:" . U('Mobile/User/login'));
+            }
+            exit;
+        }
+    }
 
     public function index(){
         // $diy_index = M('mobile_template')->where('is_index=1')->field('template_html,block_info')->find();
@@ -41,7 +77,13 @@ class Index extends MobileBase {
 
 		//获取前两条公告
 		$articlelist = M('article')->field('article_id,title,description')->where(['cat_id'=>6,'is_open'=>1])->order('add_time desc')->limit('0,2')->select();
-		$this->assign('articlelist',$articlelist);
+        $this->assign('articlelist',$articlelist);
+        
+        $first_leader = I('get.first_leader/d',0);
+        if($first_leader){ //绑定上下级
+            $user_id = session('user.user_id');
+            share_deal_after($user_id,$first_leader);
+        }
 
         //秒杀商品
 		$now_day = date('Y-m-d');

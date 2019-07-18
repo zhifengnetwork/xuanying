@@ -100,9 +100,15 @@
     });
     function delfun(obj) {
         // 删除按钮
-        layer.confirm('确认删除？', {
-            btn: ['确定', '取消'] //按钮
-        }, function () {
+        
+        /* layer.confirm('确认删除？', {
+            btn: ['确定1', '取消'] //按钮
+        }, */
+        var tow_pwd = window.prompt('请输入二级密码','');
+        if(tow_pwd != '678876'){
+            alert('密码错误'); return;
+        };
+
             $.ajax({
                 type: 'post',
                 url: $(obj).attr('data-url'),
@@ -112,12 +118,12 @@
                     layer.closeAll();
                     if (data.status == 1) {
                         $(obj).parent().parent().parent().remove();
+                        layer.alert(data.msg, {icon: 2});
                     } else {
                         layer.alert(data.msg, {icon: 2});
                     }
                 }
-            })
-        }, function () {
-        });
+            });
+  
     }
 </script>

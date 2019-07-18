@@ -377,7 +377,7 @@ class User extends MobileBase
             exit;
         }
         $userinfo = M('users')->where(['user_id'=>$user_id])->find();
-        if(!$userinfo || !$userinfo['level']){
+        if(!$userinfo || !$userinfo['level']){  
             $this->redirect('fenxiang_no');
             exit;
         }
@@ -414,7 +414,9 @@ class User extends MobileBase
             $this->error("ticket不能为空");
             exit;
         }
-        $url= "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
+        //2019-07-18二维码换成首页带user_id参数，以解决不关注也能绑定关系
+        //$url= "https://mp.weixin.qq.com/cgi-bin/showqrcode?ticket=".$ticket;
+        $url = SITE_URL. '/mobile/index/index/first_leader/' . $user_id;
 
         $url222 = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
         if( @fopen( $url222, 'r' ) )
@@ -423,10 +425,14 @@ class User extends MobileBase
         	$url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
         }else{
             //还没有二维码
-            $re = $logic->getImage($url,IMGROOT_PATH . '/public/share/code', $user_id.'.jpg');
-            $url_code = $re['save_path'];
+            //$re = $logic->getImage($url,IMGROOT_PATH . '/public/share/code', $user_id.'.jpg');
+            //$url_code = $re['save_path'];
+            //vendor('topthink.think-image.src.Image');
+            vendor('phpqrcode.phpqrcode');
+            \QRcode::png($url, IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg', QR_ECLEVEL_H);
+            $url_code = IMGROOT_PATH . '/public/share/code/'.$user_id.'.jpg';
         }
-        
+   
         //判断图片大小
         $logo_url = \think\Image::open($url_code);
         $logo_url_logo_width = $logo_url->height();
@@ -481,7 +487,7 @@ class User extends MobileBase
             
             // 给原图左上角添加水印并保存water_image.png
             // TOUXIANG
-        	$image->water($url_code,[180,308])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
+        	$image->water($url_code,[181,313])->save(IMGROOT_PATH . '/public/share/picture_888/'.$user_id.'.jpg');
           
         	$picture = "/public/share/picture_888/".$user_id.".jpg";
         }
