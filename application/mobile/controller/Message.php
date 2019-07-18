@@ -72,7 +72,8 @@ class Message extends Controller
 
             //注册用户
             $new_data = array(
-                'openid' => $xiaji_openid
+                'openid'   => $xiaji_openid,
+                'reg_time' => time()
             );
             $xiaji_user_id = M('users')->add($new_data);
 

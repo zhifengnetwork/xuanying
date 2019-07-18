@@ -51,6 +51,10 @@ class Index extends MobileBase {
 		} else {
 			$flash_now_time = $now_time - 1;
 		} 
+        if($flash_now_time == -1){
+            $flash_now_time = 23; 
+            $now_day = date('Y-m-d',strtotime('-1 day'));
+        }
 		$start_time = strtotime($now_day . " " . $flash_now_time . ":00:00");
         $end_time = $start_time+7200;   //结束时间
         $flash_sale_list = Db::name('goods')->alias('g')
