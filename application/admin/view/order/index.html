@@ -203,7 +203,7 @@
 			location.href = location.href;
 		});
 		
-		ajax_get_table('search-form2',1);
+		ajax_get_table('search-form2',"{$page}");
 		
 		$('.ico-check ' , '.hDivBox').click(function(){
 			$('tr' ,'.hDivBox').toggleClass('trSelected' , function(index,currentclass){

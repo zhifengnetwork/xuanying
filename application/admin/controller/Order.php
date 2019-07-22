@@ -40,6 +40,10 @@ class Order extends Base {
      *订单首页
      */
     public function index(){
+        
+        $page  = I('page',1);
+        $this->assign('page',$page);
+
         return $this->fetch();
     }
 
@@ -73,6 +77,7 @@ class Order extends Base {
         $nickname ? $condition['users.nickname'] = ['like', '%' . trim($nickname) . '%'] : false;
         $mobile ? $condition['order.mobile'] = ['like', '%' . trim($mobile) . '%'] : false;
         $invoice_no ? $condition['delivery.invoice_no'] = trim($invoice_no) : false;
+
         
         I('order_status') != '' ? $condition['order.order_status'] = I('order_status') : false;
         I('pay_status') != '' ? $condition['order.pay_status'] = I('pay_status') : false;
@@ -100,27 +105,49 @@ class Order extends Base {
                     break;
             }
         }
-
+       
         I('shipping_status') != '' ? $condition['order.shipping_status'] = I('shipping_status') : false;
         I('user_id') ? $condition['order.user_id'] = trim(I('user_id')) : false;
-        $sort_order = I('order_by','DESC').' '.I('sort');
-        $sort_order = 'order.'.$sort_order;
+
+        $sort = I('sort');
+        if($sort){
+            $sort_order = I('order_by','DESC').' '.$sort;
+            $sort_order = 'order.'.$sort_order;
+        }
+       
         $count = Db::name('order')->alias('order')
                 ->join('users', 'users.user_id = order.user_id', 'LEFT')
                 ->join('delivery_doc delivery', 'delivery.order_id = order.order_id', 'LEFT')
                 ->where($condition)->count();
         $Page  = new AjaxPage($count,20);
         $show = $Page->show();
-        $orderList = Db::name('order')->alias('order')
-                    ->join('users', 'users.user_id = order.user_id', 'LEFT')
-                    ->join('delivery_doc delivery', 'delivery.order_id = order.order_id', 'LEFT')
-                    ->where($condition)
-                    ->limit($Page->firstRow,$Page->listRows)
-                    ->field('order.*')
-                    ->order($sort_order)->select();
+       
+        //有排序
+        if($sort_order){
+            $orderList = Db::name('order')->alias('order')
+            ->join('users', 'users.user_id = order.user_id', 'LEFT')
+            ->join('delivery_doc delivery', 'delivery.order_id = order.order_id', 'LEFT')
+            ->where($condition)
+            ->limit($Page->firstRow,$Page->listRows)
+            ->field('order.*')
+            ->order($sort_order)
+            ->select();
+        }else{
+            $orderList = Db::name('order')->alias('order')
+            ->join('users', 'users.user_id = order.user_id', 'LEFT')
+            ->join('delivery_doc delivery', 'delivery.order_id = order.order_id', 'LEFT')
+            ->where($condition)
+            ->limit($Page->firstRow,$Page->listRows)
+            ->field('order.*')
+            ->select();
+        }
+        
         $this->assign('orderList',$orderList);
         $this->assign('page',$show);// 赋值分页输出
         $this->assign('pager',$Page);
+
+        $this->assign('p',I('p'));
+
         return $this->fetch();
     }
 
@@ -619,6 +646,10 @@ exit("请联系萱莹集团客服购买高级版支持此功能");
         }
         $this->assign('invoice_no', $invoice_no);
         $this->assign('result', $result);
+
+        $page = input('page');
+        $this->assign('page', $page);
+
         $this->assign('order', $order);
         return $this->fetch();
     }
