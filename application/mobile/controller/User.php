@@ -382,16 +382,11 @@ class User extends MobileBase
         $session_head_pic = session('user.head_pic');
         if(strpos($session_head_pic,'thumb') !== false){ 
             
-            //强制获取头像
-            $openid = session('user.openid');
-            $access_token = access_token();
-            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
-            $resp = httpRequest($url, "GET");
-            $res = json_decode($resp, true);
-        
-            $head_pic = $res['headimgurl'];
+            $wxuser = $this->GetOpenid(); //授权获取openid以及微信用户信息
+            $head_pic = $wxuser['head_pic'];
             if($head_pic){
                 //得到头像
+                $openid = session('user.openid');
                 M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
                 session('user.head_pic',$head_pic);
             }else{
