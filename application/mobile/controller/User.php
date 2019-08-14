@@ -381,6 +381,32 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
+
+
+        //判断头像对不对
+        $session_head_pic = session('user.head_pic');
+        if(strpos($session_head_pic,'thumb') !== false){ 
+            
+            //强制获取头像
+            $openid = session('user.openid');
+            $access_token = access_token();
+            $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$openid.'&lang=zh_CN';
+            $resp = httpRequest($url, "GET");
+            $res = json_decode($resp, true);
+        
+            $head_pic = $res['headimgurl'];
+            if($head_pic){
+                //得到头像
+                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
+                session('user.head_pic',$head_pic);
+            }else{
+                echo "<h1>无法获取头像，请先关注公众号</h1>";
+                exit;
+            }
+
+        }
+
+
 		define('IMGROOT_PATH', str_replace("\\","/",realpath(dirname(dirname(__FILE__)).'/../../'))); //图片根目录（绝对路径）
         if(I('refresh') == '1'){
           
