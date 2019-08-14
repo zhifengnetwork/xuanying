@@ -400,7 +400,7 @@ class User extends MobileBase
                 M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
                 session('user.head_pic',$head_pic);
             }else{
-                echo "<h1>无法获取头像，请先关注公众号</h1>";
+                $this->redirect('fenxiang_no_guanzhu');
                 exit;
             }
 
