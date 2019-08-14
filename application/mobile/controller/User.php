@@ -400,7 +400,7 @@ class User extends MobileBase
                 M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
                 session('user.head_pic',$head_pic);
             }else{
-                $this->redirect('fenxiang_no_guanzhu');
+                return $this->fetch('fenxiang_no_guanzhu');
                 exit;
             }
 
