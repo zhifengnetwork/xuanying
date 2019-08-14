@@ -342,6 +342,27 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
+
+
+        //判断头像对不对
+        $session_head_pic = session('user.head_pic');
+        if(strpos($session_head_pic,'thumb') !== false){ 
+            
+            $wxuser = $this->GetOpenid(); //授权获取openid以及微信用户信息
+            $head_pic = $wxuser['head_pic'];
+            if($head_pic){
+                //得到头像
+                $openid = session('user.openid');
+                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
+                session('user.head_pic',$head_pic);
+            }else{
+                return $this->fetch('fenxiang_no_guanzhu');
+                exit;
+            }
+
+        }
+
+
         $userinfo = M('users')->where(['user_id'=>$user_id])->field('user_id,level')->find();
         if(!$userinfo){
             $this->redirect('fenxiang_no');
@@ -376,26 +397,6 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
             exit;
         }
-
-        
-        //判断头像对不对
-        $session_head_pic = session('user.head_pic');
-        if(strpos($session_head_pic,'thumb') !== false){ 
-            
-            $wxuser = $this->GetOpenid(); //授权获取openid以及微信用户信息
-            $head_pic = $wxuser['head_pic'];
-            if($head_pic){
-                //得到头像
-                $openid = session('user.openid');
-                M('users')->where(['openid'=>$openid])->update(['head_pic'=>$head_pic]);
-                session('user.head_pic',$head_pic);
-            }else{
-                return $this->fetch('fenxiang_no_guanzhu');
-                exit;
-            }
-
-        }
-
 
         $userinfo = M('users')->where(['user_id'=>$user_id])->find();
         if(!$userinfo || !$userinfo['level']){  
