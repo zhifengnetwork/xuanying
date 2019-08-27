@@ -191,8 +191,10 @@ function jichadaili($order_id,$old_level=0)
     if ($r['status'] == 1) {
         return false;
     }
-    $order = M('order')->where(['order_id' => $order_id])->field('user_id,total_amount,order_sn')->find();
-
+    $order = M('order')->where(['order_id' => $order_id])->field('user_id,total_amount,order_sn,pay_status')->find();
+    if ($order['pay_status'] == 0) {
+        return false;
+    }
     $userId = $order['user_id'];
     $orderSn = $order['order_sn'];
 

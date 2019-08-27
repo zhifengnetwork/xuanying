@@ -18,7 +18,10 @@ class DistributLogic
      * log == 0 不记录
      */
     public function bufa($order_id,$log=1){
-
+        $order = M('order')->where(['order_id' => $order_id])->find();
+        if (!$order||$order['pay_status'] == 0) {
+            return false;
+        }
         //补发业绩
         agent_performance($order_id);
         //补发返利
