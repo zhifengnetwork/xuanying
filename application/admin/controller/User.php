@@ -91,10 +91,11 @@ class User extends Base
         $count = $usersModel->where($condition)->count();
         $Page = new AjaxPage($count, 10);
 
+        $field = 'user_id,nickname,realname,level,agent_user,mobile,user_money,reg_time,is_distribut,mobile_validated';
         if(trim($sort_order) == ''){
-            $userList = $usersModel->where($condition)->limit($Page->firstRow . ',' . $Page->listRows)->select();
+            $userList = $usersModel->where($condition)->field($field)->limit($Page->firstRow . ',' . $Page->listRows)->select();
         }else{
-            $userList = $usersModel->where($condition)->order($sort_order)->limit($Page->firstRow . ',' . $Page->listRows)->select();
+            $userList = $usersModel->where($condition)->field($field)->order($sort_order)->limit($Page->firstRow . ',' . $Page->listRows)->select();
         }
 
         $user_id_arr = get_arr_column($userList, 'user_id');
@@ -112,6 +113,7 @@ class User extends Base
         $this->assign('second_leader', $second_leader);
         $this->assign('third_leader', $third_leader);
         $show = $Page->show();
+      
         $this->assign('userList', $userList);
         $this->assign('level', M('user_level')->getField('level,level_name'));
         $this->assign('page', $show);// 赋值分页输出
