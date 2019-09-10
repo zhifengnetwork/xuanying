@@ -73,30 +73,8 @@ class User extends MobileBase
     public function distribut(){
 
         $user_id = session('user.user_id');
-       
-        $per_logic =  new PerformanceLogic();
-        $money_total = $per_logic->distribut_caculate();
-       
-        //补业绩
-        if($money_total['moneys'] < 0){
-            $bu_moneys = -1 * $money_total['moneys'] * 2; //补 两倍 的 差值
-            //这里重新
-            $add_logic = new \app\common\logic\AgentPerformanceAddLogic();
-            $add_logic->add($user_id,$bu_moneys);
-           
-            //重新来
-            $per_logic =  new PerformanceLogic();
-            $money_total = $per_logic->distribut_caculate();
-        }
-		/*
-        //获取当前用户的所有下级
-        $UsersLogic = new UsersLogic();
-        $bot_arr = [];
-        $bot_arr = $UsersLogic->getUserLevBotAll($user_id,$bot_arr); 
-        //$bot_arr[] = $user_id;
-        $num = Db::name('order')->master()->where(['user_id' => ['in',$bot_arr], 'pay_status' => 1, 'order_status' => ['NOTIN', [3, 5]]])->sum('order_amount+user_money'); 
-        //$money_total['money_total'] += $num;	*/
-		$money_total['money_total'] = M('Yeji')->where(['uid'=>$user_id])->sum('money');
+     
+		$money_total = M('Yeji')->where(['uid'=>$user_id])->sum('money');
         $this->assign('money_total',$money_total);
 
         //上级用户信息
@@ -117,6 +95,7 @@ class User extends MobileBase
       
         $underling_number = M('users')->where(['user_id'=>$user_id])->value('underling_number');
         $underling_number == NULL ? $underling_number = '0' : $underling_number;
+
         $this->assign('underling_number', $underling_number);
  
         $this->assign('user_id',$user_id);
