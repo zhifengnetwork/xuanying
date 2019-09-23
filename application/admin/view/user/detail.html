@@ -56,9 +56,9 @@
                 </dt>
                 <dd class="opt">
                 	<select id="level" name="level">
-                        <option value="0" condition="$user.agent_user  eq 0 ">selected</if>>普通用户</option>
+                            <option value="0"  <if condition="$user.agent_user  eq 0 ">selected</if> >普通用户</option>
                 		<tpshop sql="select * from `__PREFIX__user_level` where level_id != 12" key="k" item='v'>
-                		<option value="{$v[level_id]}" <if condition="$v.level_id eq $user.agent_user">selected</if>>{$v[level_name]}</option>
+                		    <option value="{$v[level_id]}" <if condition="$v.level_id eq $user.agent_user">selected</if>>{$v[level_name]}</option>
                 		</tpshop>
                 	</select>
                 </dd>
