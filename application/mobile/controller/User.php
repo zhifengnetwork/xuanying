@@ -322,7 +322,6 @@ class User extends MobileBase
             exit;
         }
 
-
         //判断头像对不对
         $session_head_pic = session('user.head_pic');
         if(strpos($session_head_pic,'thumb') !== false){ 
@@ -352,6 +351,12 @@ class User extends MobileBase
             $this->redirect('fenxiang_no');
         }
 
+        $head_pic = M('users')->where(['user_id'=>$user_id])->value('head_pic');
+        if(!$head_pic){
+            $this->redirect('/mobile/User/fenxiang1.html?refresh=1');
+        }
+
+        
         $this->redirect('fenxiang1');
     }
 
